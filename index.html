@@ -5,7 +5,7 @@
   <title>🎰 SPIN Ролетка</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- PWA (можеш да махнеш тези 3 реда, ако не ти трябва инсталация) -->
+  <!-- PWA (по желание – ако имаш manifest.json и sw.js) -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#111111">
   <link rel="icon" href="icon-192.png">
@@ -55,8 +55,11 @@
       justify-content:center;
       font-size:2.4rem;
       box-shadow:inset 0 0 8px #000;
+      transition:transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
     }
-    .middle-row { box-shadow:0 0 0 1px rgba(255,215,0,0.7), 0 0 12px rgba(255,215,0,0.5); }
+    .middle-row {
+      box-shadow:0 0 0 1px rgba(255,215,0,0.7), 0 0 12px rgba(255,215,0,0.5);
+    }
     .win {
       background: radial-gradient(circle at 30% 20%, #fff4c2, #e0a900 55%);
       color:#000;
@@ -70,7 +73,22 @@
       from { transform:scale(1); }
       to   { transform:scale(1.12); }
     }
-    .controls { display:flex; justify-content:space-between; margin-top:15px; gap:10px; align-items:center; }
+
+    @keyframes reel-spin {
+      0% { transform:translateY(0); }
+      50% { transform:translateY(4px); }
+      100% { transform:translateY(0); }
+    }
+    .spinning .cell { animation:reel-spin 0.18s infinite; }
+
+    .controls {
+      display:flex;
+      justify-content:space-between;
+      margin-top:15px;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
     .spin-btn {
       flex:1;
       padding:12px;
@@ -83,7 +101,12 @@
       cursor:pointer;
       box-shadow:0 10px 24px rgba(0,0,0,0.8);
     }
-    .spin-btn:active { transform:translateY(1px) scale(0.99); box-shadow:0 4px 16px rgba(0,0,0,0.9); }
+    .spin-btn:active {
+      transform:translateY(1px) scale(0.99);
+      box-shadow:0 4px 16px rgba(0,0,0,0.9);
+    }
+    .spin-btn:disabled { opacity:0.6; cursor:not-allowed; }
+
     .bet-box { display:flex; gap:8px; align-items:center; }
     .icon-btn {
       width:30px; height:30px;
@@ -94,17 +117,87 @@
       cursor:pointer;
       font-size:1.1rem;
     }
-    #resultText { text-align:center; margin-top:12px; min-height:22px; font-size:0.95rem; }
-    @keyframes reel-spin {
-      0% { transform:translateY(0); }
-      50% { transform:translateY(4px); }
-      100% { transform:translateY(0); }
+    #resultText {
+      text-align:center;
+      margin-top:12px;
+      min-height:22px;
+      font-size:0.95rem;
     }
-    .spinning .cell { animation:reel-spin 0.18s infinite; }
+
+    /* Балонче за последния резултат */
+    #history {
+      margin-top: 10px;
+      text-align: center;
+      min-height: 30px;
+    }
+
+    .history-box {
+      display: inline-block;
+      position: relative;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid transparent;
+      font-size: 0.85rem;
+      max-width: 100%;
+      white-space: nowrap;
+    }
+
+    .history-box::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid transparent; /* по-късно сменяме цвета за win/lose */
+    }
+
+    .history-win {
+      border-color: rgba(46, 204, 113, 0.9);
+      color: #c9ffd8;
+      box-shadow: 0 0 10px rgba(46, 204, 113, 0.7), 0 0 20px rgba(39, 174, 96, 0.9);
+      animation: historyPulseGreen 0.5s ease-in-out 0s 4 alternate;
+    }
+    .history-win::after {
+      border-top-color: rgba(46, 204, 113, 0.9);
+    }
+
+    .history-lose {
+      border-color: rgba(231, 76, 60, 0.9);
+      color: #ffd1d1;
+      box-shadow: 0 0 10px rgba(231, 76, 60, 0.7), 0 0 20px rgba(192, 57, 43, 0.9);
+      animation: historyPulseRed 0.5s ease-in-out 0s 3 alternate;
+    }
+    .history-lose::after {
+      border-top-color: rgba(231, 76, 60, 0.9);
+    }
+
+    @keyframes historyPulseGreen {
+      from {
+        transform: translateY(0) scale(1);
+      }
+      to {
+        transform: translateY(-2px) scale(1.05);
+      }
+    }
+
+    @keyframes historyPulseRed {
+      from {
+        transform: translateY(0) scale(1);
+      }
+      to {
+        transform: translateY(-2px) scale(1.05);
+      }
+    }
 
     @media (max-width:480px){
       .slot-grid{ grid-template-rows:repeat(3,68px); }
       .cell{ font-size:2rem; }
+      .history-box { white-space: normal; }
     }
   </style>
 </head>
@@ -114,7 +207,9 @@
   <div class="card">
 
     <h1>🎰 SPIN Ролетка</h1>
-    <p class="subtitle">Подреди 3 еднакви символа на <span class="highlight">средния ред</span> и печелиш!</p>
+    <p class="subtitle">
+      Подреди 3 еднакви символа на <span class="highlight">средния ред</span> и печелиш!
+    </p>
 
     <div class="status-bar">
       <div>Баланс: <span id="balance" class="highlight">100</span> 🪙</div>
@@ -150,6 +245,9 @@
     </div>
 
     <div id="resultText">Печалба при 3 еднакви символа по средния ред.</div>
+
+    <!-- Балонче за последния резултат -->
+    <div id="history"></div>
 
   </div>
 </div>
@@ -188,6 +286,7 @@ const resultText=document.getElementById("resultText");
 const gridEl=document.getElementById("slotGrid");
 const slotWindow=document.getElementById("slotWindow");
 const modeLabel=document.getElementById("modeLabel");
+const historyEl=document.getElementById("history");
 
 /* Audio */
 const audioSpin=document.getElementById("audioSpin");
@@ -195,6 +294,13 @@ const audioSpinMusic=document.getElementById("audioSpinMusic");
 const audioWin=document.getElementById("audioWin");
 const audioLose=document.getElementById("audioLose");
 const bgMusic=document.getElementById("bgMusic");
+
+function getDateTime() {
+  const d = new Date();
+  const pad = n => n.toString().padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ` +
+         `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
 
 function updateUI(){
   balanceEl.textContent=balance;
@@ -228,15 +334,24 @@ function clearWin(){
   });
 }
 
+/* за бъдеще – ако искаш бутон за режим */
+modeLabel.textContent = easyMode ? "По-лесен" : "Нормален";
+
 function startSpin(){
   if(spinning) return;
   if(bet>balance){
     resultText.textContent="Недостатъчен баланс.";
     return;
   }
+
   spinning=true;
   stopRequested=false;
   spinBtn.textContent="STOP";
+
+  // при ново завъртане скриваме балончето
+  historyEl.innerHTML = "";
+  historyEl.className = "";
+
   clearWin();
 
   balance-=bet; updateUI();
@@ -277,19 +392,19 @@ function finalize(matrix){
   try{ audioSpinMusic.pause(); audioSpinMusic.currentTime=0; }catch(e){}
 
   let s1=matrix[1][0], s2=matrix[1][1], s3=matrix[1][2];
-  let win=false, amount=0;
+  let win=false, winAmount=0;
 
   if(s1===s2 && s2===s3 && PAYOUTS[s1]){
     win=true;
-    amount=PAYOUTS[s1]*bet;
+    winAmount=PAYOUTS[s1]*bet;
   }
 
   if(win){
-    balance+=amount;
+    balance+=winAmount;
     if(s1==="7️⃣"){
-      resultText.textContent="💎 ДЖАКПОТ! Печелиш "+amount+" монети!";
+      resultText.textContent="💎 ДЖАКПОТ! Печелиш "+winAmount+" монети!";
     }else{
-      resultText.textContent="🎉 Печалба: "+amount+" монети!";
+      resultText.textContent="🎉 Печалба: "+winAmount+" монети!";
     }
     let cells=document.querySelectorAll(".middle-row");
     cells.forEach(c=>{
@@ -300,6 +415,16 @@ function finalize(matrix){
   } else {
     resultText.textContent="❌ Няма печалба. Опитай пак!";
     play(audioLose);
+  }
+
+  // показване на балончето с дата/час, залог и резултат
+  const dt = getDateTime();
+  if (win) {
+    historyEl.innerHTML =
+      `<div class="history-box history-win">[${dt}] Залог: ${bet} | Печалба: ${winAmount} | Комбинация: ${s1} ${s2} ${s3}</div>`;
+  } else {
+    historyEl.innerHTML =
+      `<div class="history-box history-lose">[${dt}] Залог: ${bet} | Без печалба</div>`;
   }
 
   spinning=false;
