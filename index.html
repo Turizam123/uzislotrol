@@ -231,7 +231,7 @@
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
       Печели при 3 еднакви на средния ред.<br>
-      <small>🃏 JOKER на третия барабан заменя символите при два еднакви + JOKER в средата.</small>
+      <small>🃏 JOKER на <b>среден ред, трети барабан</b> замества символите и винаги дава печалба.</small>
     </p>
 
     <div class="status-bar">
@@ -292,10 +292,18 @@ const SYMBOLS = [
   {emoji:"🍑",weightNormal:3,weightEasy:4},
   {emoji:"🍐",weightNormal:4,weightEasy:5},
   {emoji:"🍇",weightNormal:5,weightEasy:5},
-  {emoji:JOKER_SYMBOL,weightNormal:1,weightEasy:2} // JOKER (само за 3-ти барабан)
+  {emoji:JOKER_SYMBOL,weightNormal:1,weightEasy:2} // JOKER (само на 3-ти барабан)
 ];
 
-const PAYOUTS = {"7️⃣":100,"🔔":50,"🍒":35,"🍑":25,"🍐":18,"🍇":12};
+const PAYOUTS = {
+  "7️⃣":100,
+  "🔔":50,
+  "🍒":35,
+  "🍑":25,
+  "🍐":18,
+  "🍇":12,
+  "🃏":40  // JOKER – специална печалба
+};
 
 let balance=100, bet=5;
 let spinning=false, easyMode=false;
@@ -309,7 +317,6 @@ const spinBtn=document.getElementById("spinBtn");
 const betMinusBtn=document.getElementById("betMinus");
 const betPlusBtn=document.getElementById("betPlus");
 const resultText=document.getElementById("resultText");
-const gridEl=document.getElementById("slotGrid");
 const slotWindow=document.getElementById("slotWindow");
 const modeLabel=document.getElementById("modeLabel");
 const historyEl=document.getElementById("history");
@@ -373,7 +380,6 @@ function startSpin(){
   stopRequested=false;
   spinBtn.textContent="STOP";
 
-  // скриваме балончето
   historyEl.innerHTML = "";
   historyEl.className = "";
 
@@ -386,7 +392,7 @@ function startSpin(){
   play(audioSpin);
   play(audioSpinMusic);
 
-  const poolAll = buildPool(true);      // включително JOKER
+  const poolAll = buildPool(true);      // с JOKER
   const poolNoJoker = buildPool(false); // без JOKER
 
   let matrix=[["","",""],["","",""],["","",""]];
@@ -426,18 +432,18 @@ function finalize(matrix){
 
   let win=false;
   let winAmount=0;
-  let winSymbol=null;
   let viaJoker=false;
+  let winSymbol=null;
 
-  // 3 еднакви нормално
-  if(a===b && b===c && PAYOUTS[a]){
-    win = true;
-    winSymbol = a;
-  }
-  // 2 еднакви + JOKER в средата на 3-ти барабан
-  else if (c===JOKER_SYMBOL && a===b && PAYOUTS[a]) {
+  // 1) Ако има JOKER в средния ред, трети барабан → винаги печалба
+  if (c === JOKER_SYMBOL) {
     win = true;
     viaJoker = true;
+    winSymbol = JOKER_SYMBOL;
+  }
+  // 2) Иначе класическа печалба при 3 еднакви
+  else if (a === b && b === c && PAYOUTS[a]) {
+    win = true;
     winSymbol = a;
   }
 
@@ -446,7 +452,7 @@ function finalize(matrix){
     balance += winAmount;
 
     if(viaJoker){
-      resultText.textContent = `🤡 JOKER! Печелиш ${winAmount} монети! JOKER замества ${winSymbol}.`;
+      resultText.textContent = `🤡 JOKER! Печелиш ${winAmount} монети! Джокер замества символите.`;
     } else if(winSymbol==="7️⃣"){
       resultText.textContent = `💎 ДЖАКПОТ! Печелиш ${winAmount} монети!`;
     } else {
@@ -468,8 +474,8 @@ function finalize(matrix){
 
   // балонче с дата/час, залог и резултат
   const dt = getDateTime();
+  const comboText = `${a} ${b} ${c}`;
   if (win) {
-    const comboText = `${a} ${b} ${c}`;
     let cls = "history-box history-win";
     if (viaJoker) cls = "history-box history-joker";
     historyEl.innerHTML =
