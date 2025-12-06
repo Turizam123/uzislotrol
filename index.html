@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
-  <title>🎰 SPIN Ролетка</title>
+  <title>🎰 SPIN Ролетка с JOKER</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- PWA (по желание – ако имаш manifest.json и sw.js) -->
@@ -22,7 +22,7 @@
       align-items: center;
       min-height: 100vh;
     }
-    .game-wrapper { max-width: 480px; width: 100%; padding: 20px; }
+    .game-wrapper { max-width: 500px; width: 100%; padding: 20px; }
     .card {
       background: rgba(0,0,0,0.85);
       padding: 20px;
@@ -30,17 +30,26 @@
       box-shadow: 0 16px 40px rgba(0,0,0,0.9);
       border: 1px solid rgba(255,255,255,0.06);
     }
-    h1 { text-align:center; margin:0 0 10px; }
+    h1 { text-align:center; margin:0 0 8px; }
     .subtitle {
       text-align:center;
       font-size:0.9rem;
-      opacity:0.85;
-      margin-bottom:8px;
+      opacity:0.9;
+      margin-bottom:6px;
     }
+    .subtitle small { font-size:0.8rem; opacity:0.8; display:block; }
+
     .status-bar { display:flex; justify-content:space-between; margin:10px 0; font-size:0.95rem; }
     .highlight { color:#ffd86b; }
-    .slot-frame { margin-top:14px; }
-    .slot-window { padding:10px; background:#222; border-radius:14px; box-shadow:inset 0 0 12px #000; }
+
+    .slot-frame { margin-top:12px; }
+    .slot-window {
+      padding:10px;
+      background:#222;
+      border-radius:14px;
+      box-shadow:inset 0 0 12px #000;
+      position:relative;
+    }
     .slot-grid {
       display:grid;
       grid-template-columns:repeat(3,1fr);
@@ -58,7 +67,7 @@
       transition:transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
     }
     .middle-row {
-      box-shadow:0 0 0 1px rgba(255,215,0,0.7), 0 0 12px rgba(255,215,0,0.5);
+      box-shadow:0 0 0 1px rgba(255,215,0,0.7), 0 0 12px rgba(255,215,0,0.4);
     }
     .win {
       background: radial-gradient(circle at 30% 20%, #fff4c2, #e0a900 55%);
@@ -69,9 +78,17 @@
       animation:seven 0.3s infinite alternate;
       box-shadow:0 0 20px red, 0 0 30px gold;
     }
+    .joker-win {
+      animation:jokerPulse 0.35s infinite alternate;
+      box-shadow:0 0 20px rgba(155,89,182,0.9), 0 0 30px rgba(52,152,219,0.9);
+    }
     @keyframes seven {
       from { transform:scale(1); }
       to   { transform:scale(1.12); }
+    }
+    @keyframes jokerPulse {
+      from { transform:scale(1); }
+      to   { transform:scale(1.1) rotate(1deg); }
     }
 
     @keyframes reel-spin {
@@ -153,7 +170,7 @@
       height: 0;
       border-left: 8px solid transparent;
       border-right: 8px solid transparent;
-      border-top: 8px solid transparent; /* по-късно сменяме цвета за win/lose */
+      border-top: 8px solid transparent;
     }
 
     .history-win {
@@ -176,22 +193,27 @@
       border-top-color: rgba(231, 76, 60, 0.9);
     }
 
-    @keyframes historyPulseGreen {
-      from {
-        transform: translateY(0) scale(1);
-      }
-      to {
-        transform: translateY(-2px) scale(1.05);
-      }
+    .history-joker {
+      border-color: rgba(155, 89, 182, 0.95);
+      color: #f8e9ff;
+      box-shadow: 0 0 10px rgba(155,89,182,0.8), 0 0 24px rgba(52,152,219,0.9);
+      animation: historyPulseJoker 0.55s ease-in-out 0s 5 alternate;
+    }
+    .history-joker::after {
+      border-top-color: rgba(155, 89, 182, 0.95);
     }
 
+    @keyframes historyPulseGreen {
+      from { transform: translateY(0) scale(1); }
+      to   { transform: translateY(-2px) scale(1.05); }
+    }
     @keyframes historyPulseRed {
-      from {
-        transform: translateY(0) scale(1);
-      }
-      to {
-        transform: translateY(-2px) scale(1.05);
-      }
+      from { transform: translateY(0) scale(1); }
+      to   { transform: translateY(-2px) scale(1.05); }
+    }
+    @keyframes historyPulseJoker {
+      from { transform: translateY(0) scale(1) rotate(-1deg); }
+      to   { transform: translateY(-2px) scale(1.06) rotate(1deg); }
     }
 
     @media (max-width:480px){
@@ -208,7 +230,8 @@
 
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
-      Подреди 3 еднакви символа на <span class="highlight">средния ред</span> и печелиш!
+      Печели при 3 еднакви на средния ред.<br>
+      <small>🃏 JOKER на третия барабан заменя символите при два еднакви + JOKER в средата.</small>
     </p>
 
     <div class="status-bar">
@@ -260,6 +283,8 @@
 <audio id="bgMusic" src="music.wav" preload="auto" loop></audio>
 
 <script>
+const JOKER_SYMBOL = "🃏";
+
 const SYMBOLS = [
   {emoji:"7️⃣",weightNormal:1,weightEasy:2},
   {emoji:"🔔",weightNormal:1,weightEasy:3},
@@ -267,6 +292,7 @@ const SYMBOLS = [
   {emoji:"🍑",weightNormal:3,weightEasy:4},
   {emoji:"🍐",weightNormal:4,weightEasy:5},
   {emoji:"🍇",weightNormal:5,weightEasy:5},
+  {emoji:JOKER_SYMBOL,weightNormal:1,weightEasy:2} // JOKER (само за 3-ти барабан)
 ];
 
 const PAYOUTS = {"7️⃣":100,"🔔":50,"🍒":35,"🍑":25,"🍐":18,"🍇":12};
@@ -305,6 +331,7 @@ function getDateTime() {
 function updateUI(){
   balanceEl.textContent=balance;
   betValueEl.textContent=bet;
+  modeLabel.textContent = easyMode ? "По-лесен" : "Нормален";
 }
 
 function play(audio){
@@ -312,10 +339,11 @@ function play(audio){
   try { audio.currentTime=0; audio.play(); } catch(e){}
 }
 
-function weightedPool(){
-  let pool=[];
+function buildPool(includeJoker){
+  const pool=[];
   SYMBOLS.forEach(s=>{
-    let w= easyMode ? s.weightEasy : s.weightNormal;
+    if(!includeJoker && s.emoji===JOKER_SYMBOL) return;
+    const w = easyMode ? s.weightEasy : s.weightNormal;
     for(let i=0;i<w;i++) pool.push(s.emoji);
   });
   return pool;
@@ -330,12 +358,9 @@ function setGrid(matrix){
 
 function clearWin(){
   document.querySelectorAll(".cell").forEach(c=>{
-    c.classList.remove("win","seven-win");
+    c.classList.remove("win","seven-win","joker-win");
   });
 }
-
-/* за бъдеще – ако искаш бутон за режим */
-modeLabel.textContent = easyMode ? "По-лесен" : "Нормален";
 
 function startSpin(){
   if(spinning) return;
@@ -348,7 +373,7 @@ function startSpin(){
   stopRequested=false;
   spinBtn.textContent="STOP";
 
-  // при ново завъртане скриваме балончето
+  // скриваме балончето
   historyEl.innerHTML = "";
   historyEl.className = "";
 
@@ -361,13 +386,16 @@ function startSpin(){
   play(audioSpin);
   play(audioSpinMusic);
 
-  const pool=weightedPool();
+  const poolAll = buildPool(true);      // включително JOKER
+  const poolNoJoker = buildPool(false); // без JOKER
+
   let matrix=[["","",""],["","",""],["","",""]];
 
   slotWindow.classList.add("spinning");
 
   spinInterval=setInterval(()=>{
     for(let c=0;c<3;c++){
+      const pool = (c === 2) ? poolAll : poolNoJoker; // JOKER само на 3-ти барабан
       for(let r=0;r<3;r++){
         matrix[r][c]= pool[Math.floor(Math.random()*pool.length)];
       }
@@ -391,37 +419,61 @@ function finalize(matrix){
 
   try{ audioSpinMusic.pause(); audioSpinMusic.currentTime=0; }catch(e){}
 
-  let s1=matrix[1][0], s2=matrix[1][1], s3=matrix[1][2];
-  let win=false, winAmount=0;
+  const mid = 1;
+  const a = matrix[mid][0];
+  const b = matrix[mid][1];
+  const c = matrix[mid][2];
 
-  if(s1===s2 && s2===s3 && PAYOUTS[s1]){
-    win=true;
-    winAmount=PAYOUTS[s1]*bet;
+  let win=false;
+  let winAmount=0;
+  let winSymbol=null;
+  let viaJoker=false;
+
+  // 3 еднакви нормално
+  if(a===b && b===c && PAYOUTS[a]){
+    win = true;
+    winSymbol = a;
+  }
+  // 2 еднакви + JOKER в средата на 3-ти барабан
+  else if (c===JOKER_SYMBOL && a===b && PAYOUTS[a]) {
+    win = true;
+    viaJoker = true;
+    winSymbol = a;
   }
 
   if(win){
-    balance+=winAmount;
-    if(s1==="7️⃣"){
-      resultText.textContent="💎 ДЖАКПОТ! Печелиш "+winAmount+" монети!";
-    }else{
-      resultText.textContent="🎉 Печалба: "+winAmount+" монети!";
+    winAmount = PAYOUTS[winSymbol] * bet;
+    balance += winAmount;
+
+    if(viaJoker){
+      resultText.textContent = `🤡 JOKER! Печелиш ${winAmount} монети! JOKER замества ${winSymbol}.`;
+    } else if(winSymbol==="7️⃣"){
+      resultText.textContent = `💎 ДЖАКПОТ! Печелиш ${winAmount} монети!`;
+    } else {
+      resultText.textContent = `🎉 Печалба: ${winAmount} монети!`;
     }
-    let cells=document.querySelectorAll(".middle-row");
-    cells.forEach(c=>{
-      c.classList.add("win");
-      if(s1==="7️⃣") c.classList.add("seven-win");
+
+    const middleCells = document.querySelectorAll(".middle-row");
+    middleCells.forEach(cel=>{
+      cel.classList.add("win");
+      if(winSymbol==="7️⃣") cel.classList.add("seven-win");
+      if(viaJoker) cel.classList.add("joker-win");
     });
+
     play(audioWin);
   } else {
     resultText.textContent="❌ Няма печалба. Опитай пак!";
     play(audioLose);
   }
 
-  // показване на балончето с дата/час, залог и резултат
+  // балонче с дата/час, залог и резултат
   const dt = getDateTime();
   if (win) {
+    const comboText = `${a} ${b} ${c}`;
+    let cls = "history-box history-win";
+    if (viaJoker) cls = "history-box history-joker";
     historyEl.innerHTML =
-      `<div class="history-box history-win">[${dt}] Залог: ${bet} | Печалба: ${winAmount} | Комбинация: ${s1} ${s2} ${s3}</div>`;
+      `<div class="${cls}">[${dt}] Залог: ${bet} | Печалба: ${winAmount} | Комбинация: ${comboText}</div>`;
   } else {
     historyEl.innerHTML =
       `<div class="history-box history-lose">[${dt}] Залог: ${bet} | Без печалба</div>`;
