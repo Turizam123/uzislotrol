@@ -231,7 +231,7 @@
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
       Печели при 3 еднакви на средния ред.<br>
-      <small>🃏 JOKER на <b>среден ред, трети барабан</b> винаги дава печалба – при 🔔 + 🍑 + 🃏 всичко става JOKER.</small>
+      <small>🃏 JOKER на <b>среден ред, трети барабан</b> магически прави реда 🃏🃏🃏 и дава печалба.</small>
     </p>
 
     <div class="status-bar">
@@ -441,23 +441,14 @@ function finalize(matrix){
     viaJoker = true;
     winSymbol = JOKER_SYMBOL;
 
-    // Специална логика: ако първите два са Камбана и Слива (в който и да е ред)
-    const bell = "🔔";
-    const plum = "🍑";
-    if (
-      (a === bell && b === plum) ||
-      (a === plum && b === bell)
-    ) {
-      // визуално показваме JOKER на всички 3 позиции
-      const middleCells = document.querySelectorAll(".middle-row");
-      middleCells.forEach(cel => {
-        cel.textContent = JOKER_SYMBOL;
-      });
-      // актуализираме и вътрешните символи за историята
-      a = JOKER_SYMBOL;
-      b = JOKER_SYMBOL;
-      c = JOKER_SYMBOL;
-    }
+    // магия: независимо какви са били a и b, визуално правим целия ред 🃏🃏🃏
+    a = JOKER_SYMBOL;
+    b = JOKER_SYMBOL;
+    // обновяваме DOM на средния ред
+    const middleCells = document.querySelectorAll(".middle-row");
+    middleCells.forEach(cel => {
+      cel.textContent = JOKER_SYMBOL;
+    });
   }
   // 2) Иначе класическа печалба при 3 еднакви
   else if (a === b && b === c && PAYOUTS[a]) {
