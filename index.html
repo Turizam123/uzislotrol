@@ -157,7 +157,7 @@
       border: 2px solid transparent;
       font-size: 0.85rem;
       max-width: 100%;
-      white-space: nowrap;
+      white-space: normal;
     }
 
     .history-box::after {
@@ -219,7 +219,6 @@
     @media (max-width:480px){
       .slot-grid{ grid-template-rows:repeat(3,68px); }
       .cell{ font-size:2rem; }
-      .history-box { white-space: normal; }
     }
   </style>
 </head>
@@ -230,8 +229,8 @@
 
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
-      Печели при 3 еднакви на средния ред.<br>
-      <small>🃏 JOKER на <b>среден ред, трети барабан</b> магически прави реда 🃏🃏🃏 и дава печалба.</small>
+      Печели само <span class="highlight">средният ред</span> (една линия).<br>
+      <small>🃏 JOKER на трети барабан прави реда 🃏🃏🃏 и плаща множител върху залога (~20% RTP общо).</small>
     </p>
 
     <div class="status-bar">
@@ -285,24 +284,26 @@
 <script>
 const JOKER_SYMBOL = "🃏";
 
+// шанс за символите – като в слот таблица
 const SYMBOLS = [
   {emoji:"7️⃣",weightNormal:1,weightEasy:2},
-  {emoji:"🔔",weightNormal:1,weightEasy:3},
-  {emoji:"🍒",weightNormal:2,weightEasy:4},
-  {emoji:"🍑",weightNormal:3,weightEasy:4},
-  {emoji:"🍐",weightNormal:4,weightEasy:5},
-  {emoji:"🍇",weightNormal:5,weightEasy:5},
+  {emoji:"🔔",weightNormal:2,weightEasy:3},
+  {emoji:"🍒",weightNormal:3,weightEasy:4},
+  {emoji:"🍑",weightNormal:4,weightEasy:5},
+  {emoji:"🍐",weightNormal:5,weightEasy:6},
+  {emoji:"🍇",weightNormal:6,weightEasy:7},
   {emoji:JOKER_SYMBOL,weightNormal:1,weightEasy:2} // JOKER (само на 3-ти барабан)
 ];
 
+// множители по залога (настройвани така, че RTP ~= 20%)
 const PAYOUTS = {
-  "7️⃣":100,
-  "🔔":50,
-  "🍒":35,
-  "🍑":25,
-  "🍐":18,
-  "🍇":12,
-  "🃏":40  // JOKER – специална печалба
+  "7️⃣":15, // 15x залога
+  "🔔":6,
+  "🍒":4,
+  "🍑":2,
+  "🍐":1,
+  "🍇":1,
+  "🃏":3  // JOKER – 3x залога
 };
 
 let balance=100, bet=5;
@@ -425,7 +426,7 @@ function finalize(matrix){
 
   try{ audioSpinMusic.pause(); audioSpinMusic.currentTime=0; }catch(e){}
 
-  const mid = 1;
+  const mid = 1; // само среден ред печели
   let a = matrix[mid][0];
   let b = matrix[mid][1];
   let c = matrix[mid][2];
@@ -435,40 +436,40 @@ function finalize(matrix){
   let viaJoker=false;
   let winSymbol=null;
 
-  // 1) Ако има JOKER в средния ред, трети барабан → винаги печалба
+  // JOKER на трети барабан -> магически ред 🃏🃏🃏
   if (c === JOKER_SYMBOL) {
     win = true;
     viaJoker = true;
     winSymbol = JOKER_SYMBOL;
 
-    // магия: независимо какви са били a и b, визуално правим целия ред 🃏🃏🃏
     a = JOKER_SYMBOL;
     b = JOKER_SYMBOL;
-    // обновяваме DOM на средния ред
-    const middleCells = document.querySelectorAll(".middle-row");
-    middleCells.forEach(cel => {
-      cel.textContent = JOKER_SYMBOL;
-    });
+    matrix[mid][0] = JOKER_SYMBOL;
+    matrix[mid][1] = JOKER_SYMBOL;
+    // c вече е JOKER
   }
-  // 2) Иначе класическа печалба при 3 еднакви
+  // иначе класически 3 еднакви символа
   else if (a === b && b === c && PAYOUTS[a]) {
     win = true;
     winSymbol = a;
   }
 
+  // ъпдейтваме грид (за да се видят евентуални джокери)
+  setGrid(matrix);
+
   if(win){
-    winAmount = PAYOUTS[winSymbol] * bet;
+    winAmount = PAYOUTS[winSymbol] * bet; // множител * залог
     balance += winAmount;
 
     if(viaJoker){
-      resultText.textContent = `🤡 JOKER! Печелиш ${winAmount} монети! Джокер замества символите.`;
+      resultText.textContent = `🤡 JOKER! Печелиш ${winAmount} монети (x${PAYOUTS[winSymbol]})!`;
     } else if(winSymbol==="7️⃣"){
-      resultText.textContent = `💎 ДЖАКПОТ! Печелиш ${winAmount} монети!`;
+      resultText.textContent = `💎 ДЖАКПОТ! Печелиш ${winAmount} монети (x${PAYOUTS[winSymbol]})!`;
     } else {
-      resultText.textContent = `🎉 Печалба: ${winAmount} монети!`;
+      resultText.textContent = `🎉 Печелиш ${winAmount} монети (x${PAYOUTS[winSymbol]})!`;
     }
 
-    const middleCells = document.querySelectorAll(".middle-row");
+    const middleCells = document.querySelectorAll('.cell[data-row="1"]');
     middleCells.forEach(cel=>{
       cel.classList.add("win");
       if(winSymbol==="7️⃣") cel.classList.add("seven-win");
@@ -481,12 +482,11 @@ function finalize(matrix){
     play(audioLose);
   }
 
-  // балонче с дата/час, залог и резултат
+  // Балонче история
   const dt = getDateTime();
   const comboText = `${a} ${b} ${c}`;
   if (win) {
-    let cls = "history-box history-win";
-    if (viaJoker) cls = "history-box history-joker";
+    const cls = viaJoker ? "history-box history-joker" : "history-box history-win";
     historyEl.innerHTML =
       `<div class="${cls}">[${dt}] Залог: ${bet} | Печалба: ${winAmount} | Комбинация: ${comboText}</div>`;
   } else {
