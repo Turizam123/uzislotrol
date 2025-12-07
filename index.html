@@ -2,15 +2,12 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
-  <title>🎰 SPIN Ролетка с JOKER + Бонус + Моят портфейл</title>
+  <title>🎰 SPIN Ролетка – Реална игра</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#111111">
   <link rel="icon" href="icon-192.png">
-
-  <!-- Google Identity Services -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
     * { box-sizing: border-box; }
@@ -40,29 +37,17 @@
       text-align:center;
       font-size:0.9rem;
       opacity:0.9;
-      margin-bottom:6px;
+      margin-bottom:8px;
     }
     .subtitle small { font-size:0.8rem; opacity:0.8; display:block; }
 
     .highlight { color:#ffd86b; }
 
-    .auth-bar {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:8px;
-      margin:8px 0 4px;
-      font-size:0.85rem;
-    }
-    #authInfo {
-      flex:1;
-      opacity:0.9;
-    }
-
     #balancesInfo {
-      font-size:0.8rem;
-      opacity:0.85;
+      font-size:0.85rem;
+      opacity:0.9;
       margin-bottom:4px;
+      text-align:center;
     }
 
     #walletInfo {
@@ -99,32 +84,6 @@
       opacity:0.5;
       cursor:not-allowed;
       box-shadow:none;
-    }
-
-    .mode-switch {
-      display:flex;
-      gap:8px;
-      margin-bottom:6px;
-    }
-    .mode-btn {
-      flex:1;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,0.2);
-      background:rgba(255,255,255,0.04);
-      color:#fff;
-      font-size:0.85rem;
-      cursor:pointer;
-    }
-    .mode-btn.active {
-      background:linear-gradient(135deg,#ffd86b,#f4ba00);
-      color:#351f00;
-      border-color:rgba(0,0,0,0.8);
-      font-weight:bold;
-    }
-    .mode-btn:disabled {
-      opacity:0.5;
-      cursor:not-allowed;
     }
 
     .status-bar {
@@ -384,29 +343,23 @@
 
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
-      ДЕМО / РЕАЛНИ средства + BOOSTER + Бонус ниво + Моят портфейл.<br>
-      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. Портфейлът е моментен (само за тази сесия).</small>
+      Реална игра с виртуални монети, без вход.<br>
+      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. Портфейлът е моментен за тази сесия.</small>
     </p>
 
-    <div class="auth-bar">
-      <div id="authInfo">Режим: ДЕМО (без вход)</div>
-      <div id="googleSignIn"></div>
-    </div>
-
     <div id="balancesInfo">
-      Баланс ДЕМО: <span id="demoBalanceLabel">100</span> |
-      Баланс РЕАЛНИ: <span id="realBalanceLabel">0</span>
+      Начален баланс: <span class="highlight">1000</span> монети (записва се в браузъра ти).
     </div>
 
     <div id="walletInfo">
-      <div><strong>Моят портфейл (моментен, само за текущата сесия):</strong></div>
+      <div><strong>Моят портфейл (моментен):</strong></div>
       <div>
         Натрупани монети: <span id="walletCoins">0</span> |
         Стойност: <span id="walletBgn">0</span> BGN (~<span id="walletEur">0</span> EUR)
       </div>
       <div class="wallet-row">
         <span style="font-size:0.75rem; opacity:0.8;">
-          Всеки блок от 10 000 монети в РЕАЛЕН режим добавя 10, 20, 30... BGN прогресивно. Данните се губят при рефреш.
+          Всеки блок от 10 000 монети добавя 10, 20, 30... BGN прогресивно. Данните за портфейла се губят при рефреш.
         </span>
         <button id="walletCashoutBtn" class="wallet-btn" disabled>
           💰 Заяви изплащане (симулация)
@@ -414,14 +367,9 @@
       </div>
     </div>
 
-    <div class="mode-switch">
-      <button id="demoModeBtn" class="mode-btn active">ДЕМО</button>
-      <button id="realModeBtn" class="mode-btn" disabled>РЕАЛНИ СРЕДСТВА</button>
-    </div>
-
     <div class="status-bar">
-      <div>Активен баланс: <span id="balance" class="highlight">100</span> 🪙</div>
-      <div>Режим: <span id="modeLabel">ДЕМО</span></div>
+      <div>Баланс: <span id="balance" class="highlight">1000</span> 🪙</div>
+      <div>Режим: <span class="highlight">Реална игра</span></div>
     </div>
 
     <div class="slot-frame">
@@ -501,16 +449,13 @@ const PAYOUTS = {
   "🃏":30
 };
 
-// Портфейл – прогресивен, моментен (без база/без localStorage)
+// Портфейл – прогресивен, моментен
 const WALLET_STEP = 10000;
 const WALLET_BASE_BGN = 10;
 const BGN_TO_EUR = 0.51;
 
-// режими и баланси (балансите все още се пазят локално в localStorage)
-let currentMode = "DEMO";
-let demoBalance = 100;
-let realBalance = 0;
-let currentUser = null;
+// баланс (реална игра) – пазим го в localStorage за устройството
+let balance = 1000;
 
 // портфейл (само в паметта на JS, губи се при рефреш)
 let walletCoins = 0;
@@ -534,19 +479,13 @@ let bonusBaseBet = 0;
 
 // DOM
 const balanceEl=document.getElementById("balance");
-const demoBalanceLabel=document.getElementById("demoBalanceLabel");
-const realBalanceLabel=document.getElementById("realBalanceLabel");
 const betValueEl=document.getElementById("betValue");
 const spinBtn=document.getElementById("spinBtn");
 const betMinusBtn=document.getElementById("betMinus");
 const betPlusBtn=document.getElementById("betPlus");
 const resultText=document.getElementById("resultText");
 const slotWindow=document.getElementById("slotWindow");
-const modeLabel=document.getElementById("modeLabel");
 const historyEl=document.getElementById("history");
-const authInfo=document.getElementById("authInfo");
-const demoModeBtn=document.getElementById("demoModeBtn");
-const realModeBtn=document.getElementById("realModeBtn");
 const bonusOverlay=document.getElementById("bonusOverlay");
 const bonusButtons=document.querySelectorAll(".bonus-pick");
 
@@ -569,49 +508,34 @@ function getDateTime() {
          `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
-// DEMO баланс (можеш да махнеш localStorage и тук, ако искаш всичко да е моментно)
-function loadDemoBalance() {
-  const stored = localStorage.getItem("slot_demo_balance");
-  demoBalance = stored ? parseInt(stored,10) : 100;
+// баланс – четем/записваме в localStorage за да не се губи при рефреш
+function loadBalance() {
+  const stored = localStorage.getItem("slot_real_balance_single");
+  balance = stored ? parseInt(stored,10) : 1000;
 }
-function saveDemoBalance() {
-  localStorage.setItem("slot_demo_balance", demoBalance);
-}
-
-// REAL баланс
-function loadRealBalanceForUser(email) {
-  const stored = localStorage.getItem("slot_real_balance_"+email);
-  realBalance = stored ? parseInt(stored,10) : 1000;
-}
-function saveRealBalance() {
-  if(!currentUser) return;
-  localStorage.setItem("slot_real_balance_"+currentUser.email, realBalance);
+function saveBalance() {
+  localStorage.setItem("slot_real_balance_single", balance);
 }
 
 function getBalance() {
-  return currentMode==="DEMO" ? demoBalance : realBalance;
+  return balance;
 }
 function setBalance(val) {
-  if(currentMode==="DEMO") {
-    demoBalance = val;
-    saveDemoBalance();
-  } else {
-    realBalance = val;
-    saveRealBalance();
-  }
+  balance = val;
+  saveBalance();
   updateUI();
 }
 
-// моментен портфейл – без запис
+// автоматично отделяне към портфейла
 function autoBankToWallet(){
-  if(currentMode !== "REAL" || !currentUser) return;
   let bal = getBalance();
   const blocksToBank = Math.floor(bal / WALLET_STEP);
   if(blocksToBank <= 0) return;
 
   const coinsToBank = blocksToBank * WALLET_STEP;
   bal -= coinsToBank;
-  setBalance(bal);
+  balance = bal;
+  saveBalance();
 
   walletCoins += coinsToBank;
 
@@ -626,15 +550,12 @@ function updateWalletUI(){
   walletCoinsEl.textContent = walletCoins;
   walletBgnEl.textContent = walletBgn.toFixed(2);
   walletEurEl.textContent = (walletBgn * BGN_TO_EUR).toFixed(2);
-  walletCashoutBtn.disabled = walletBgn <= 0 || !currentUser;
+  walletCashoutBtn.disabled = walletBgn <= 0;
 }
 
 function updateUI(){
   balanceEl.textContent = getBalance();
   betValueEl.textContent = bet;
-  modeLabel.textContent = currentMode==="DEMO" ? "ДЕМО" : "РЕАЛНИ СРЕДСТВА";
-  demoBalanceLabel.textContent = demoBalance;
-  realBalanceLabel.textContent = realBalance;
   updateWalletUI();
 }
 
@@ -666,20 +587,6 @@ function clearWin(){
   });
 }
 
-function switchMode(mode){
-  if(mode==="REAL" && !currentUser){
-    resultText.textContent = "Влез с Gmail, за да играеш в режим РЕАЛНИ СРЕДСТВА.";
-    return;
-  }
-  currentMode = mode;
-  demoModeBtn.classList.toggle("active", mode==="DEMO");
-  realModeBtn.classList.toggle("active", mode==="REAL");
-  updateUI();
-}
-
-demoModeBtn.onclick = () => switchMode("DEMO");
-realModeBtn.onclick = () => switchMode("REAL");
-
 // БОНУС
 function showBonus(baseBet) {
   bonusActive = true;
@@ -698,7 +605,7 @@ function hideBonus() {
 function startSpin(){
   if(spinning || bonusActive) return;
   if(bet>getBalance()){
-    resultText.textContent="Недостатъчен баланс в активния режим.";
+    resultText.textContent="Недостатъчен баланс.";
     return;
   }
 
@@ -800,7 +707,7 @@ function finalize(matrix){
     play(audioLose);
   }
 
-  // моментен портфейл – само в REAL режим
+  // портфейл – прогресивен
   autoBankToWallet();
 
   const dt = getDateTime();
@@ -808,10 +715,10 @@ function finalize(matrix){
   if (win) {
     const cls = viaJoker ? "history-box history-joker" : "history-box history-win";
     historyEl.innerHTML =
-      `<div class="${cls}">[${dt}] Режим: ${currentMode} | Залог: ${bet} | Печалба: ${winAmount} | Комбинация: ${comboText}</div>`;
+      `<div class="${cls}">[${dt}] Залог: ${bet} | Печалба: ${winAmount} | Комбинация: ${comboText}</div>`;
   } else {
     historyEl.innerHTML =
-      `<div class="history-box history-lose">[${dt}] Режим: ${currentMode} | Залог: ${bet} | Без печалба</div>`;
+      `<div class="history-box history-lose">[${dt}] Залог: ${bet} | Без печалба</div>`;
   }
 
   spinning=false;
@@ -902,12 +809,8 @@ spinBtn.addEventListener("touchstart", handlePointerDown, {passive:false});
 spinBtn.addEventListener("touchend", handlePointerUp, {passive:false});
 spinBtn.addEventListener("touchcancel", handlePointerUp, {passive:false});
 
-// „изплащане“ (симулация, не променя портфейла)
+// „изплащане“ (симулация)
 walletCashoutBtn.onclick = ()=>{
-  if(!currentUser){
-    resultText.textContent = "За портфейл трябва да влезеш с Gmail (РЕАЛНИ СРЕДСТВА).";
-    return;
-  }
   if(walletBgn <= 0){
     resultText.textContent = "Нямаш натрупани средства в портфейла.";
     return;
@@ -926,51 +829,13 @@ setGrid([
   ["🍒","🍇","🔔"],
 ]);
 
-// GOOGLE LOGIN
-function parseJwt(token){
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/');
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c){
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-  return JSON.parse(jsonPayload);
-}
-
-function handleCredentialResponse(response){
-  try {
-    const data = parseJwt(response.credential);
-    currentUser = {
-      email: data.email,
-      name: data.name || data.given_name || data.email,
-      picture: data.picture || null
-    };
-    loadRealBalanceForUser(currentUser.email);
-    // портфейлът остава моментен – не зареждаме нищо от база
-    authInfo.textContent = `Влязъл като: ${currentUser.name} (${currentUser.email})`;
-    realModeBtn.disabled = false;
-    switchMode("REAL");
-  } catch(e){
-    console.error(e);
-    authInfo.textContent = "Грешка при входа с Google.";
-  }
-}
-
+// зареждане
 window.onload = function() {
-  loadDemoBalance();
+  loadBalance();
   updateUI();
-
-  if (window.google && google.accounts && google.accounts.id) {
-    google.accounts.id.initialize({
-      client_id: "114661235982-8kips5s57fk0rn2e9bf8it8chd7shhsr.apps.googleusercontent.com",
-      callback: handleCredentialResponse
-    });
-    google.accounts.id.renderButton(
-      document.getElementById("googleSignIn"),
-      { theme: "outline", size: "medium", type: "standard" }
-    );
-  }
 };
 
+// PWA service worker
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("sw.js").catch(()=>{});
 }
