@@ -2,13 +2,15 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
-  <title>🎰 SPIN Ролетка с JOKER</title>
+  <title>🎰 SPIN Ролетка с JOKER + Бонус + Моят портфейл</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- PWA (по желание – ако имаш manifest.json и sw.js) -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#111111">
   <link rel="icon" href="icon-192.png">
+
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
     * { box-sizing: border-box; }
@@ -22,15 +24,18 @@
       align-items: center;
       min-height: 100vh;
     }
-    .game-wrapper { max-width: 500px; width: 100%; padding: 20px; }
+    .game-wrapper { max-width: 520px; width: 100%; padding: 20px; }
     .card {
       background: rgba(0,0,0,0.85);
       padding: 20px;
       border-radius: 20px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.9);
       border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
+      overflow: hidden;
     }
-    h1 { text-align:center; margin:0 0 8px; }
+    h1 { text-align:center; margin:0 0 4px; }
+
     .subtitle {
       text-align:center;
       font-size:0.9rem;
@@ -39,10 +44,97 @@
     }
     .subtitle small { font-size:0.8rem; opacity:0.8; display:block; }
 
-    .status-bar { display:flex; justify-content:space-between; margin:10px 0; font-size:0.95rem; }
     .highlight { color:#ffd86b; }
 
-    .slot-frame { margin-top:12px; }
+    .auth-bar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      margin:8px 0 4px;
+      font-size:0.85rem;
+    }
+    #authInfo {
+      flex:1;
+      opacity:0.9;
+    }
+
+    #balancesInfo {
+      font-size:0.8rem;
+      opacity:0.85;
+      margin-bottom:4px;
+    }
+
+    #walletInfo {
+      font-size:0.8rem;
+      opacity:0.9;
+      margin-bottom:8px;
+      padding:6px 8px;
+      border-radius:10px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.06);
+    }
+    #walletInfo strong { color:#ffd86b; }
+
+    .wallet-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:6px;
+      margin-top:4px;
+      flex-wrap:wrap;
+    }
+    .wallet-btn {
+      padding:4px 8px;
+      border-radius:999px;
+      border:none;
+      background:linear-gradient(135deg,#2ecc71,#27ae60);
+      color:#fff;
+      font-size:0.78rem;
+      cursor:pointer;
+      box-shadow:0 4px 10px rgba(0,0,0,0.7);
+      white-space:nowrap;
+    }
+    .wallet-btn:disabled {
+      opacity:0.5;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+
+    .mode-switch {
+      display:flex;
+      gap:8px;
+      margin-bottom:6px;
+    }
+    .mode-btn {
+      flex:1;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.2);
+      background:rgba(255,255,255,0.04);
+      color:#fff;
+      font-size:0.85rem;
+      cursor:pointer;
+    }
+    .mode-btn.active {
+      background:linear-gradient(135deg,#ffd86b,#f4ba00);
+      color:#351f00;
+      border-color:rgba(0,0,0,0.8);
+      font-weight:bold;
+    }
+    .mode-btn:disabled {
+      opacity:0.5;
+      cursor:not-allowed;
+    }
+
+    .status-bar {
+      display:flex;
+      justify-content:space-between;
+      margin:6px 0 8px;
+      font-size:0.92rem;
+    }
+
+    .slot-frame { margin-top:8px; }
     .slot-window {
       padding:10px;
       background:#222;
@@ -90,7 +182,6 @@
       from { transform:scale(1); }
       to   { transform:scale(1.1) rotate(1deg); }
     }
-
     @keyframes reel-spin {
       0% { transform:translateY(0); }
       50% { transform:translateY(4px); }
@@ -101,7 +192,7 @@
     .controls {
       display:flex;
       justify-content:space-between;
-      margin-top:15px;
+      margin-top:12px;
       gap:10px;
       align-items:center;
       flex-wrap:wrap;
@@ -117,6 +208,8 @@
       color:#351f00;
       cursor:pointer;
       box-shadow:0 10px 24px rgba(0,0,0,0.8);
+      user-select:none;
+      -webkit-user-select:none;
     }
     .spin-btn:active {
       transform:translateY(1px) scale(0.99);
@@ -136,18 +229,16 @@
     }
     #resultText {
       text-align:center;
-      margin-top:12px;
+      margin-top:10px;
       min-height:22px;
       font-size:0.95rem;
     }
 
-    /* Балонче за последния резултат */
     #history {
       margin-top: 10px;
       text-align: center;
       min-height: 30px;
     }
-
     .history-box {
       display: inline-block;
       position: relative;
@@ -159,7 +250,6 @@
       max-width: 100%;
       white-space: normal;
     }
-
     .history-box::after {
       content: "";
       position: absolute;
@@ -172,7 +262,6 @@
       border-right: 8px solid transparent;
       border-top: 8px solid transparent;
     }
-
     .history-win {
       border-color: rgba(46, 204, 113, 0.9);
       color: #c9ffd8;
@@ -182,7 +271,6 @@
     .history-win::after {
       border-top-color: rgba(46, 204, 113, 0.9);
     }
-
     .history-lose {
       border-color: rgba(231, 76, 60, 0.9);
       color: #ffd1d1;
@@ -192,7 +280,6 @@
     .history-lose::after {
       border-top-color: rgba(231, 76, 60, 0.9);
     }
-
     .history-joker {
       border-color: rgba(155, 89, 182, 0.95);
       color: #f8e9ff;
@@ -202,7 +289,6 @@
     .history-joker::after {
       border-top-color: rgba(155, 89, 182, 0.95);
     }
-
     @keyframes historyPulseGreen {
       from { transform: translateY(0) scale(1); }
       to   { transform: translateY(-2px) scale(1.05); }
@@ -216,9 +302,78 @@
       to   { transform: translateY(-2px) scale(1.06) rotate(1deg); }
     }
 
+    /* Бонус overlay */
+    .bonus-overlay {
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,0.85);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:10;
+      backdrop-filter:blur(3px);
+    }
+    .bonus-hidden { display:none; }
+    .bonus-card {
+      background: radial-gradient(circle at 20% 0%, #ffec9b, #f39c12 55%, #8e44ad);
+      padding:16px;
+      border-radius:18px;
+      text-align:center;
+      box-shadow:0 14px 30px rgba(0,0,0,0.9);
+      max-width:360px;
+      width:100%;
+      animation:bonusIn 0.3s ease-out;
+    }
+    @keyframes bonusIn {
+      from { transform:scale(0.8); opacity:0; }
+      to { transform:scale(1); opacity:1; }
+    }
+    .bonus-title {
+      font-size:1.1rem;
+      font-weight:bold;
+      margin-bottom:4px;
+    }
+    .bonus-sub {
+      font-size:0.85rem;
+      margin-bottom:10px;
+    }
+    .bonus-cards-row {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:6px;
+    }
+    .bonus-pick {
+      flex:1;
+      padding:12px 6px;
+      border-radius:12px;
+      border:none;
+      cursor:pointer;
+      background:rgba(0,0,0,0.18);
+      color:#fff;
+      font-size:1.3rem;
+      box-shadow:0 6px 14px rgba(0,0,0,0.6);
+      transition:transform 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+    .bonus-pick:hover {
+      transform:translateY(-1px) scale(1.03);
+      box-shadow:0 10px 18px rgba(0,0,0,0.8);
+      background:rgba(0,0,0,0.28);
+    }
+    .bonus-pick:active {
+      transform:translateY(1px) scale(0.98);
+      box-shadow:0 4px 10px rgba(0,0,0,0.9);
+    }
+    .bonus-info {
+      font-size:0.8rem;
+      margin-top:8px;
+      opacity:0.9;
+    }
+
     @media (max-width:480px){
       .slot-grid{ grid-template-rows:repeat(3,68px); }
       .cell{ font-size:2rem; }
+      .bonus-card { max-width: 95%; }
     }
   </style>
 </head>
@@ -229,13 +384,44 @@
 
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
-      Печели само <span class="highlight">средният ред</span> (една линия).<br>
-      <small>🃏 JOKER на трети барабан магически прави реда 🃏🃏🃏 </small>
+      ДЕМО / РЕАЛНИ средства + BOOSTER + Бонус ниво + Моят портфейл.<br>
+      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. Портфейлът е моментен (само за тази сесия).</small>
     </p>
 
+    <div class="auth-bar">
+      <div id="authInfo">Режим: ДЕМО (без вход)</div>
+      <div id="googleSignIn"></div>
+    </div>
+
+    <div id="balancesInfo">
+      Баланс ДЕМО: <span id="demoBalanceLabel">100</span> |
+      Баланс РЕАЛНИ: <span id="realBalanceLabel">0</span>
+    </div>
+
+    <div id="walletInfo">
+      <div><strong>Моят портфейл (моментен, само за текущата сесия):</strong></div>
+      <div>
+        Натрупани монети: <span id="walletCoins">0</span> |
+        Стойност: <span id="walletBgn">0</span> BGN (~<span id="walletEur">0</span> EUR)
+      </div>
+      <div class="wallet-row">
+        <span style="font-size:0.75rem; opacity:0.8;">
+          Всеки блок от 10 000 монети в РЕАЛЕН режим добавя 10, 20, 30... BGN прогресивно. Данните се губят при рефреш.
+        </span>
+        <button id="walletCashoutBtn" class="wallet-btn" disabled>
+          💰 Заяви изплащане (симулация)
+        </button>
+      </div>
+    </div>
+
+    <div class="mode-switch">
+      <button id="demoModeBtn" class="mode-btn active">ДЕМО</button>
+      <button id="realModeBtn" class="mode-btn" disabled>РЕАЛНИ СРЕДСТВА</button>
+    </div>
+
     <div class="status-bar">
-      <div>Баланс: <span id="balance" class="highlight">100</span> 🪙</div>
-      <div>Режим: <span id="modeLabel">Демо</span></div>
+      <div>Активен баланс: <span id="balance" class="highlight">100</span> 🪙</div>
+      <div>Режим: <span id="modeLabel">ДЕМО</span></div>
     </div>
 
     <div class="slot-frame">
@@ -262,19 +448,30 @@
         <span id="betValue">5</span>
         <button class="icon-btn" id="betPlus">+</button>
       </div>
-
       <button id="spinBtn" class="spin-btn">SPIN</button>
     </div>
 
     <div id="resultText">Печалба при 3 еднакви символа по средния ред.</div>
-
-    <!-- Балонче за последния резултат -->
     <div id="history"></div>
+
+    <!-- БОНУС НИВО -->
+    <div id="bonusOverlay" class="bonus-overlay bonus-hidden">
+      <div class="bonus-card">
+        <div class="bonus-title">🎁 БОНУС ИГРА</div>
+        <div class="bonus-sub">Имаш JOKER печалба! Избери една от трите карти, за да спечелиш допълнителен множител.</div>
+        <div class="bonus-cards-row">
+          <button class="bonus-pick" data-mult="2">❓</button>
+          <button class="bonus-pick" data-mult="5">❓</button>
+          <button class="bonus-pick" data-mult="10">❓</button>
+        </div>
+        <div class="bonus-info">Множителят се прилага върху текущия залог. Успех! 🍀</div>
+      </div>
+    </div>
 
   </div>
 </div>
 
-<!-- Аудио файлове (.wav) -->
+<!-- Аудио файлове -->
 <audio id="audioSpin" src="spin_effect.wav" preload="auto"></audio>
 <audio id="audioSpinMusic" src="spin_music.wav" preload="auto"></audio>
 <audio id="audioWin" src="win.wav" preload="auto"></audio>
@@ -284,7 +481,6 @@
 <script>
 const JOKER_SYMBOL = "🃏";
 
-// шанс за символите – като в слот таблица
 const SYMBOLS = [
   {emoji:"7️⃣",weightNormal:1,weightEasy:2},
   {emoji:"🔔",weightNormal:2,weightEasy:3},
@@ -292,10 +488,9 @@ const SYMBOLS = [
   {emoji:"🍑",weightNormal:4,weightEasy:5},
   {emoji:"🍐",weightNormal:5,weightEasy:6},
   {emoji:"🍇",weightNormal:6,weightEasy:7},
-  {emoji:JOKER_SYMBOL,weightNormal:1,weightEasy:2} // JOKER (само на 3-ти барабан)
+  {emoji:JOKER_SYMBOL,weightNormal:1,weightEasy:2}
 ];
 
-// ВРЪЩАМЕ ПРЕДИШНАТА ЛОГИКА ЗА ПЕЧАЛБИ (множители)
 const PAYOUTS = {
   "7️⃣":100,
   "🔔":40,
@@ -303,16 +498,44 @@ const PAYOUTS = {
   "🍑":15,
   "🍐":10,
   "🍇":5,
-  "🃏":30  // JOKER – специална печалба
+  "🃏":30
 };
 
-let balance=100, bet=5;
+// Портфейл – прогресивен, моментен (без база/без localStorage)
+const WALLET_STEP = 10000;
+const WALLET_BASE_BGN = 10;
+const BGN_TO_EUR = 0.51;
+
+// режими и баланси (балансите все още се пазят локално в localStorage)
+let currentMode = "DEMO";
+let demoBalance = 100;
+let realBalance = 0;
+let currentUser = null;
+
+// портфейл (само в паметта на JS, губи се при рефреш)
+let walletCoins = 0;
+let walletBlocks = 0;
+let walletBgn = 0;
+
+// игра
+let bet=5;
 let spinning=false, easyMode=false;
 let spinInterval=null, stopRequested=false, autoStopTimeout=null;
 let bgMusicStarted=false;
 
-/* DOM */
+// BOOSTER
+let boosterMode = false;
+let holdTimeoutId = null;
+let isHoldCandidate = false;
+
+// BONUS
+let bonusActive = false;
+let bonusBaseBet = 0;
+
+// DOM
 const balanceEl=document.getElementById("balance");
+const demoBalanceLabel=document.getElementById("demoBalanceLabel");
+const realBalanceLabel=document.getElementById("realBalanceLabel");
 const betValueEl=document.getElementById("betValue");
 const spinBtn=document.getElementById("spinBtn");
 const betMinusBtn=document.getElementById("betMinus");
@@ -321,8 +544,18 @@ const resultText=document.getElementById("resultText");
 const slotWindow=document.getElementById("slotWindow");
 const modeLabel=document.getElementById("modeLabel");
 const historyEl=document.getElementById("history");
+const authInfo=document.getElementById("authInfo");
+const demoModeBtn=document.getElementById("demoModeBtn");
+const realModeBtn=document.getElementById("realModeBtn");
+const bonusOverlay=document.getElementById("bonusOverlay");
+const bonusButtons=document.querySelectorAll(".bonus-pick");
 
-/* Audio */
+const walletCoinsEl=document.getElementById("walletCoins");
+const walletBgnEl=document.getElementById("walletBgn");
+const walletEurEl=document.getElementById("walletEur");
+const walletCashoutBtn=document.getElementById("walletCashoutBtn");
+
+// аудио
 const audioSpin=document.getElementById("audioSpin");
 const audioSpinMusic=document.getElementById("audioSpinMusic");
 const audioWin=document.getElementById("audioWin");
@@ -336,10 +569,73 @@ function getDateTime() {
          `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
+// DEMO баланс (можеш да махнеш localStorage и тук, ако искаш всичко да е моментно)
+function loadDemoBalance() {
+  const stored = localStorage.getItem("slot_demo_balance");
+  demoBalance = stored ? parseInt(stored,10) : 100;
+}
+function saveDemoBalance() {
+  localStorage.setItem("slot_demo_balance", demoBalance);
+}
+
+// REAL баланс
+function loadRealBalanceForUser(email) {
+  const stored = localStorage.getItem("slot_real_balance_"+email);
+  realBalance = stored ? parseInt(stored,10) : 1000;
+}
+function saveRealBalance() {
+  if(!currentUser) return;
+  localStorage.setItem("slot_real_balance_"+currentUser.email, realBalance);
+}
+
+function getBalance() {
+  return currentMode==="DEMO" ? demoBalance : realBalance;
+}
+function setBalance(val) {
+  if(currentMode==="DEMO") {
+    demoBalance = val;
+    saveDemoBalance();
+  } else {
+    realBalance = val;
+    saveRealBalance();
+  }
+  updateUI();
+}
+
+// моментен портфейл – без запис
+function autoBankToWallet(){
+  if(currentMode !== "REAL" || !currentUser) return;
+  let bal = getBalance();
+  const blocksToBank = Math.floor(bal / WALLET_STEP);
+  if(blocksToBank <= 0) return;
+
+  const coinsToBank = blocksToBank * WALLET_STEP;
+  bal -= coinsToBank;
+  setBalance(bal);
+
+  walletCoins += coinsToBank;
+
+  for(let i=0;i<blocksToBank;i++){
+    walletBlocks++;
+    walletBgn += WALLET_BASE_BGN * walletBlocks;
+  }
+  updateUI();
+}
+
+function updateWalletUI(){
+  walletCoinsEl.textContent = walletCoins;
+  walletBgnEl.textContent = walletBgn.toFixed(2);
+  walletEurEl.textContent = (walletBgn * BGN_TO_EUR).toFixed(2);
+  walletCashoutBtn.disabled = walletBgn <= 0 || !currentUser;
+}
+
 function updateUI(){
-  balanceEl.textContent=balance;
-  betValueEl.textContent=bet;
-  modeLabel.textContent = easyMode ? "По-лесен" : "Демо";
+  balanceEl.textContent = getBalance();
+  betValueEl.textContent = bet;
+  modeLabel.textContent = currentMode==="DEMO" ? "ДЕМО" : "РЕАЛНИ СРЕДСТВА";
+  demoBalanceLabel.textContent = demoBalance;
+  realBalanceLabel.textContent = realBalance;
+  updateWalletUI();
 }
 
 function play(audio){
@@ -370,39 +666,67 @@ function clearWin(){
   });
 }
 
+function switchMode(mode){
+  if(mode==="REAL" && !currentUser){
+    resultText.textContent = "Влез с Gmail, за да играеш в режим РЕАЛНИ СРЕДСТВА.";
+    return;
+  }
+  currentMode = mode;
+  demoModeBtn.classList.toggle("active", mode==="DEMO");
+  realModeBtn.classList.toggle("active", mode==="REAL");
+  updateUI();
+}
+
+demoModeBtn.onclick = () => switchMode("DEMO");
+realModeBtn.onclick = () => switchMode("REAL");
+
+// БОНУС
+function showBonus(baseBet) {
+  bonusActive = true;
+  bonusBaseBet = baseBet;
+  boosterMode = false;
+  resultText.textContent = "🎁 Бонус игра – избери една от картите!";
+  bonusOverlay.classList.remove("bonus-hidden");
+}
+
+function hideBonus() {
+  bonusActive = false;
+  bonusOverlay.classList.add("bonus-hidden");
+}
+
+// слот логика
 function startSpin(){
-  if(spinning) return;
-  if(bet>balance){
-    resultText.textContent="Недостатъчен баланс.";
+  if(spinning || bonusActive) return;
+  if(bet>getBalance()){
+    resultText.textContent="Недостатъчен баланс в активния режим.";
     return;
   }
 
   spinning=true;
   stopRequested=false;
-  spinBtn.textContent="STOP";
+  spinBtn.textContent = boosterMode ? "BOOST..." : "STOP";
 
   historyEl.innerHTML = "";
   historyEl.className = "";
 
   clearWin();
 
-  balance-=bet; updateUI();
+  setBalance(getBalance() - bet);
 
   if(!bgMusicStarted){ play(bgMusic); bgMusicStarted=true; }
 
   play(audioSpin);
   play(audioSpinMusic);
 
-  const poolAll = buildPool(true);      // с JOKER
-  const poolNoJoker = buildPool(false); // без JOKER
+  const poolAll = buildPool(true);
+  const poolNoJoker = buildPool(false);
 
   let matrix=[["","",""],["","",""],["","",""]];
-
   slotWindow.classList.add("spinning");
 
   spinInterval=setInterval(()=>{
     for(let c=0;c<3;c++){
-      const pool = (c === 2) ? poolAll : poolNoJoker; // JOKER само на 3-ти барабан
+      const pool = (c === 2) ? poolAll : poolNoJoker;
       for(let r=0;r<3;r++){
         matrix[r][c]= pool[Math.floor(Math.random()*pool.length)];
       }
@@ -426,7 +750,7 @@ function finalize(matrix){
 
   try{ audioSpinMusic.pause(); audioSpinMusic.currentTime=0; }catch(e){}
 
-  const mid = 1; // само среден ред печели
+  const mid = 1;
   let a = matrix[mid][0];
   let b = matrix[mid][1];
   let c = matrix[mid][2];
@@ -436,30 +760,24 @@ function finalize(matrix){
   let viaJoker=false;
   let winSymbol=null;
 
-  // JOKER на трети барабан -> магически ред 🃏🃏🃏
   if (c === JOKER_SYMBOL) {
     win = true;
     viaJoker = true;
     winSymbol = JOKER_SYMBOL;
-
     a = JOKER_SYMBOL;
     b = JOKER_SYMBOL;
     matrix[mid][0] = JOKER_SYMBOL;
     matrix[mid][1] = JOKER_SYMBOL;
-    // c вече е JOKER
-  }
-  // иначе класически 3 еднакви символа
-  else if (a === b && b === c && PAYOUTS[a]) {
+  } else if (a === b && b === c && PAYOUTS[a]) {
     win = true;
     winSymbol = a;
   }
 
-  // ъпдейтваме грид (за да се видят евентуалните джокери)
   setGrid(matrix);
 
   if(win){
-    winAmount = PAYOUTS[winSymbol] * bet; // множител * залог
-    balance += winAmount;
+    winAmount = PAYOUTS[winSymbol] * bet;
+    setBalance(getBalance() + winAmount);
 
     if(viaJoker){
       resultText.textContent = `🤡 JOKER! Печелиш ${winAmount} монети (x${PAYOUTS[winSymbol]})!`;
@@ -482,26 +800,124 @@ function finalize(matrix){
     play(audioLose);
   }
 
-  // Балонче история
+  // моментен портфейл – само в REAL режим
+  autoBankToWallet();
+
   const dt = getDateTime();
   const comboText = `${a} ${b} ${c}`;
   if (win) {
     const cls = viaJoker ? "history-box history-joker" : "history-box history-win";
     historyEl.innerHTML =
-      `<div class="${cls}">[${dt}] Залог: ${bet} | Печалба: ${winAmount} | Комбинация: ${comboText}</div>`;
+      `<div class="${cls}">[${dt}] Режим: ${currentMode} | Залог: ${bet} | Печалба: ${winAmount} | Комбинация: ${comboText}</div>`;
   } else {
     historyEl.innerHTML =
-      `<div class="history-box history-lose">[${dt}] Залог: ${bet} | Без печалба</div>`;
+      `<div class="history-box history-lose">[${dt}] Режим: ${currentMode} | Залог: ${bet} | Без печалба</div>`;
   }
 
   spinning=false;
   spinBtn.textContent="SPIN";
   updateUI();
+
+  if (win && viaJoker) {
+    boosterMode = false;
+    showBonus(bet);
+    return;
+  }
+
+  if (boosterMode && !bonusActive) {
+    setTimeout(()=>{
+      if (boosterMode && !spinning && !bonusActive) {
+        startSpin();
+      }
+    }, 200);
+  }
 }
 
-spinBtn.onclick=()=> spinning ? stopSpin() : startSpin();
-betMinusBtn.onclick=()=>{ if(!spinning && bet>1){ bet--; updateUI(); } }
-betPlusBtn.onclick=()=>{ if(!spinning && bet<50){ bet++; updateUI(); } }
+// бонус избор
+bonusButtons.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    if(!bonusActive) return;
+    const mult = parseInt(btn.dataset.mult,10);
+    const bonusWin = bonusBaseBet * mult;
+    setBalance(getBalance() + bonusWin);
+    play(audioWin);
+    resultText.textContent = `🎁 Бонус печалба: ${bonusWin} монети (x${mult} от залога)!`;
+    const dt = getDateTime();
+    historyEl.innerHTML =
+      `<div class="history-box history-joker">[${dt}] БОНУС | Множител: x${mult} | Допълнителна печалба: ${bonusWin}</div>`;
+    autoBankToWallet();
+    hideBonus();
+  });
+});
+
+// залог
+betMinusBtn.onclick=()=>{ if(!spinning && !bonusActive && bet>1){ bet--; updateUI(); } }
+betPlusBtn.onclick=()=>{ if(!spinning && !bonusActive && bet<50){ bet++; updateUI(); } }
+
+// BOOSTER – задържане
+function handlePointerDown(e){
+  e.preventDefault();
+  if (spinBtn.disabled || bonusActive) return;
+  isHoldCandidate = true;
+
+  holdTimeoutId = setTimeout(()=>{
+    if (isHoldCandidate && !boosterMode) {
+      boosterMode = true;
+      resultText.textContent = "🚀 BOOSTER режим: автоматични завъртания – пусни бутона, за да спреш.";
+      if (!spinning) {
+        startSpin();
+      }
+    }
+  }, 400);
+}
+
+function handlePointerUp(e){
+  e.preventDefault();
+  if (holdTimeoutId) {
+    clearTimeout(holdTimeoutId);
+    holdTimeoutId = null;
+  }
+
+  if (boosterMode) {
+    boosterMode = false;
+    isHoldCandidate = false;
+    resultText.textContent = "BOOSTER режим изключен. Вие сте в нормален режим.";
+    return;
+  }
+
+  if (isHoldCandidate && !bonusActive) {
+    isHoldCandidate = false;
+    if (spinning) {
+      stopSpin();
+    } else {
+      startSpin();
+    }
+  }
+}
+
+spinBtn.addEventListener("mousedown", handlePointerDown);
+spinBtn.addEventListener("mouseup", handlePointerUp);
+spinBtn.addEventListener("mouseleave", handlePointerUp);
+spinBtn.addEventListener("touchstart", handlePointerDown, {passive:false});
+spinBtn.addEventListener("touchend", handlePointerUp, {passive:false});
+spinBtn.addEventListener("touchcancel", handlePointerUp, {passive:false});
+
+// „изплащане“ (симулация, не променя портфейла)
+walletCashoutBtn.onclick = ()=>{
+  if(!currentUser){
+    resultText.textContent = "За портфейл трябва да влезеш с Gmail (РЕАЛНИ СРЕДСТВА).";
+    return;
+  }
+  if(walletBgn <= 0){
+    resultText.textContent = "Нямаш натрупани средства в портфейла.";
+    return;
+  }
+  const msg = `💰 Симулация: портфейлът ти има ${walletBgn.toFixed(2)} BGN (~${(walletBgn*BGN_TO_EUR).toFixed(2)} EUR).`;
+  resultText.textContent = msg;
+  const dt = getDateTime();
+  historyEl.innerHTML =
+    `<div class="history-box history-win">[${dt}] ПОРТФЕЙЛ | ${msg}</div>`;
+};
 
 // начална подредба
 setGrid([
@@ -509,9 +925,52 @@ setGrid([
   ["🍑","🍐","🍇"],
   ["🍒","🍇","🔔"],
 ]);
-updateUI();
 
-// PWA service worker (по желание, ако имаш sw.js)
+// GOOGLE LOGIN
+function parseJwt(token){
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c){
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+  return JSON.parse(jsonPayload);
+}
+
+function handleCredentialResponse(response){
+  try {
+    const data = parseJwt(response.credential);
+    currentUser = {
+      email: data.email,
+      name: data.name || data.given_name || data.email,
+      picture: data.picture || null
+    };
+    loadRealBalanceForUser(currentUser.email);
+    // портфейлът остава моментен – не зареждаме нищо от база
+    authInfo.textContent = `Влязъл като: ${currentUser.name} (${currentUser.email})`;
+    realModeBtn.disabled = false;
+    switchMode("REAL");
+  } catch(e){
+    console.error(e);
+    authInfo.textContent = "Грешка при входа с Google.";
+  }
+}
+
+window.onload = function() {
+  loadDemoBalance();
+  updateUI();
+
+  if (window.google && google.accounts && google.accounts.id) {
+    google.accounts.id.initialize({
+      client_id: "YOUR_GOOGLE_CLIENT_ID",
+      callback: handleCredentialResponse
+    });
+    google.accounts.id.renderButton(
+      document.getElementById("googleSignIn"),
+      { theme: "outline", size: "medium", type: "standard" }
+    );
+  }
+};
+
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("sw.js").catch(()=>{});
 }
