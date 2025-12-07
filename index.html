@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
-  <title>🎰 SPIN Ролетка</title>
+  <title>🎰 SPIN Ролетка – Реална игра</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="manifest" href="manifest.json">
@@ -89,7 +89,7 @@
     .status-bar {
       display:flex;
       justify-content:space-between;
-      margin:6px 0 8px;
+      margin:6px 0 6px;
       font-size:0.92rem;
       gap:8px;
       flex-wrap:wrap;
@@ -364,26 +364,26 @@
 
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
-      Реална игра с виртуални монети.<br>
+      Реална игра с виртуални монети, без вход.<br>
       <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. Портфейлът е моментен за тази сесия.</small>
     </p>
 
     <div id="balancesInfo">
-      Начален баланс: <span class="highlight">1000</span> монети.
+      Начален баланс: <span class="highlight">1000</span> монети (записва се в браузъра ти).
     </div>
 
     <div id="walletInfo">
-      <div><strong>Моят портфейл:</strong></div>
+      <div><strong>Моят портфейл (моментен):</strong></div>
       <div>
         Натрупани монети: <span id="walletCoins">0</span> |
         Стойност: <span id="walletBgn">0</span> BGN (~<span id="walletEur">0</span> EUR)
       </div>
       <div class="wallet-row">
         <span style="font-size:0.75rem; opacity:0.8;">
-          Всеки блок от 10 000 монети добавя 10, 20, 30... BGN прогресивно.
+          Всеки блок от 10 000 монети добавя 10, 20, 30... BGN прогресивно. Данните за портфейла се губят при рефреш.
         </span>
         <button id="walletCashoutBtn" class="wallet-btn" disabled>
-          💰 Заяви изплащане
+          💰 Заяви изплащане (симулация)
         </button>
       </div>
     </div>
@@ -391,6 +391,13 @@
     <div class="status-bar">
       <div>Баланс: <span id="balance" class="highlight">1000</span> 🪙</div>
       <div>Залог: <span id="betDisplay" class="highlight">5</span> 🪙</div>
+    </div>
+
+    <!-- Бутон за ръчен нов старт -->
+    <div style="text-align:right; margin-bottom:6px;">
+      <button id="resetBalanceBtn" class="wallet-btn">
+        🔄 Нов старт (1000 монети)
+      </button>
     </div>
 
     <div class="slot-frame">
@@ -517,6 +524,7 @@ const walletCoinsEl=document.getElementById("walletCoins");
 const walletBgnEl=document.getElementById("walletBgn");
 const walletEurEl=document.getElementById("walletEur");
 const walletCashoutBtn=document.getElementById("walletCashoutBtn");
+const resetBalanceBtn=document.getElementById("resetBalanceBtn");
 
 // аудио
 const audioSpin=document.getElementById("audioSpin");
@@ -623,6 +631,18 @@ function showBonus(baseBet) {
 function hideBonus() {
   bonusActive = false;
   bonusOverlay.classList.add("bonus-hidden");
+}
+
+// НОВ СТАРТ – нулиране на баланс и портфейл
+function resetGameBalance() {
+  balance = 1000;
+  saveBalance();
+  walletCoins = 0;
+  walletBlocks = 0;
+  walletBgn = 0;
+  updateUI();
+  historyEl.innerHTML = "";
+  resultText.textContent = "Балансът е подновен до 1000 монети. Успех!";
 }
 
 // слот логика
@@ -749,12 +769,24 @@ function finalize(matrix){
   spinBtn.textContent="SPIN";
   updateUI();
 
+  // ако има JOKER – стартираме бонус ниво
   if (win && viaJoker) {
     boosterMode = false;
     showBonus(bet);
     return;
   }
 
+  // ако балансът е 0 – popup за нов баланс
+  if (getBalance() <= 0) {
+    setTimeout(() => {
+      const ok = confirm("Балансът ти е 0.\n\nЗареждане на нов баланс 1000 монети?");
+      if (ok) {
+        resetGameBalance();
+      }
+    }, 250);
+  }
+
+  // BOOSTER
   if (boosterMode && !bonusActive) {
     setTimeout(()=>{
       if (boosterMode && !spinning && !bonusActive) {
@@ -778,6 +810,16 @@ bonusButtons.forEach(btn=>{
       `<div class="history-box history-joker">[${dt}] БОНУС | Множител: x${mult} | Допълнителна печалба: ${bonusWin}</div>`;
     autoBankToWallet();
     hideBonus();
+
+    // проверка за 0 баланс след бонус
+    if (getBalance() <= 0) {
+      setTimeout(() => {
+        const ok = confirm("Балансът ти е 0.\n\nЗареждане на нов баланс 1000 монети?");
+        if (ok) {
+          resetGameBalance();
+        }
+      }, 250);
+    }
   });
 });
 
@@ -793,7 +835,7 @@ betButtons.forEach(btn => {
   });
 });
 
-// задаваме начален активен бутон (5)
+// начален активен залог (5)
 document.querySelector('.bet-btn[data-bet="5"]').classList.add("active");
 
 // BOOSTER – задържане
@@ -855,6 +897,13 @@ walletCashoutBtn.onclick = ()=>{
   const dt = getDateTime();
   historyEl.innerHTML =
     `<div class="history-box history-win">[${dt}] ПОРТФЕЙЛ | ${msg}</div>`;
+};
+
+// бутон „Нов старт“
+resetBalanceBtn.onclick = () => {
+  if (confirm("Сигурен ли си, че искаш нов старт с 1000 монети?\nТекущият баланс и портфейл ще се нулират.")) {
+    resetGameBalance();
+  }
 };
 
 // начална подредба
