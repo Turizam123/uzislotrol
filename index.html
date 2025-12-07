@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
-  <title>🎰 SPIN Ролетка</title>
+  <title>🎰 SPIN Ролетка – Реална игра</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="manifest" href="manifest.json">
@@ -290,7 +290,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      z-index:10;
+      z-index:20;
       backdrop-filter:blur(3px);
     }
     .bonus-hidden { display:none; }
@@ -350,10 +350,95 @@
       opacity:0.9;
     }
 
+    /* Луксозен popup за нов баланс */
+    .reset-overlay {
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,0.78);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:30;
+      backdrop-filter:blur(4px);
+    }
+    .reset-hidden { display:none; }
+    .reset-card {
+      background: radial-gradient(circle at 10% -10%, #ffe8b5, #d35400 40%, #8e0000 100%);
+      padding:18px 16px 14px;
+      border-radius:20px;
+      max-width:360px;
+      width:100%;
+      text-align:center;
+      box-shadow:0 18px 40px rgba(0,0,0,0.95);
+      border:1px solid rgba(255,255,255,0.25);
+      animation:resetIn 0.28s ease-out;
+    }
+    @keyframes resetIn {
+      from { transform:scale(0.8) translateY(10px); opacity:0; }
+      to   { transform:scale(1) translateY(0); opacity:1; }
+    }
+    .reset-icon {
+      font-size:2.1rem;
+      margin-bottom:4px;
+      text-shadow:0 0 10px rgba(0,0,0,0.6);
+    }
+    .reset-title {
+      font-size:1.06rem;
+      font-weight:bold;
+      margin-bottom:4px;
+      color:#fff7df;
+    }
+    .reset-message {
+      font-size:0.86rem;
+      margin-bottom:10px;
+      color:#ffeede;
+    }
+    .reset-message span {
+      font-weight:bold;
+      color:#fff;
+    }
+    .reset-buttons {
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:4px;
+    }
+    .reset-btn-primary,
+    .reset-btn-secondary {
+      flex:1;
+      padding:8px 6px;
+      border-radius:999px;
+      border:none;
+      font-size:0.9rem;
+      cursor:pointer;
+      box-shadow:0 8px 18px rgba(0,0,0,0.7);
+    }
+    .reset-btn-primary {
+      background:linear-gradient(135deg,#ffe082,#ffca28);
+      color:#4e2600;
+      font-weight:bold;
+    }
+    .reset-btn-secondary {
+      background:rgba(0,0,0,0.4);
+      color:#ffdede;
+    }
+    .reset-btn-primary:active,
+    .reset-btn-secondary:active {
+      transform:translateY(1px) scale(0.98);
+      box-shadow:0 4px 10px rgba(0,0,0,0.8);
+    }
+    .reset-note {
+      font-size:0.75rem;
+      margin-top:6px;
+      color:#ffe9c7;
+      opacity:0.9;
+    }
+
     @media (max-width:480px){
       .slot-grid{ grid-template-rows:repeat(3,68px); }
       .cell{ font-size:2rem; }
-      .bonus-card { max-width: 95%; }
+      .bonus-card,
+      .reset-card { max-width: 95%; }
     }
   </style>
 </head>
@@ -364,26 +449,26 @@
 
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
-      Реална игра с виртуални монети.<br>
-      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра.</small>
+      Реална игра с виртуални монети, без вход.<br>
+      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. Портфейлът е моментен за тази сесия.</small>
     </p>
 
     <div id="balancesInfo">
-      Начален баланс: <span class="highlight">1000</span> монети.
+      Начален баланс: <span class="highlight">1000</span> монети (записва се в браузъра ти).
     </div>
 
     <div id="walletInfo">
-      <div><strong>Моят портфейл:</strong></div>
+      <div><strong>Моят портфейл (моментен):</strong></div>
       <div>
         Натрупани монети: <span id="walletCoins">0</span> |
         Стойност: <span id="walletBgn">0</span> BGN (~<span id="walletEur">0</span> EUR)
       </div>
       <div class="wallet-row">
         <span style="font-size:0.75rem; opacity:0.8;">
-          Всеки блок от 10 000 монети добавя 10, 20, 30... BGN прогресивно.
+          Всеки блок от 10 000 монети добавя 10, 20, 30... BGN прогресивно. Данните за портфейла се губят при рефреш.
         </span>
         <button id="walletCashoutBtn" class="wallet-btn" disabled>
-          💰 Заяви изплащане
+          💰 Заяви изплащане (симулация)
         </button>
       </div>
     </div>
@@ -396,7 +481,7 @@
     <!-- Бутон за ръчен нов старт -->
     <div style="text-align:right; margin-bottom:6px;">
       <button id="resetBalanceBtn" class="wallet-btn">
-        🔄 Зареждане (1000 монети)
+        🔄 Нов старт (1000 монети)
       </button>
     </div>
 
@@ -445,6 +530,25 @@
           <button class="bonus-pick" data-mult="10">❓</button>
         </div>
         <div class="bonus-info">Множителят се прилага върху текущия залог. Успех! 🍀</div>
+      </div>
+    </div>
+
+    <!-- Луксозен popup за нов баланс -->
+    <div id="resetOverlay" class="reset-overlay reset-hidden">
+      <div class="reset-card">
+        <div class="reset-icon">💎</div>
+        <div class="reset-title">Нов старт с 1000 монети</div>
+        <div id="resetMessage" class="reset-message">
+          Балансът ти е <span>0</span>.<br>
+          Да презаредим с нов баланс <span>1000</span> монети и да нулираме портфейла?
+        </div>
+        <div class="reset-buttons">
+          <button id="resetConfirmBtn" class="reset-btn-primary">✅ Да, нов баланс</button>
+          <button id="resetCancelBtn" class="reset-btn-secondary">❌ Не сега</button>
+        </div>
+        <div class="reset-note">
+          * Балансът се нулира до 1000 монети, а портфейлът започва от начало. Това е само визуална игра.
+        </div>
       </div>
     </div>
 
@@ -525,6 +629,12 @@ const walletBgnEl=document.getElementById("walletBgn");
 const walletEurEl=document.getElementById("walletEur");
 const walletCashoutBtn=document.getElementById("walletCashoutBtn");
 const resetBalanceBtn=document.getElementById("resetBalanceBtn");
+
+// reset popup DOM
+const resetOverlay=document.getElementById("resetOverlay");
+const resetMessageEl=document.getElementById("resetMessage");
+const resetConfirmBtn=document.getElementById("resetConfirmBtn");
+const resetCancelBtn=document.getElementById("resetCancelBtn");
 
 // аудио
 const audioSpin=document.getElementById("audioSpin");
@@ -643,6 +753,15 @@ function resetGameBalance() {
   updateUI();
   historyEl.innerHTML = "";
   resultText.textContent = "Балансът е подновен до 1000 монети. Успех!";
+}
+
+// Луксозен popup за нов баланс
+function showResetPopup(messageHtml){
+  resetMessageEl.innerHTML = messageHtml;
+  resetOverlay.classList.remove("reset-hidden");
+}
+function hideResetPopup(){
+  resetOverlay.classList.add("reset-hidden");
 }
 
 // слот логика
@@ -776,13 +895,13 @@ function finalize(matrix){
     return;
   }
 
-  // ако балансът е 0 – popup за нов баланс
+  // ако балансът е 0 – луксозен popup
   if (getBalance() <= 0) {
     setTimeout(() => {
-      const ok = confirm("Балансът ти е 0.\n\nЗареждане на нов баланс 1000 монети?");
-      if (ok) {
-        resetGameBalance();
-      }
+      showResetPopup(
+        `Балансът ти е <span>0</span>.<br>` +
+        `Да презаредим с нов баланс <span>1000</span> монети и да нулираме портфейла?`
+      );
     }, 250);
   }
 
@@ -814,10 +933,10 @@ bonusButtons.forEach(btn=>{
     // проверка за 0 баланс след бонус
     if (getBalance() <= 0) {
       setTimeout(() => {
-        const ok = confirm("Балансът ти е 0.\n\nЗареждане на нов баланс 1000 монети?");
-        if (ok) {
-          resetGameBalance();
-        }
+        showResetPopup(
+          `Балансът ти е <span>0</span>.<br>` +
+          `Да презаредим с нов баланс <span>1000</span> монети и да нулираме портфейла?`
+        );
       }, 250);
     }
   });
@@ -899,11 +1018,22 @@ walletCashoutBtn.onclick = ()=>{
     `<div class="history-box history-win">[${dt}] ПОРТФЕЙЛ | ${msg}</div>`;
 };
 
-// бутон „Нов старт“
+// бутон „Нов старт“ – отваря луксозния popup
 resetBalanceBtn.onclick = () => {
-  if (confirm("Сигурен ли си, че искаш нов старт с 1000 монети?\nТекущият баланс и портфейл ще се нулират.")) {
-    resetGameBalance();
-  }
+  showResetPopup(
+    `Сигурен ли си, че искаш <span>нов старт</span> с <span>1000</span> монети?<br>` +
+    `Текущият баланс и портфейл ще се нулират.`
+  );
+};
+
+// обработка на бутоните в popup-а
+resetConfirmBtn.onclick = () => {
+  hideResetPopup();
+  resetGameBalance();
+};
+resetCancelBtn.onclick = () => {
+  hideResetPopup();
+  resultText.textContent = "Продължаваш с текущия баланс. Можеш да заредиш нов по всяко време.";
 };
 
 // начална подредба
