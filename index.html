@@ -546,7 +546,7 @@
           <button id="resetCancelBtn" class="reset-btn-secondary">❌ Не сега</button>
         </div>
         <div class="reset-note">
-          * Балансът се нулира до 1000 монети, а портфейлът започва от начало. Това е само визуална игра.
+          * Балансът се нулира до 1000 монети, а портфейлът започва от начало.
         </div>
       </div>
     </div>
@@ -1010,7 +1010,7 @@ walletCashoutBtn.onclick = ()=>{
     resultText.textContent = "Нямаш натрупани средства в портфейла.";
     return;
   }
-  const msg = `💰 Симулация: портфейлът ти има ${walletBgn.toFixed(2)} BGN (~${(walletBgn*BGN_TO_EUR).toFixed(2)} EUR).`;
+  const msg = `💰 Портфейлът ти има ${walletBgn.toFixed(2)} BGN (~${(walletBgn*BGN_TO_EUR).toFixed(2)} EUR).`;
   resultText.textContent = msg;
   const dt = getDateTime();
   historyEl.innerHTML =
