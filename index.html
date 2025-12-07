@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
-  <title>🎰 UZi Ролетка </title>
+  <title>🎰 SPIN Ролетка – Реална игра</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="manifest" href="manifest.json">
@@ -91,6 +91,8 @@
       justify-content:space-between;
       margin:6px 0 8px;
       font-size:0.92rem;
+      gap:8px;
+      flex-wrap:wrap;
     }
 
     .slot-frame { margin-top:8px; }
@@ -150,14 +152,43 @@
 
     .controls {
       display:flex;
-      justify-content:space-between;
+      flex-direction:column;
       margin-top:12px;
       gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
+      align-items:stretch;
     }
+
+    /* Фиксирани залози */
+    .bet-box {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 2px;
+    }
+    .bet-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+    }
+    .bet-btn:hover {
+      background: rgba(255,255,255,0.15);
+    }
+    .bet-btn.active {
+      background: linear-gradient(135deg, #ffd86b, #f4ba00);
+      color: #351f00;
+      font-weight: bold;
+      box-shadow: 0 0 12px rgba(255,215,0,0.6);
+    }
+
     .spin-btn {
-      flex:1;
+      width:100%;
       padding:12px;
       background:radial-gradient(circle at 20% 20%, #ffec9b,#f4ba00 55%,#a86800);
       border:none;
@@ -176,19 +207,9 @@
     }
     .spin-btn:disabled { opacity:0.6; cursor:not-allowed; }
 
-    .bet-box { display:flex; gap:8px; align-items:center; }
-    .icon-btn {
-      width:30px; height:30px;
-      border-radius:999px;
-      border:none;
-      background:rgba(255,255,255,0.08);
-      color:#fff;
-      cursor:pointer;
-      font-size:1.1rem;
-    }
     #resultText {
       text-align:center;
-      margin-top:10px;
+      margin-top:4px;
       min-height:22px;
       font-size:0.95rem;
     }
@@ -341,35 +362,35 @@
 <div class="game-wrapper">
   <div class="card">
 
-    <h1>🎰 UZi Ролетка</h1>
+    <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
-      Реална игра с виртуални монети.<br>
+      Реална игра с виртуални монети, без вход.<br>
       <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. Портфейлът е моментен за тази сесия.</small>
     </p>
 
     <div id="balancesInfo">
-      Начален баланс: <span class="highlight">1000</span> монети.
+      Начален баланс: <span class="highlight">1000</span> монети (записва се в браузъра ти).
     </div>
 
     <div id="walletInfo">
-      <div><strong>Моят портфейл:</strong></div>
+      <div><strong>Моят портфейл (моментен):</strong></div>
       <div>
         Натрупани монети: <span id="walletCoins">0</span> |
         Стойност: <span id="walletBgn">0</span> BGN (~<span id="walletEur">0</span> EUR)
       </div>
       <div class="wallet-row">
         <span style="font-size:0.75rem; opacity:0.8;">
-          Всеки блок от 10k монети добавя 10, 20, 30... BGN прогресивно.
+          Всеки блок от 10 000 монети добавя 10, 20, 30... BGN прогресивно. Данните за портфейла се губят при рефреш.
         </span>
         <button id="walletCashoutBtn" class="wallet-btn" disabled>
-          💰 Заяви изплащане
+          💰 Заяви изплащане (симулация)
         </button>
       </div>
     </div>
 
     <div class="status-bar">
       <div>Баланс: <span id="balance" class="highlight">1000</span> 🪙</div>
-      <div>Режим: <span class="highlight">Реална игра</span></div>
+      <div>Залог: <span id="betDisplay" class="highlight">5</span> 🪙</div>
     </div>
 
     <div class="slot-frame">
@@ -391,10 +412,14 @@
     </div>
 
     <div class="controls">
-      <div class="bet-box">
-        <button class="icon-btn" id="betMinus">−</button>
-        <span id="betValue">5</span>
-        <button class="icon-btn" id="betPlus">+</button>
+      <div class="bet-box" id="betSelector">
+        <button class="bet-btn" data-bet="5">5</button>
+        <button class="bet-btn" data-bet="7">7</button>
+        <button class="bet-btn" data-bet="10">10</button>
+        <button class="bet-btn" data-bet="25">25</button>
+        <button class="bet-btn" data-bet="40">40</button>
+        <button class="bet-btn" data-bet="50">50</button>
+        <button class="bet-btn" data-bet="100">100</button>
       </div>
       <button id="spinBtn" class="spin-btn">SPIN</button>
     </div>
@@ -463,7 +488,7 @@ let walletBlocks = 0;
 let walletBgn = 0;
 
 // игра
-let bet=5;
+let bet = 5;
 let spinning=false, easyMode=false;
 let spinInterval=null, stopRequested=false, autoStopTimeout=null;
 let bgMusicStarted=false;
@@ -479,15 +504,14 @@ let bonusBaseBet = 0;
 
 // DOM
 const balanceEl=document.getElementById("balance");
-const betValueEl=document.getElementById("betValue");
+const betDisplayEl=document.getElementById("betDisplay");
 const spinBtn=document.getElementById("spinBtn");
-const betMinusBtn=document.getElementById("betMinus");
-const betPlusBtn=document.getElementById("betPlus");
 const resultText=document.getElementById("resultText");
 const slotWindow=document.getElementById("slotWindow");
 const historyEl=document.getElementById("history");
 const bonusOverlay=document.getElementById("bonusOverlay");
 const bonusButtons=document.querySelectorAll(".bonus-pick");
+const betButtons = document.querySelectorAll(".bet-btn");
 
 const walletCoinsEl=document.getElementById("walletCoins");
 const walletBgnEl=document.getElementById("walletBgn");
@@ -555,7 +579,7 @@ function updateWalletUI(){
 
 function updateUI(){
   balanceEl.textContent = getBalance();
-  betValueEl.textContent = bet;
+  betDisplayEl.textContent = bet;
   updateWalletUI();
 }
 
@@ -757,9 +781,20 @@ bonusButtons.forEach(btn=>{
   });
 });
 
-// залог
-betMinusBtn.onclick=()=>{ if(!spinning && !bonusActive && bet>1){ bet--; updateUI(); } }
-betPlusBtn.onclick=()=>{ if(!spinning && !bonusActive && bet<50){ bet++; updateUI(); } }
+// Фиксирани залози
+betButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (spinning || bonusActive) return;
+    const value = parseInt(btn.dataset.bet, 10);
+    bet = value;
+    betButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    updateUI();
+  });
+});
+
+// задаваме начален активен бутон (5)
+document.querySelector('.bet-btn[data-bet="5"]').classList.add("active");
 
 // BOOSTER – задържане
 function handlePointerDown(e){
