@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
-  <title>🎰 SPIN Ролетка</title>
+  <title>🎰 SPIN Ролетка – Реална игра</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="manifest" href="manifest.json">
@@ -350,7 +350,7 @@
       opacity:0.9;
     }
 
-    /* Луксозни overlay-и (reset / reload споделят стил) */
+    /* Луксозни overlay-и (reset / reload / buy) */
     .reset-overlay {
       position:absolute;
       inset:0;
@@ -449,27 +449,30 @@
 
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
-      Реална игра с виртуални монети.<br>
-      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра.</small>
+      Реална игра с виртуални монети, без вход.<br>
+      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. Портфейлът е моментен за тази сесия.</small>
     </p>
 
     <div id="balancesInfo">
-      Начален баланс: <span class="highlight">1000</span> монети.
+      Начален баланс: <span class="highlight">1000</span> монети (записва се в браузъра ти).
     </div>
 
     <div id="walletInfo">
-      <div><strong>Моят портфейл:</strong></div>
+      <div><strong>Моят портфейл (моментен):</strong></div>
       <div>
         Натрупани монети: <span id="walletCoins">0</span> |
         Стойност: <span id="walletBgn">0</span> BGN (~<span id="walletEur">0</span> EUR)
       </div>
       <div class="wallet-row">
         <span style="font-size:0.75rem; opacity:0.8;">
-          Всеки блок от 10 000 монети дава по 10 BGN (10k=10, 30k=30...).
+          Всеки блок от 10 000 монети дава по 10 BGN (10k=10, 20k=20, 30k=30...). Данните за портфейла се губят при рефреш.
         </span>
         <button id="walletCashoutBtn" class="wallet-btn" disabled>
-          💰 Заяви изплащане
+          💰 Заяви изплащане (симулация)
         </button>
+      </div>
+      <div style="margin-top:4px;font-size:0.75rem;opacity:0.8;">
+        Потребителско ID: <span id="userIdDisplay"></span>
       </div>
     </div>
 
@@ -478,10 +481,13 @@
       <div>Залог: <span id="betDisplay" class="highlight">5</span> 🪙</div>
     </div>
 
-    <!-- Бутон за ръчен нов старт -->
-    <div style="text-align:right; margin-bottom:6px;">
+    <!-- Бутон за нов старт + купуване -->
+    <div style="text-align:right; margin-bottom:6px; display:flex; justify-content:flex-end; gap:6px; flex-wrap:wrap;">
       <button id="resetBalanceBtn" class="wallet-btn">
         🔄 Нов старт (1000 монети)
+      </button>
+      <button id="buyCoinsBtn" class="wallet-btn">
+        💳 Купи монети
       </button>
     </div>
 
@@ -505,9 +511,11 @@
 
     <div class="controls">
       <div class="bet-box" id="betSelector">
-        <button class="bet-btn" data-bet="1">1</button>
         <button class="bet-btn" data-bet="5">5</button>
+        <button class="bet-btn" data-bet="7">7</button>
+        <button class="bet-btn" data-bet="10">10</button>
         <button class="bet-btn" data-bet="25">25</button>
+        <button class="bet-btn" data-bet="40">40</button>
         <button class="bet-btn" data-bet="50">50</button>
         <button class="bet-btn" data-bet="100">100</button>
       </div>
@@ -545,7 +553,7 @@
           <button id="resetCancelBtn" class="reset-btn-secondary">❌ Не сега</button>
         </div>
         <div class="reset-note">
-          * Балансът се нулира до 1000 монети, а портфейлът започва от начало.
+          * Балансът се нулира до 1000 монети, а портфейлът започва от начало. Това е само визуална игра.
         </div>
       </div>
     </div>
@@ -557,7 +565,7 @@
         <div class="reset-title">Презареждане от портфейла</div>
         <div id="reloadMessage" class="reset-message">
           Играл си дълго и имаш портфейл от
-          <span id="reloadWalletBgn">20.00</span> BGN.<br>
+          <span id="reloadWalletBgn">40.00</span> BGN.<br>
           Можеш да прехвърлиш част от него обратно като монети.
         </div>
         <div style="margin-bottom:8px; font-size:0.85rem;">
@@ -573,6 +581,36 @@
         </div>
         <div class="reset-note">
           * Монетите се вадят от портфейла (10 000 монети = 10 BGN) и се добавят към баланса.
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup за покупка на монети -->
+    <div id="buyOverlay" class="reset-overlay reset-hidden">
+      <div class="reset-card">
+        <div class="reset-icon">💳</div>
+        <div class="reset-title">Покупка на монети</div>
+        <div class="reset-message">
+          Избери количество монети за покупка:<br>
+          <small>(1 монета = 0.02 EUR)</small>
+        </div>
+
+        <input type="range" id="buySlider" min="50" max="100000" value="50" step="50"
+          style="width:100%; margin-bottom:10px;">
+
+        <div style="font-size:0.9rem; margin-bottom:8px;">
+          Монети: <span id="buyCoins">50</span><br>
+          Цена: <span id="buyPrice">1.00</span> EUR
+        </div>
+
+        <div class="reset-buttons">
+          <button id="buyConfirmBtn" class="reset-btn-primary">🛒 Заяви покупка</button>
+          <button id="buyCancelBtn" class="reset-btn-secondary">Отказ</button>
+        </div>
+
+        <div class="reset-note">
+          * Това е заявка, не директно плащане.<br>
+          * След одобрение и външно плащане монетите се добавят ръчно.
         </div>
       </div>
     </div>
@@ -641,6 +679,9 @@ let bonusBaseBet = 0;
 // Reload hint
 let reloadHintShown = false;
 
+// User ID
+let userId = null;
+
 // DOM
 const balanceEl=document.getElementById("balance");
 const betDisplayEl=document.getElementById("betDisplay");
@@ -657,6 +698,7 @@ const walletBgnEl=document.getElementById("walletBgn");
 const walletEurEl=document.getElementById("walletEur");
 const walletCashoutBtn=document.getElementById("walletCashoutBtn");
 const resetBalanceBtn=document.getElementById("resetBalanceBtn");
+const userIdDisplayEl=document.getElementById("userIdDisplay");
 
 // reset popup DOM
 const resetOverlay=document.getElementById("resetOverlay");
@@ -672,6 +714,15 @@ const reloadAmountInput=document.getElementById("reloadAmountInput");
 const reloadConfirmBtn=document.getElementById("reloadConfirmBtn");
 const reloadCancelBtn=document.getElementById("reloadCancelBtn");
 
+// buy popup DOM
+const buyOverlay=document.getElementById("buyOverlay");
+const buySlider=document.getElementById("buySlider");
+const buyCoinsEl=document.getElementById("buyCoins");
+const buyPriceEl=document.getElementById("buyPrice");
+const buyConfirmBtn=document.getElementById("buyConfirmBtn");
+const buyCancelBtn=document.getElementById("buyCancelBtn");
+const buyCoinsBtn=document.getElementById("buyCoinsBtn");
+
 // аудио
 const audioSpin=document.getElementById("audioSpin");
 const audioSpinMusic=document.getElementById("audioSpinMusic");
@@ -684,6 +735,21 @@ function getDateTime() {
   const pad = n => n.toString().padStart(2,"0");
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ` +
          `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+// User ID
+function generateUserId(){
+  return "U-" + Math.random().toString(36).substring(2,10).toUpperCase();
+}
+function initUserId(){
+  const stored = localStorage.getItem("slot_user_id");
+  if(stored){
+    userId = stored;
+  } else {
+    userId = generateUserId();
+    localStorage.setItem("slot_user_id", userId);
+  }
+  if(userIdDisplayEl) userIdDisplayEl.textContent = userId;
 }
 
 // баланс – localStorage
@@ -804,7 +870,6 @@ function hideResetPopup(){
 
 function showReloadPopup(){
   reloadWalletBgnEl.textContent = walletBgn.toFixed(2);
-  // настройваме лимити спрямо наличните монети
   const maxCoins = walletCoins;
   const minCoins = WALLET_STEP;
   reloadAmountInput.min = minCoins;
@@ -817,6 +882,22 @@ function showReloadPopup(){
 }
 function hideReloadPopup(){
   reloadOverlay.classList.add("reset-hidden");
+}
+
+// BUY popup
+function updateBuyPrice() {
+  const coins = parseInt(buySlider.value,10) || 0;
+  const price = (coins * 0.02).toFixed(2);
+  buyCoinsEl.textContent = coins;
+  buyPriceEl.textContent = price;
+}
+
+function showBuyPopup(){
+  updateBuyPrice();
+  buyOverlay.classList.remove("reset-hidden");
+}
+function hideBuyPopup(){
+  buyOverlay.classList.add("reset-hidden");
 }
 
 // слот логика
@@ -1072,7 +1153,7 @@ walletCashoutBtn.onclick = ()=>{
     resultText.textContent = "Нямаш натрупани средства в портфейла.";
     return;
   }
-  const msg = `💰 Портфейлът ти има ${walletBgn.toFixed(2)} BGN (~${(walletBgn*BGN_TO_EUR).toFixed(2)} EUR).`;
+  const msg = `💰 Симулация: портфейлът ти има ${walletBgn.toFixed(2)} BGN (~${(walletBgn*BGN_TO_EUR).toFixed(2)} EUR).`;
   resultText.textContent = msg;
   const dt = getDateTime();
   historyEl.innerHTML =
@@ -1104,7 +1185,6 @@ reloadConfirmBtn.onclick = () => {
     resultText.textContent = "Въведи валиден брой монети.";
     return;
   }
-  // закръгляме към най-близкия блок 10 000
   amount = Math.floor(amount / WALLET_STEP) * WALLET_STEP;
   if (amount < WALLET_STEP) {
     resultText.textContent = "Минималното прехвърляне е 10 000 монети.";
@@ -1115,7 +1195,6 @@ reloadConfirmBtn.onclick = () => {
     return;
   }
 
-  // прехвърляме от портфейла към баланса
   walletCoins -= amount;
   walletBlocks = walletCoins / WALLET_STEP;
   walletBgn = walletBlocks * WALLET_BASE_BGN;
@@ -1132,6 +1211,51 @@ reloadCancelBtn.onclick = () => {
   hideReloadPopup();
 };
 
+// BUY popup логика
+buySlider.addEventListener("input", updateBuyPrice);
+
+buyCoinsBtn.onclick = () => {
+  showBuyPopup();
+};
+
+buyCancelBtn.onclick = () => {
+  hideBuyPopup();
+};
+
+buyConfirmBtn.onclick = () => {
+  const coins = parseInt(buySlider.value,10) || 0;
+  if(coins < 50){
+    resultText.textContent = "Минимум 50 монети.";
+    return;
+  }
+  const price = (coins * 0.02).toFixed(2);
+  const dt = getDateTime();
+
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = "https://formsubmit.io/send/uzunov.angel@abv.bg";
+  form.target = "_blank"; // да не спира играта
+
+  form.innerHTML = `
+    <input type="hidden" name="subject" value="Заявка за покупка на монети от слот играта">
+    <input type="hidden" name="user_id" value="${userId || ""}">
+    <input type="hidden" name="coins_requested" value="${coins}">
+    <input type="hidden" name="price_eur" value="${price}">
+    <input type="hidden" name="current_balance_coins" value="${getBalance()}">
+    <input type="hidden" name="wallet_coins" value="${walletCoins}">
+    <input type="hidden" name="wallet_bgn" value="${walletBgn.toFixed(2)}">
+    <input type="hidden" name="datetime" value="${dt}">
+    <input type="hidden" name="message" value="Потребител ${userId || ""} заявява покупка на ${coins} монети за ${price} EUR.">
+  `;
+
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+
+  hideBuyPopup();
+  resultText.textContent = `Заявка за покупка на ${coins} монети е изпратена. Асистент ще я обработи.`;
+};
+
 // начална подредба
 setGrid([
   ["🔔","🍒","🍇"],
@@ -1141,6 +1265,7 @@ setGrid([
 
 // зареждане
 window.onload = function() {
+  initUserId();
   loadBalance();
   updateUI();
 };
