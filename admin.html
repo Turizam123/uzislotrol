@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <title>🎛 Админ панел – SPIN Ролетка</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(circle at top, #333, #050608 60%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+    .admin-card {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(0,0,0,0.8);
+      border-radius: 18px;
+      padding: 18px 16px 20px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    h1 {
+      margin: 0 0 8px;
+      text-align: center;
+      font-size: 1.4rem;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-bottom: 14px;
+    }
+    .subtitle strong { color: #ffd86b; }
+
+    .section {
+      margin-bottom: 18px;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 0.85rem;
+      display: block;
+      margin-bottom: 4px;
+    }
+    input, textarea {
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      padding: 7px 10px;
+      font-size: 0.9rem;
+      outline: none;
+      margin-bottom: 6px;
+    }
+    textarea {
+      border-radius: 12px;
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .row > div {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.7);
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg,#ffeb99,#f4ba00);
+      color: #3a2400;
+      font-weight: 600;
+    }
+    .btn-secondary {
+      background: rgba(0,0,0,0.5);
+      color: #eee;
+    }
+    .btn-danger {
+      background: linear-gradient(135deg,#ff6b6b,#c0392b);
+      color:#fff;
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.8);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 6px;
+    }
+    th, td {
+      padding: 6px 5px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    th {
+      font-weight: 600;
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+    tbody tr:nth-child(even) {
+      background: rgba(255,255,255,0.02);
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+    }
+    .badge-pending {
+      background: rgba(241,196,15,0.2);
+      color: #f1c40f;
+    }
+    .badge-approved {
+      background: rgba(46,204,113,0.2);
+      color: #2ecc71;
+    }
+
+    .small {
+      font-size: 0.78rem;
+      opacity: 0.78;
+    }
+
+    .copy-id-btn {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: none;
+      margin-left: 4px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.08);
+      color:#fff;
+    }
+
+    @media (max-width:600px){
+      th, td { font-size: 0.75rem; }
+      .admin-card { padding: 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="admin-card">
+  <h1>🎛 Админ панел – SPIN Ролетка</h1>
+  <div class="subtitle">
+    <strong>Вътрешен панел за асистент</strong> – тук записваш реалните ID на играчите и
+    одобрените монети след заявка по e-mail.
+  </div>
+
+  <!-- Секция 1: НОВО ОДОБРЕНИЕ -->
+  <div class="section">
+    <div class="section-title">
+      <span>➕ Добавяне на ново одобрение</span>
+      <span class="small">ID-то го взимаш от e-mail заявката (поле <code>user_id</code>).</span>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="playerIdInput">User ID на играча:</label>
+        <input id="playerIdInput" type="text" placeholder="напр. U-AB12CD34">
+      </div>
+      <div>
+        <label for="coinsApprovedInput">Одобрени монети:</label>
+        <input id="coinsApprovedInput" type="number" min="1" step="1" placeholder="напр. 10000">
+      </div>
+    </div>
+
+    <label for="noteInput">Бележка (по желание):</label>
+    <textarea id="noteInput" placeholder="пример: платено по Revolut, дата, основание..."></textarea>
+
+    <button id="addApprovalBtn" class="btn btn-primary">✅ Запиши одобрението</button>
+  </div>
+
+  <!-- Секция 2: Списък с одобрения -->
+  <div class="section">
+    <div class="section-title">
+      <span>📋 Списък с одобрени заявки</span>
+      <button id="clearAllBtn" class="btn btn-danger" style="font-size:0.78rem;">🗑 Изчисти всички (локално)</button>
+    </div>
+    <div class="small" style="margin-bottom:4px;">
+      Данните се пазят <strong>само в този браузър</strong> (localStorage). Използвай това като вътрешен регистър.
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Дата / час</th>
+          <th>User ID</th>
+          <th>Монети</th>
+          <th>Статус</th>
+          <th>Бележка</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody id="approvalsTableBody">
+        <!-- попълва се от JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Секция 3: Помощен текст за копиране към играча -->
+  <div class="section">
+    <div class="section-title">
+      <span>✉️ Шаблон за съобщение към играча</span>
+    </div>
+    <div class="small" style="margin-bottom:4px;">
+      Избери ред от таблицата (бутон „💬 Съобщение“), за да попълниш автоматично този шаблон
+      и да го копираш в e-mail / чат към играча.
+    </div>
+    <textarea id="messageTemplate" readonly></textarea>
+    <button id="copyMessageBtn" class="btn btn-secondary" style="margin-top:6px;">📋 Копирай съобщението</button>
+  </div>
+</div>
+
+<script>
+/**
+ * Структура на запис:
+ * {
+ *   id: string (вътрешно),
+ *   userId: string,
+ *   coins: number,
+ *   note: string,
+ *   status: "approved" | "pending",
+ *   createdAt: string (ISO),
+ * }
+ */
+
+const STORAGE_KEY = "slot_admin_approvals_list";
+
+const playerIdInput = document.getElementById("playerIdInput");
+const coinsApprovedInput = document.getElementById("coinsApprovedInput");
+const noteInput = document.getElementById("noteInput");
+const addApprovalBtn = document.getElementById("addApprovalBtn");
+const clearAllBtn = document.getElementById("clearAllBtn");
+const approvalsTableBody = document.getElementById("approvalsTableBody");
+const messageTemplateEl = document.getElementById("messageTemplate");
+const copyMessageBtn = document.getElementById("copyMessageBtn");
+
+let approvals = [];
+
+// Помощни функции
+function loadApprovals(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    approvals = raw ? JSON.parse(raw) : [];
+  } catch(e){
+    approvals = [];
+  }
+}
+
+function saveApprovals(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(approvals));
+}
+
+function formatDateTime(iso){
+  const d = new Date(iso);
+  if(Number.isNaN(d.getTime())) return iso;
+  const pad = n => n.toString().padStart(2, "0");
+  return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function renderApprovals(){
+  approvalsTableBody.innerHTML = "";
+  if(approvals.length === 0){
+    approvalsTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; opacity:0.7;">Няма записани одобрения.</td></tr>`;
+    return;
+  }
+
+  approvals
+    .slice()
+    .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .forEach(app => {
+      const tr = document.createElement("tr");
+
+      const tdDate = document.createElement("td");
+      tdDate.textContent = formatDateTime(app.createdAt);
+      tr.appendChild(tdDate);
+
+      const tdUserId = document.createElement("td");
+      const spanId = document.createElement("span");
+      spanId.textContent = app.userId;
+      const copyBtn = document.createElement("button");
+      copyBtn.textContent = "📋";
+      copyBtn.className = "copy-id-btn";
+      copyBtn.title = "Копирай ID";
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(app.userId || "").catch(()=>{});
+      };
+      tdUserId.appendChild(spanId);
+      tdUserId.appendChild(copyBtn);
+      tr.appendChild(tdUserId);
+
+      const tdCoins = document.createElement("td");
+      tdCoins.textContent = app.coins;
+      tr.appendChild(tdCoins);
+
+      const tdStatus = document.createElement("td");
+      const badge = document.createElement("span");
+      badge.classList.add("badge");
+      if(app.status === "approved"){
+        badge.classList.add("badge-approved");
+        badge.textContent = "Одобрено";
+      } else {
+        badge.classList.add("badge-pending");
+        badge.textContent = "В изчакване";
+      }
+      tdStatus.appendChild(badge);
+      tr.appendChild(tdStatus);
+
+      const tdNote = document.createElement("td");
+      tdNote.textContent = app.note || "";
+      tr.appendChild(tdNote);
+
+      const tdActions = document.createElement("td");
+      tdActions.style.whiteSpace = "nowrap";
+
+      const msgBtn = document.createElement("button");
+      msgBtn.textContent = "💬";
+      msgBtn.className = "copy-id-btn";
+      msgBtn.title = "Генерирай съобщение към играча";
+      msgBtn.onclick = () => fillMessageTemplate(app);
+      tdActions.appendChild(msgBtn);
+
+      const toggleBtn = document.createElement("button");
+      toggleBtn.textContent = "✔";
+      toggleBtn.className = "copy-id-btn";
+      toggleBtn.title = "Смени статус";
+      toggleBtn.onclick = () => toggleStatus(app.id);
+      tdActions.appendChild(toggleBtn);
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "🗑";
+      delBtn.className = "copy-id-btn";
+      delBtn.title = "Изтрий";
+      delBtn.onclick = () => deleteApproval(app.id);
+      tdActions.appendChild(delBtn);
+
+      tr.appendChild(tdActions);
+
+      approvalsTableBody.appendChild(tr);
+    });
+}
+
+function toggleStatus(id){
+  const index = approvals.findIndex(a => a.id === id);
+  if(index === -1) return;
+  approvals[index].status = approvals[index].status === "approved" ? "pending" : "approved";
+  saveApprovals();
+  renderApprovals();
+}
+
+function deleteApproval(id){
+  if(!confirm("Сигурен ли си, че искаш да изтриеш този запис?")) return;
+  approvals = approvals.filter(a => a.id !== id);
+  saveApprovals();
+  renderApprovals();
+}
+
+function addApproval(){
+  const userId = (playerIdInput.value || "").trim();
+  const coins = parseInt(coinsApprovedInput.value, 10);
+  const note = (noteInput.value || "").trim();
+
+  if(!userId){
+    alert("Моля, въведи User ID на играча.");
+    return;
+  }
+  if(!coins || coins <= 0){
+    alert("Моля, въведи валиден брой монети (>0).");
+    return;
+  }
+
+  const nowIso = new Date().toISOString();
+  const newItem = {
+    id: "APP-" + Math.random().toString(36).substring(2,10),
+    userId,
+    coins,
+    note,
+    status: "approved", // приемаме че това е вече одобрено
+    createdAt: nowIso
+  };
+
+  approvals.push(newItem);
+  saveApprovals();
+  renderApprovals();
+
+  // Изчистваме формата
+  coinsApprovedInput.value = "";
+  noteInput.value = "";
+  // автоматично попълване на темплейта за съобщение
+  fillMessageTemplate(newItem);
+}
+
+function fillMessageTemplate(app){
+  const priceEur = (app.coins * 0.02).toFixed(2);
+  const txt =
+`Здравей,
+
+Вашата заявка за покупка на монети в играта "SPIN Ролетка" е ОДОБРЕНА. ✅
+
+User ID: ${app.userId}
+Одобрени монети: ${app.coins}
+Ориентировъчна стойност: ${priceEur} EUR
+
+След финализиране на плащането (по договорения с Вас метод),
+монетите ще бъдат начислени в профила Ви.
+
+Поздрави,
+Администрация / Асистент`;
+  messageTemplateEl.value = txt;
+}
+
+function copyMessage(){
+  const txt = messageTemplateEl.value || "";
+  if(!txt){
+    alert("Няма текст за копиране.");
+    return;
+  }
+  navigator.clipboard.writeText(txt)
+    .then(() => { alert("Съобщението е копирано."); })
+    .catch(() => { alert("Неуспешно копиране (опитай отново)."); });
+}
+
+// Събития
+addApprovalBtn.onclick = addApproval;
+clearAllBtn.onclick = () => {
+  if(!confirm("Сигурен ли си, че искаш да изчистиш всички записи?")) return;
+  approvals = [];
+  saveApprovals();
+  renderApprovals();
+};
+copyMessageBtn.onclick = copyMessage;
+
+// Инициализация
+loadApprovals();
+renderApprovals();
+</script>
+
+</body>
+</html>
