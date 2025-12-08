@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
-  <title>🎰 SPIN Ролетка</title>
+  <title>🎰 SPIN Ролетка – Реална игра</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="manifest" href="manifest.json">
@@ -158,7 +158,6 @@
       align-items:stretch;
     }
 
-    /* Фиксирани залози */
     .bet-box {
       display: flex;
       gap: 6px;
@@ -177,9 +176,7 @@
       transition: 0.15s;
       box-shadow: 0 3px 8px rgba(0,0,0,0.5);
     }
-    .bet-btn:hover {
-      background: rgba(255,255,255,0.15);
-    }
+    .bet-btn:hover { background: rgba(255,255,255,0.15); }
     .bet-btn.active {
       background: linear-gradient(135deg, #ffd86b, #f4ba00);
       color: #351f00;
@@ -248,27 +245,22 @@
       box-shadow: 0 0 10px rgba(46, 204, 113, 0.7), 0 0 20px rgba(39, 174, 96, 0.9);
       animation: historyPulseGreen 0.5s ease-in-out 0s 4 alternate;
     }
-    .history-win::after {
-      border-top-color: rgba(46, 204, 113, 0.9);
-    }
+    .history-win::after { border-top-color: rgba(46, 204, 113, 0.9); }
     .history-lose {
       border-color: rgba(231, 76, 60, 0.9);
       color: #ffd1d1;
       box-shadow: 0 0 10px rgba(231, 76, 60, 0.7), 0 0 20px rgba(192, 57, 43, 0.9);
       animation: historyPulseRed 0.5s ease-in-out 0s 3 alternate;
     }
-    .history-lose::after {
-      border-top-color: rgba(231, 76, 60, 0.9);
-    }
+    .history-lose::after { border-top-color: rgba(231, 76, 60, 0.9); }
     .history-joker {
       border-color: rgba(155, 89, 182, 0.95);
       color: #f8e9ff;
       box-shadow: 0 0 10px rgba(155,89,182,0.8), 0 0 24px rgba(52,152,219,0.9);
       animation: historyPulseJoker 0.55s ease-in-out 0s 5 alternate;
     }
-    .history-joker::after {
-      border-top-color: rgba(155, 89, 182, 0.95);
-    }
+    .history-joker::after { border-top-color: rgba(155, 89, 182, 0.95); }
+
     @keyframes historyPulseGreen {
       from { transform: translateY(0) scale(1); }
       to   { transform: translateY(-2px) scale(1.05); }
@@ -282,7 +274,6 @@
       to   { transform: translateY(-2px) scale(1.06) rotate(1deg); }
     }
 
-    /* Бонус overlay */
     .bonus-overlay {
       position:absolute;
       inset:0;
@@ -308,15 +299,8 @@
       from { transform:scale(0.8); opacity:0; }
       to { transform:scale(1); opacity:1; }
     }
-    .bonus-title {
-      font-size:1.1rem;
-      font-weight:bold;
-      margin-bottom:4px;
-    }
-    .bonus-sub {
-      font-size:0.85rem;
-      margin-bottom:10px;
-    }
+    .bonus-title { font-size:1.1rem; font-weight:bold; margin-bottom:4px; }
+    .bonus-sub { font-size:0.85rem; margin-bottom:10px; }
     .bonus-cards-row {
       display:flex;
       justify-content:space-between;
@@ -350,7 +334,6 @@
       opacity:0.9;
     }
 
-    /* Луксозни overlay-и (reset / reload / buy) */
     .reset-overlay {
       position:absolute;
       inset:0;
@@ -422,17 +405,6 @@
       background:rgba(0,0,0,0.4);
       color:#ffdede;
     }
-    .reset-btn-primary:active,
-    .reset-btn-secondary:active {
-      transform:translateY(1px) scale(0.98);
-      box-shadow:0 4px 10px rgba(0,0,0,0.8);
-    }
-    .reset-note {
-      font-size:0.75rem;
-      margin-top:6px;
-      color:#ffe9c7;
-      opacity:0.9;
-    }
 
     @media (max-width:480px){
       .slot-grid{ grid-template-rows:repeat(3,68px); }
@@ -449,26 +421,27 @@
 
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
-      Реална игра с виртуални монети.<br>
-      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра.</small>
+      Реална игра с виртуални монети, без вход.<br>
+      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. Портфейлът е моментен за тази сесия.</small>
     </p>
 
     <div id="balancesInfo">
-      Начален баланс: <span class="highlight">1000</span> монети.
+      Начален баланс: <span class="highlight">1000</span> монети (записва се в браузъра ти).
     </div>
 
     <div id="walletInfo">
-      <div><strong>Моят портфейл:</strong></div>
+      <div><strong>Моят портфейл (моментен):</strong></div>
       <div>
         Натрупани монети: <span id="walletCoins">0</span> |
         Стойност: <span id="walletBgn">0</span> BGN (~<span id="walletEur">0</span> EUR)
       </div>
       <div class="wallet-row">
         <span style="font-size:0.75rem; opacity:0.8;">
-          Всеки блок от 10 000 монети дава по 10 BGN.
+          Всеки блок от 10 000 монети дава по 10 BGN (10k=10, 20k=20, 30k=30...).<br>
+          Можеш да теглиш при минимум 10 000 монети (10 BGN).
         </span>
         <button id="walletCashoutBtn" class="wallet-btn" disabled>
-          💰 Заяви изплащане
+          💸 Тегли от портфейла (симулация)
         </button>
       </div>
       <div style="margin-top:4px;font-size:0.75rem;opacity:0.8;">
@@ -481,11 +454,8 @@
       <div>Залог: <span id="betDisplay" class="highlight">5</span> 🪙</div>
     </div>
 
-    <!-- Бутон за нов старт + купуване -->
+    <!-- Бутон за купуване -->
     <div style="text-align:right; margin-bottom:6px; display:flex; justify-content:flex-end; gap:6px; flex-wrap:wrap;">
-      <button id="resetBalanceBtn" class="wallet-btn">
-        🔄 Нов старт (1000 монети)
-      </button>
       <button id="buyCoinsBtn" class="wallet-btn">
         💳 Купи монети
       </button>
@@ -511,10 +481,11 @@
 
     <div class="controls">
       <div class="bet-box" id="betSelector">
-        <button class="bet-btn" data-bet="1">1</button>
         <button class="bet-btn" data-bet="5">5</button>
+        <button class="bet-btn" data-bet="7">7</button>
         <button class="bet-btn" data-bet="10">10</button>
         <button class="bet-btn" data-bet="25">25</button>
+        <button class="bet-btn" data-bet="40">40</button>
         <button class="bet-btn" data-bet="50">50</button>
         <button class="bet-btn" data-bet="100">100</button>
       </div>
@@ -535,52 +506,6 @@
           <button class="bonus-pick" data-mult="10">❓</button>
         </div>
         <div class="bonus-info">Множителят се прилага върху текущия залог. Успех! 🍀</div>
-      </div>
-    </div>
-
-    <!-- Луксозен popup за нов баланс -->
-    <div id="resetOverlay" class="reset-overlay reset-hidden">
-      <div class="reset-card">
-        <div class="reset-icon">💎</div>
-        <div class="reset-title">Нов старт с 1000 монети</div>
-        <div id="resetMessage" class="reset-message">
-          Балансът ти е <span>0</span>.<br>
-          Да презаредим с нов баланс <span>1000</span> монети и да нулираме портфейла?
-        </div>
-        <div class="reset-buttons">
-          <button id="resetConfirmBtn" class="reset-btn-primary">✅ Да, нов баланс</button>
-          <button id="resetCancelBtn" class="reset-btn-secondary">❌ Не сега</button>
-        </div>
-        <div class="reset-note">
-          * Балансът се нулира до 1000 монети, а портфейлът започва от начало. Това е само визуална игра.
-        </div>
-      </div>
-    </div>
-
-    <!-- Popup за презареждане от портфейла -->
-    <div id="reloadOverlay" class="reset-overlay reset-hidden">
-      <div class="reset-card">
-        <div class="reset-icon">⚡</div>
-        <div class="reset-title">Презареждане от портфейла</div>
-        <div id="reloadMessage" class="reset-message">
-          Играл си дълго и имаш портфейл от
-          <span id="reloadWalletBgn">40.00</span> BGN.<br>
-          Можеш да прехвърлиш част от него обратно като монети.
-        </div>
-        <div style="margin-bottom:8px; font-size:0.85rem;">
-          Монети за презареждане (стъпка 10 000):
-          <input id="reloadAmountInput" type="number"
-                 min="10000" step="10000" value="10000"
-                 style="margin-top:4px; width:100%; border-radius:999px;
-                        border:none; padding:6px 10px; outline:none;">
-        </div>
-        <div class="reset-buttons">
-          <button id="reloadConfirmBtn" class="reset-btn-primary">✅ Прехвърли</button>
-          <button id="reloadCancelBtn" class="reset-btn-secondary">❌ Отказ</button>
-        </div>
-        <div class="reset-note">
-          * Монетите се вадят от портфейла (10 000 монети = 10 BGN) и се добавят към баланса.
-        </div>
       </div>
     </div>
 
@@ -609,7 +534,37 @@
 
         <div class="reset-note">
           * Това е заявка, не директно плащане.<br>
-          * След одобрение и външно плащане монетите се добавят на ID.
+          * След одобрение и външно плащане монетите се добавят ръчно.
+        </div>
+      </div>
+    </div>
+
+    <!-- Popup за теглене от портфейла -->
+    <div id="withdrawOverlay" class="reset-overlay reset-hidden">
+      <div class="reset-card">
+        <div class="reset-icon">💸</div>
+        <div class="reset-title">Теглене от портфейла</div>
+        <div class="reset-message">
+          Избери колко монети да теглиш:<br>
+          <small>Минимум 10 000 монети (10 BGN), стъпка 10 000.</small>
+        </div>
+
+        <input type="range" id="withdrawSlider" min="10000" max="10000" value="10000" step="10000"
+          style="width:100%; margin-bottom:10px;">
+
+        <div style="font-size:0.9rem; margin-bottom:8px;">
+          Теглиш монети: <span id="withdrawCoins">10000</span><br>
+          Стойност: <span id="withdrawBgn">10.00</span> BGN
+        </div>
+
+        <div class="reset-buttons">
+          <button id="withdrawConfirmBtn" class="reset-btn-primary">✅ Потвърди тегленето</button>
+          <button id="withdrawCancelBtn" class="reset-btn-secondary">Отказ</button>
+        </div>
+
+        <div class="reset-note">
+          * Това е симулация – тук само намаляваме портфейла визуално.<br>
+          * При максимум на плъзгача портфейлът става 0.
         </div>
       </div>
     </div>
@@ -647,10 +602,13 @@ const PAYOUTS = {
   "🃏":30
 };
 
-// Портфейл – линейно: всеки 10k = 10 BGN
+// Портфейл – всеки 10k = 10 BGN
 const WALLET_STEP = 10000;
 const WALLET_BASE_BGN = 10;
 const BGN_TO_EUR = 0.51;
+
+// Минимално теглене: 10 000
+const MIN_WITHDRAW_COINS = 10000;
 
 // баланс (реална игра) – пазим го в localStorage
 let balance = 1000;
@@ -675,9 +633,6 @@ let isHoldCandidate = false;
 let bonusActive = false;
 let bonusBaseBet = 0;
 
-// Reload hint
-let reloadHintShown = false;
-
 // User ID
 let userId = null;
 
@@ -696,24 +651,9 @@ const walletCoinsEl=document.getElementById("walletCoins");
 const walletBgnEl=document.getElementById("walletBgn");
 const walletEurEl=document.getElementById("walletEur");
 const walletCashoutBtn=document.getElementById("walletCashoutBtn");
-const resetBalanceBtn=document.getElementById("resetBalanceBtn");
 const userIdDisplayEl=document.getElementById("userIdDisplay");
 
-// reset popup DOM
-const resetOverlay=document.getElementById("resetOverlay");
-const resetMessageEl=document.getElementById("resetMessage");
-const resetConfirmBtn=document.getElementById("resetConfirmBtn");
-const resetCancelBtn=document.getElementById("resetCancelBtn");
-
-// reload popup DOM
-const reloadOverlay=document.getElementById("reloadOverlay");
-const reloadMessageEl=document.getElementById("reloadMessage");
-const reloadWalletBgnEl=document.getElementById("reloadWalletBgn");
-const reloadAmountInput=document.getElementById("reloadAmountInput");
-const reloadConfirmBtn=document.getElementById("reloadConfirmBtn");
-const reloadCancelBtn=document.getElementById("reloadCancelBtn");
-
-// buy popup DOM
+// BUY popup DOM
 const buyOverlay=document.getElementById("buyOverlay");
 const buySlider=document.getElementById("buySlider");
 const buyCoinsEl=document.getElementById("buyCoins");
@@ -721,6 +661,14 @@ const buyPriceEl=document.getElementById("buyPrice");
 const buyConfirmBtn=document.getElementById("buyConfirmBtn");
 const buyCancelBtn=document.getElementById("buyCancelBtn");
 const buyCoinsBtn=document.getElementById("buyCoinsBtn");
+
+// WITHDRAW popup DOM
+const withdrawOverlay=document.getElementById("withdrawOverlay");
+const withdrawSlider=document.getElementById("withdrawSlider");
+const withdrawCoinsEl=document.getElementById("withdrawCoins");
+const withdrawBgnEl=document.getElementById("withdrawBgn");
+const withdrawConfirmBtn=document.getElementById("withdrawConfirmBtn");
+const withdrawCancelBtn=document.getElementById("withdrawCancelBtn");
 
 // аудио
 const audioSpin=document.getElementById("audioSpin");
@@ -760,16 +708,14 @@ function saveBalance() {
   localStorage.setItem("slot_real_balance_single", balance);
 }
 
-function getBalance() {
-  return balance;
-}
+function getBalance() { return balance; }
 function setBalance(val) {
   balance = val;
   saveBalance();
   updateUI();
 }
 
-// автоматично отделяне към портфейла (ЛИНЕЙНО)
+// автоматично отделяне към портфейла
 function autoBankToWallet(){
   let bal = getBalance();
   const blocksToBank = Math.floor(bal / WALLET_STEP);
@@ -780,10 +726,7 @@ function autoBankToWallet(){
   balance = bal;
   saveBalance();
 
-  // добавяме монети към портфейла
   walletCoins += coinsToBank;
-
-  // 1 блок = 10k монети = 10 лв
   walletBlocks = walletCoins / WALLET_STEP;
   walletBgn = walletBlocks * WALLET_BASE_BGN;
 
@@ -794,7 +737,7 @@ function updateWalletUI(){
   walletCoinsEl.textContent = walletCoins;
   walletBgnEl.textContent = walletBgn.toFixed(2);
   walletEurEl.textContent = (walletBgn * BGN_TO_EUR).toFixed(2);
-  walletCashoutBtn.disabled = walletBgn <= 0;
+  walletCashoutBtn.disabled = walletCoins < MIN_WITHDRAW_COINS;
 }
 
 function updateUI(){
@@ -839,48 +782,9 @@ function showBonus(baseBet) {
   resultText.textContent = "🎁 Бонус игра – избери една от картите!";
   bonusOverlay.classList.remove("bonus-hidden");
 }
-
 function hideBonus() {
   bonusActive = false;
   bonusOverlay.classList.add("bonus-hidden");
-}
-
-// НОВ СТАРТ
-function resetGameBalance() {
-  balance = 1000;
-  saveBalance();
-  walletCoins = 0;
-  walletBlocks = 0;
-  walletBgn = 0;
-  reloadHintShown = false;
-  updateUI();
-  historyEl.innerHTML = "";
-  resultText.textContent = "Балансът е подновен до 1000 монети. Успех!";
-}
-
-// popups
-function showResetPopup(messageHtml){
-  resetMessageEl.innerHTML = messageHtml;
-  resetOverlay.classList.remove("reset-hidden");
-}
-function hideResetPopup(){
-  resetOverlay.classList.add("reset-hidden");
-}
-
-function showReloadPopup(){
-  reloadWalletBgnEl.textContent = walletBgn.toFixed(2);
-  const maxCoins = walletCoins;
-  const minCoins = WALLET_STEP;
-  reloadAmountInput.min = minCoins;
-  reloadAmountInput.step = WALLET_STEP;
-  reloadAmountInput.max = maxCoins;
-  const initial = Math.min(maxCoins, WALLET_STEP);
-  reloadAmountInput.value = initial > 0 ? initial : 0;
-  reloadOverlay.classList.remove("reset-hidden");
-  reloadHintShown = true;
-}
-function hideReloadPopup(){
-  reloadOverlay.classList.add("reset-hidden");
 }
 
 // BUY popup
@@ -890,13 +794,41 @@ function updateBuyPrice() {
   buyCoinsEl.textContent = coins;
   buyPriceEl.textContent = price;
 }
-
 function showBuyPopup(){
   updateBuyPrice();
   buyOverlay.classList.remove("reset-hidden");
 }
 function hideBuyPopup(){
   buyOverlay.classList.add("reset-hidden");
+}
+
+// WITHDRAW popup
+function updateWithdrawInfo(){
+  let val = parseInt(withdrawSlider.value,10) || 0;
+  // закръгляме до стъпка 10 000
+  val = Math.floor(val / WALLET_STEP) * WALLET_STEP;
+  if(val < MIN_WITHDRAW_COINS) val = MIN_WITHDRAW_COINS;
+  if(val > walletCoins) val = walletCoins;
+  withdrawSlider.value = val;
+  withdrawCoinsEl.textContent = val;
+  const bgn = (val / WALLET_STEP) * WALLET_BASE_BGN;
+  withdrawBgnEl.textContent = bgn.toFixed(2);
+}
+function showWithdrawPopup(){
+  if(walletCoins < MIN_WITHDRAW_COINS){
+    resultText.textContent = "Минимум 10 000 монети (10 BGN), за да теглиш.";
+    return;
+  }
+  const maxCoins = Math.floor(walletCoins / WALLET_STEP) * WALLET_STEP;
+  withdrawSlider.min = MIN_WITHDRAW_COINS;
+  withdrawSlider.max = maxCoins;
+  withdrawSlider.step = WALLET_STEP;
+  withdrawSlider.value = maxCoins; // по подразбиране – всичко (портфейлът → 0)
+  updateWithdrawInfo();
+  withdrawOverlay.classList.remove("reset-hidden");
+}
+function hideWithdrawPopup(){
+  withdrawOverlay.classList.add("reset-hidden");
 }
 
 // слот логика
@@ -913,7 +845,6 @@ function startSpin(){
 
   historyEl.innerHTML = "";
   historyEl.className = "";
-
   clearWin();
 
   setBalance(getBalance() - bet);
@@ -1030,23 +961,6 @@ function finalize(matrix){
     return;
   }
 
-  // ако балансът е 0 – reset popup
-  if (getBalance() <= 0) {
-    setTimeout(() => {
-      showResetPopup(
-        `Балансът ти е <span>0</span>.<br>` +
-        `Да презаредим с нов баланс <span>1000</span> монети и да нулираме портфейла?`
-      );
-    }, 250);
-  }
-
-  // ако портфейл >= 40 BGN и балансът е 1 монета – предложи презареждане от портфейла
-  if (!reloadHintShown && getBalance() === 1 && walletBgn >= 40) {
-    setTimeout(() => {
-      showReloadPopup();
-    }, 400);
-  }
-
   // BOOSTER
   if (boosterMode && !bonusActive) {
     setTimeout(()=>{
@@ -1054,6 +968,10 @@ function finalize(matrix){
         startSpin();
       }
     }, 200);
+  }
+
+  if (getBalance() <= 0) {
+    resultText.textContent = "Балансът е 0. Играта за тази сесия приключи, освен ако не купиш монети.";
   }
 }
 
@@ -1073,12 +991,7 @@ bonusButtons.forEach(btn=>{
     hideBonus();
 
     if (getBalance() <= 0) {
-      setTimeout(() => {
-        showResetPopup(
-          `Балансът ти е <span>0</span>.<br>` +
-          `Да презаредим с нов баланс <span>1000</span> монети и да нулираме портфейла?`
-        );
-      }, 250);
+      resultText.textContent = "Балансът е 0. Играта за тази сесия приключи, освен ако не купиш монети.";
     }
   });
 });
@@ -1146,47 +1059,22 @@ spinBtn.addEventListener("touchstart", handlePointerDown, {passive:false});
 spinBtn.addEventListener("touchend", handlePointerUp, {passive:false});
 spinBtn.addEventListener("touchcancel", handlePointerUp, {passive:false});
 
-// „изплащане“ (симулация)
-walletCashoutBtn.onclick = ()=>{
-  if(walletBgn <= 0){
-    resultText.textContent = "Нямаш натрупани средства в портфейла.";
-    return;
-  }
-  const msg = `💰 Портфейлът ти има ${walletBgn.toFixed(2)} BGN (~${(walletBgn*BGN_TO_EUR).toFixed(2)} EUR).`;
-  resultText.textContent = msg;
-  const dt = getDateTime();
-  historyEl.innerHTML =
-    `<div class="history-box history-win">[${dt}] ПОРТФЕЙЛ | ${msg}</div>`;
+// Теглене от портфейла – плъзгач
+walletCashoutBtn.onclick = () => {
+  showWithdrawPopup();
 };
 
-// бутон „Нов старт“
-resetBalanceBtn.onclick = () => {
-  showResetPopup(
-    `Сигурен ли си, че искаш <span>нов старт</span> с <span>1000</span> монети?<br>` +
-    `Текущият баланс и портфейл ще се нулират.`
-  );
+withdrawSlider.addEventListener("input", updateWithdrawInfo);
+
+withdrawCancelBtn.onclick = () => {
+  hideWithdrawPopup();
 };
 
-// popup „Нов старт“
-resetConfirmBtn.onclick = () => {
-  hideResetPopup();
-  resetGameBalance();
-};
-resetCancelBtn.onclick = () => {
-  hideResetPopup();
-  resultText.textContent = "Продължаваш с текущия баланс. Можеш да заредиш нов по всяко време.";
-};
-
-// popup „Презареждане от портфейла“
-reloadConfirmBtn.onclick = () => {
-  let amount = parseInt(reloadAmountInput.value, 10);
-  if (isNaN(amount) || amount <= 0) {
-    resultText.textContent = "Въведи валиден брой монети.";
-    return;
-  }
+withdrawConfirmBtn.onclick = () => {
+  let amount = parseInt(withdrawSlider.value,10) || 0;
   amount = Math.floor(amount / WALLET_STEP) * WALLET_STEP;
-  if (amount < WALLET_STEP) {
-    resultText.textContent = "Минималното прехвърляне е 10 000 монети.";
+  if (amount < MIN_WITHDRAW_COINS) {
+    resultText.textContent = "Минимално теглене: 10 000 монети.";
     return;
   }
   if (amount > walletCoins) {
@@ -1197,17 +1085,15 @@ reloadConfirmBtn.onclick = () => {
   walletCoins -= amount;
   walletBlocks = walletCoins / WALLET_STEP;
   walletBgn = walletBlocks * WALLET_BASE_BGN;
+  updateWalletUI();
+  hideWithdrawPopup();
 
-  balance += amount;
-  saveBalance();
-  updateUI();
-  hideReloadPopup();
+  const bgn = (amount / WALLET_STEP) * WALLET_BASE_BGN;
+  resultText.textContent = `💸 Теглиш ${amount} монети (${bgn.toFixed(2)} BGN, симулация) от портфейла. Остават ${walletBgn.toFixed(2)} BGN.`;
 
-  resultText.textContent = `Прехвърли ${amount} монети от портфейла към баланса. Успех!`;
-};
-
-reloadCancelBtn.onclick = () => {
-  hideReloadPopup();
+  const dt = getDateTime();
+  historyEl.innerHTML =
+    `<div class="history-box history-win">[${dt}] ТЕГЛЕНЕ | -${amount} монети (${bgn.toFixed(2)} BGN)</div>`;
 };
 
 // BUY popup логика
@@ -1233,10 +1119,10 @@ buyConfirmBtn.onclick = () => {
   const form = document.createElement("form");
   form.method = "POST";
   form.action = "https://formsubmit.io/send/uzunov.angel@abv.bg";
-  form.target = "_blank"; // да не спира играта
+  form.target = "_blank";
 
   form.innerHTML = `
-    <input type="hidden" name="subject" value="Заявка за покупка на монети">
+    <input type="hidden" name="subject" value="Заявка за покупка на монети от слот играта">
     <input type="hidden" name="user_id" value="${userId || ""}">
     <input type="hidden" name="coins_requested" value="${coins}">
     <input type="hidden" name="price_eur" value="${price}">
