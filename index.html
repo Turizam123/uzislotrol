@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
-  <title>🎰 SPIN Ролетка</title>
+  <title>🎰 SPIN Ролетка – Реална игра</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="manifest" href="manifest.json">
@@ -11,46 +11,33 @@
 
   <style>
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
+    body{
+      margin:0;
+      font-family:system-ui,sans-serif;
       background: radial-gradient(circle at top, #444, #111 55%);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      color:#fff;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
     }
-    .game-wrapper { max-width: 520px; width: 100%; padding: 20px; }
-    .card {
-      background: rgba(0,0,0,0.85);
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.9);
-      border: 1px solid rgba(255,255,255,0.06);
-      position: relative;
-      overflow: hidden;
+    .game-wrapper{ max-width:520px; width:100%; padding:20px; }
+    .card{
+      background:rgba(0,0,0,0.85);
+      padding:20px;
+      border-radius:20px;
+      box-shadow:0 16px 40px rgba(0,0,0,0.9);
+      border:1px solid rgba(255,255,255,0.06);
+      position:relative;
+      overflow:hidden;
     }
-    h1 { text-align:center; margin:0 0 4px; }
+    h1{ text-align:center; margin:0 0 4px; }
+    .subtitle{ text-align:center; font-size:0.9rem; opacity:0.9; margin-bottom:8px; }
+    .subtitle small{ font-size:0.8rem; opacity:0.8; display:block; }
+    .highlight{ color:#ffd86b; }
+    #balancesInfo{ font-size:0.85rem; opacity:0.9; margin-bottom:4px; text-align:center; }
 
-    .subtitle {
-      text-align:center;
-      font-size:0.9rem;
-      opacity:0.9;
-      margin-bottom:8px;
-    }
-    .subtitle small { font-size:0.8rem; opacity:0.8; display:block; }
-
-    .highlight { color:#ffd86b; }
-
-    #balancesInfo {
-      font-size:0.85rem;
-      opacity:0.9;
-      margin-bottom:4px;
-      text-align:center;
-    }
-
-    #walletInfo {
+    #walletInfo{
       font-size:0.8rem;
       opacity:0.9;
       margin-bottom:8px;
@@ -59,9 +46,9 @@
       background:rgba(255,255,255,0.03);
       border:1px solid rgba(255,255,255,0.06);
     }
-    #walletInfo strong { color:#ffd86b; }
+    #walletInfo strong{ color:#ffd86b; }
 
-    .wallet-row {
+    .wallet-row{
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -69,7 +56,7 @@
       margin-top:4px;
       flex-wrap:wrap;
     }
-    .wallet-btn {
+    .wallet-btn{
       padding:4px 8px;
       border-radius:999px;
       border:none;
@@ -80,13 +67,9 @@
       box-shadow:0 4px 10px rgba(0,0,0,0.7);
       white-space:nowrap;
     }
-    .wallet-btn:disabled {
-      opacity:0.5;
-      cursor:not-allowed;
-      box-shadow:none;
-    }
+    .wallet-btn:disabled{ opacity:0.5; cursor:not-allowed; box-shadow:none; }
 
-    .status-bar {
+    .status-bar{
       display:flex;
       justify-content:space-between;
       margin:6px 0 6px;
@@ -95,21 +78,21 @@
       flex-wrap:wrap;
     }
 
-    .slot-frame { margin-top:8px; }
-    .slot-window {
+    .slot-frame{ margin-top:8px; }
+    .slot-window{
       padding:10px;
       background:#222;
       border-radius:14px;
       box-shadow:inset 0 0 12px #000;
       position:relative;
     }
-    .slot-grid {
+    .slot-grid{
       display:grid;
       grid-template-columns:repeat(3,1fr);
       grid-template-rows:repeat(3,80px);
       gap:8px;
     }
-    .cell {
+    .cell{
       background:#111;
       border-radius:10px;
       display:flex;
@@ -119,72 +102,52 @@
       box-shadow:inset 0 0 8px #000;
       transition:transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
     }
-    .middle-row {
-      box-shadow:0 0 0 1px rgba(255,215,0,0.7), 0 0 12px rgba(255,215,0,0.4);
-    }
-    .win {
+    .middle-row{ box-shadow:0 0 0 1px rgba(255,215,0,0.7), 0 0 12px rgba(255,215,0,0.4); }
+    .win{
       background: radial-gradient(circle at 30% 20%, #fff4c2, #e0a900 55%);
       color:#000;
       box-shadow:0 0 0 2px rgba(0,0,0,0.7),0 0 20px rgba(255,230,150,0.8);
     }
-    .seven-win {
-      animation:seven 0.3s infinite alternate;
-      box-shadow:0 0 20px red, 0 0 30px gold;
-    }
-    .joker-win {
-      animation:jokerPulse 0.35s infinite alternate;
-      box-shadow:0 0 20px rgba(155,89,182,0.9), 0 0 30px rgba(52,152,219,0.9);
-    }
-    @keyframes seven {
-      from { transform:scale(1); }
-      to   { transform:scale(1.12); }
-    }
-    @keyframes jokerPulse {
-      from { transform:scale(1); }
-      to   { transform:scale(1.1) rotate(1deg); }
-    }
-    @keyframes reel-spin {
-      0% { transform:translateY(0); }
-      50% { transform:translateY(4px); }
-      100% { transform:translateY(0); }
-    }
-    .spinning .cell { animation:reel-spin 0.18s infinite; }
+    .seven-win{ animation:seven 0.3s infinite alternate; box-shadow:0 0 20px red, 0 0 30px gold; }
+    .joker-win{ animation:jokerPulse 0.35s infinite alternate; box-shadow:0 0 20px rgba(155,89,182,0.9), 0 0 30px rgba(52,152,219,0.9); }
+    @keyframes seven{ from{transform:scale(1);} to{transform:scale(1.12);} }
+    @keyframes jokerPulse{ from{transform:scale(1);} to{transform:scale(1.1) rotate(1deg);} }
+    @keyframes reel-spin{ 0%{transform:translateY(0);} 50%{transform:translateY(4px);} 100%{transform:translateY(0);} }
+    .spinning .cell{ animation:reel-spin 0.18s infinite; }
 
-    .controls {
+    .controls{
       display:flex;
       flex-direction:column;
       margin-top:12px;
       gap:10px;
       align-items:stretch;
     }
-
-    .bet-box {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 2px;
+    .bet-box{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-bottom:2px;
     }
-    .bet-btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      color: white;
-      font-size: 0.88rem;
-      cursor: pointer;
-      transition: 0.15s;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+    .bet-btn{
+      padding:6px 12px;
+      border:none;
+      border-radius:999px;
+      background:rgba(255,255,255,0.08);
+      color:white;
+      font-size:0.88rem;
+      cursor:pointer;
+      transition:0.15s;
+      box-shadow:0 3px 8px rgba(0,0,0,0.5);
     }
-    .bet-btn:hover { background: rgba(255,255,255,0.15); }
-    .bet-btn.active {
-      background: linear-gradient(135deg, #ffd86b, #f4ba00);
-      color: #351f00;
-      font-weight: bold;
-      box-shadow: 0 0 12px rgba(255,215,0,0.6);
+    .bet-btn:hover{ background:rgba(255,255,255,0.15); }
+    .bet-btn.active{
+      background:linear-gradient(135deg,#ffd86b,#f4ba00);
+      color:#351f00;
+      font-weight:bold;
+      box-shadow:0 0 12px rgba(255,215,0,0.6);
     }
-
-    .spin-btn {
+    .spin-btn{
       width:100%;
       padding:12px;
       background:radial-gradient(circle at 20% 20%, #ffec9b,#f4ba00 55%,#a86800);
@@ -198,219 +161,198 @@
       user-select:none;
       -webkit-user-select:none;
     }
-    .spin-btn:active {
-      transform:translateY(1px) scale(0.99);
-      box-shadow:0 4px 16px rgba(0,0,0,0.9);
-    }
-    .spin-btn:disabled { opacity:0.6; cursor:not-allowed; }
+    .spin-btn:active{ transform:translateY(1px) scale(0.99); box-shadow:0 4px 16px rgba(0,0,0,0.9); }
+    .spin-btn:disabled{ opacity:0.6; cursor:not-allowed; }
 
-    #resultText {
-      text-align:center;
-      margin-top:4px;
-      min-height:22px;
-      font-size:0.95rem;
-    }
+    #resultText{ text-align:center; margin-top:4px; min-height:22px; font-size:0.95rem; }
 
-    #history {
-      margin-top: 10px;
-      text-align: center;
-      min-height: 30px;
+    #history{ margin-top:10px; text-align:center; min-height:30px; }
+    .history-box{
+      display:inline-block;
+      position:relative;
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(0,0,0,0.8);
+      border:2px solid transparent;
+      font-size:0.85rem;
+      max-width:100%;
+      white-space:normal;
     }
-    .history-box {
-      display: inline-block;
-      position: relative;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.8);
-      border: 2px solid transparent;
-      font-size: 0.85rem;
-      max-width: 100%;
-      white-space: normal;
-    }
-    .history-box::after {
-      content: "";
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 8px solid transparent;
-      border-right: 8px solid transparent;
-      border-top: 8px solid transparent;
-    }
-    .history-win {
-      border-color: rgba(46, 204, 113, 0.9);
-      color: #c9ffd8;
-      box-shadow: 0 0 10px rgba(46, 204, 113, 0.7), 0 0 20px rgba(39, 174, 96, 0.9);
-      animation: historyPulseGreen 0.5s ease-in-out 0s 4 alternate;
-    }
-    .history-win::after { border-top-color: rgba(46, 204, 113, 0.9); }
-    .history-lose {
-      border-color: rgba(231, 76, 60, 0.9);
-      color: #ffd1d1;
-      box-shadow: 0 0 10px rgba(231, 76, 60, 0.7), 0 0 20px rgba(192, 57, 43, 0.9);
-      animation: historyPulseRed 0.5s ease-in-out 0s 3 alternate;
-    }
-    .history-lose::after { border-top-color: rgba(231, 76, 60, 0.9); }
-    .history-joker {
-      border-color: rgba(155, 89, 182, 0.95);
-      color: #f8e9ff;
-      box-shadow: 0 0 10px rgba(155,89,182,0.8), 0 0 24px rgba(52,152,219,0.9);
-      animation: historyPulseJoker 0.55s ease-in-out 0s 5 alternate;
-    }
-    .history-joker::after { border-top-color: rgba(155, 89, 182, 0.95); }
-
-    @keyframes historyPulseGreen {
-      from { transform: translateY(0) scale(1); }
-      to   { transform: translateY(-2px) scale(1.05); }
-    }
-    @keyframes historyPulseRed {
-      from { transform: translateY(0) scale(1); }
-      to   { transform: translateY(-2px) scale(1.05); }
-    }
-    @keyframes historyPulseJoker {
-      from { transform: translateY(0) scale(1) rotate(-1deg); }
-      to   { transform: translateY(-2px) scale(1.06) rotate(1deg); }
-    }
-
-    .bonus-overlay {
+    .history-box::after{
+      content:"";
       position:absolute;
-      inset:0;
-      background:rgba(0,0,0,0.85);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:20;
-      backdrop-filter:blur(3px);
+      top:100%;
+      left:50%;
+      transform:translateX(-50%);
+      width:0;height:0;
+      border-left:8px solid transparent;
+      border-right:8px solid transparent;
+      border-top:8px solid transparent;
     }
-    .bonus-hidden { display:none; }
-    .bonus-card {
+    .history-win{
+      border-color: rgba(46,204,113,0.9);
+      color:#c9ffd8;
+      box-shadow:0 0 10px rgba(46,204,113,0.7), 0 0 20px rgba(39,174,96,0.9);
+      animation:historyPulseGreen 0.5s ease-in-out 0s 4 alternate;
+    }
+    .history-win::after{ border-top-color: rgba(46,204,113,0.9); }
+    .history-lose{
+      border-color: rgba(231,76,60,0.9);
+      color:#ffd1d1;
+      box-shadow:0 0 10px rgba(231,76,60,0.7), 0 0 20px rgba(192,57,43,0.9);
+      animation:historyPulseRed 0.5s ease-in-out 0s 3 alternate;
+    }
+    .history-lose::after{ border-top-color: rgba(231,76,60,0.9); }
+    .history-joker{
+      border-color: rgba(155,89,182,0.95);
+      color:#f8e9ff;
+      box-shadow:0 0 10px rgba(155,89,182,0.8), 0 0 24px rgba(52,152,219,0.9);
+      animation:historyPulseJoker 0.55s ease-in-out 0s 5 alternate;
+    }
+    .history-joker::after{ border-top-color: rgba(155,89,182,0.95); }
+    .history-dice{
+      border-color: rgba(52,152,219,0.95);
+      color:#e8f4ff;
+      box-shadow:0 0 10px rgba(52,152,219,0.7), 0 0 22px rgba(46,204,113,0.5);
+      animation:historyPulseDice 0.55s ease-in-out 0s 5 alternate;
+    }
+    .history-dice::after{ border-top-color: rgba(52,152,219,0.95); }
+
+    @keyframes historyPulseGreen{ from{transform:translateY(0) scale(1);} to{transform:translateY(-2px) scale(1.05);} }
+    @keyframes historyPulseRed{ from{transform:translateY(0) scale(1);} to{transform:translateY(-2px) scale(1.05);} }
+    @keyframes historyPulseJoker{ from{transform:translateY(0) scale(1) rotate(-1deg);} to{transform:translateY(-2px) scale(1.06) rotate(1deg);} }
+    @keyframes historyPulseDice{ from{transform:translateY(0) scale(1);} to{transform:translateY(-2px) scale(1.06);} }
+
+    .bonus-overlay{
+      position:absolute; inset:0;
+      background:rgba(0,0,0,0.85);
+      display:flex; align-items:center; justify-content:center;
+      z-index:20; backdrop-filter:blur(3px);
+    }
+    .bonus-hidden{ display:none; }
+    .bonus-card{
       background: radial-gradient(circle at 20% 0%, #ffec9b, #f39c12 55%, #8e44ad);
       padding:16px;
       border-radius:18px;
       text-align:center;
       box-shadow:0 14px 30px rgba(0,0,0,0.9);
-      max-width:360px;
-      width:100%;
+      max-width:360px; width:100%;
       animation:bonusIn 0.3s ease-out;
     }
-    @keyframes bonusIn {
-      from { transform:scale(0.8); opacity:0; }
-      to { transform:scale(1); opacity:1; }
-    }
-    .bonus-title { font-size:1.1rem; font-weight:bold; margin-bottom:4px; }
-    .bonus-sub { font-size:0.85rem; margin-bottom:10px; }
-    .bonus-cards-row {
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:6px;
-    }
-    .bonus-pick {
-      flex:1;
-      padding:12px 6px;
-      border-radius:12px;
-      border:none;
+    @keyframes bonusIn{ from{transform:scale(0.8);opacity:0;} to{transform:scale(1);opacity:1;} }
+    .bonus-title{ font-size:1.1rem; font-weight:bold; margin-bottom:4px; }
+    .bonus-sub{ font-size:0.85rem; margin-bottom:10px; }
+    .bonus-cards-row{ display:flex; justify-content:space-between; gap:10px; margin-top:6px; }
+    .bonus-pick{
+      flex:1; padding:12px 6px;
+      border-radius:12px; border:none;
       cursor:pointer;
       background:rgba(0,0,0,0.18);
-      color:#fff;
-      font-size:1.3rem;
+      color:#fff; font-size:1.3rem;
       box-shadow:0 6px 14px rgba(0,0,0,0.6);
       transition:transform 0.15s, box-shadow 0.15s, background 0.15s;
     }
-    .bonus-pick:hover {
-      transform:translateY(-1px) scale(1.03);
-      box-shadow:0 10px 18px rgba(0,0,0,0.8);
-      background:rgba(0,0,0,0.28);
-    }
-    .bonus-pick:active {
-      transform:translateY(1px) scale(0.98);
-      box-shadow:0 4px 10px rgba(0,0,0,0.9);
-    }
-    .bonus-info {
-      font-size:0.8rem;
-      margin-top:8px;
-      opacity:0.9;
-    }
+    .bonus-pick:hover{ transform:translateY(-1px) scale(1.03); box-shadow:0 10px 18px rgba(0,0,0,0.8); background:rgba(0,0,0,0.28); }
+    .bonus-pick:active{ transform:translateY(1px) scale(0.98); box-shadow:0 4px 10px rgba(0,0,0,0.9); }
+    .bonus-info{ font-size:0.8rem; margin-top:8px; opacity:0.9; }
 
-    .reset-overlay {
-      position:absolute;
-      inset:0;
+    .overlay{
+      position:absolute; inset:0;
       background:rgba(0,0,0,0.78);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:30;
-      backdrop-filter:blur(4px);
+      display:flex; align-items:center; justify-content:center;
+      z-index:30; backdrop-filter:blur(4px);
     }
-    .reset-hidden { display:none; }
-    .reset-card {
+    .hidden{ display:none; }
+    .popup{
       background: radial-gradient(circle at 10% -10%, #ffe8b5, #d35400 40%, #8e0000 100%);
       padding:18px 16px 14px;
       border-radius:20px;
-      max-width:360px;
-      width:100%;
+      max-width:360px; width:100%;
       text-align:center;
       box-shadow:0 18px 40px rgba(0,0,0,0.95);
       border:1px solid rgba(255,255,255,0.25);
-      animation:resetIn 0.28s ease-out;
+      animation:popIn 0.28s ease-out;
     }
-    @keyframes resetIn {
-      from { transform:scale(0.8) translateY(10px); opacity:0; }
-      to   { transform:scale(1) translateY(0); opacity:1; }
-    }
-    .reset-icon {
-      font-size:2.1rem;
-      margin-bottom:4px;
-      text-shadow:0 0 10px rgba(0,0,0,0.6);
-    }
-    .reset-title {
-      font-size:1.06rem;
-      font-weight:bold;
-      margin-bottom:4px;
-      color:#fff7df;
-    }
-    .reset-message {
-      font-size:0.86rem;
-      margin-bottom:10px;
-      color:#ffeede;
-    }
-    .reset-message span {
-      font-weight:bold;
-      color:#fff;
-    }
-    .reset-buttons {
-      display:flex;
-      justify-content:space-between;
-      gap:8px;
-      margin-top:4px;
-    }
-    .reset-btn-primary,
-    .reset-btn-secondary {
-      flex:1;
-      padding:8px 6px;
-      border-radius:999px;
-      border:none;
-      font-size:0.9rem;
-      cursor:pointer;
+    @keyframes popIn{ from{transform:scale(0.8) translateY(10px);opacity:0;} to{transform:scale(1) translateY(0);opacity:1;} }
+    .pop-icon{ font-size:2.1rem; margin-bottom:4px; text-shadow:0 0 10px rgba(0,0,0,0.6); }
+    .pop-title{ font-size:1.06rem; font-weight:bold; margin-bottom:4px; color:#fff7df; }
+    .pop-msg{ font-size:0.86rem; margin-bottom:10px; color:#ffeede; }
+    .pop-btns{ display:flex; justify-content:space-between; gap:8px; margin-top:4px; }
+    .btn-primary,.btn-secondary{
+      flex:1; padding:8px 6px;
+      border-radius:999px; border:none;
+      font-size:0.9rem; cursor:pointer;
       box-shadow:0 8px 18px rgba(0,0,0,0.7);
     }
-    .reset-btn-primary {
-      background:linear-gradient(135deg,#ffe082,#ffca28);
-      color:#4e2600;
-      font-weight:bold;
+    .btn-primary{ background:linear-gradient(135deg,#ffe082,#ffca28); color:#4e2600; font-weight:bold; }
+    .btn-secondary{ background:rgba(0,0,0,0.4); color:#ffdede; }
+
+    /* Dice Surprise UI */
+    .dice-popup{
+      background: radial-gradient(circle at 15% -10%, #d6f5ff, #1abc9c 35%, #2c3e50 100%);
+      border:1px solid rgba(255,255,255,0.22);
+      color:#ecf9ff;
     }
-    .reset-btn-secondary {
-      background:rgba(0,0,0,0.4);
-      color:#ffdede;
+    .dice-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
     }
+    .dice-box{
+      background:rgba(0,0,0,0.25);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:16px;
+      padding:10px;
+      text-align:center;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+    }
+    .dice-label{ font-size:0.78rem; opacity:0.9; margin-bottom:6px; }
+    .dice-face{
+      font-size:2.4rem;
+      line-height:1;
+      padding:10px 0;
+      border-radius:14px;
+      background:rgba(255,255,255,0.06);
+      box-shadow:0 10px 20px rgba(0,0,0,0.45);
+      margin-bottom:6px;
+      transform: translateZ(0);
+    }
+    .dice-value{
+      font-size:0.95rem;
+      margin-bottom:4px;
+      color:#fff;
+    }
+    .dice-hint{
+      font-size:0.72rem;
+      opacity:0.9;
+    }
+    .dice-stop{
+      width:100%;
+      margin-top:8px;
+      padding:8px 10px;
+      border:none;
+      border-radius:999px;
+      background:linear-gradient(135deg,#ffd86b,#f4ba00);
+      color:#351f00;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 10px 20px rgba(0,0,0,0.55);
+    }
+    .dice-stop:disabled{ opacity:0.6; cursor:not-allowed; }
+
+    @keyframes diceJitter {
+      0% { transform: rotate(-2deg) translateY(0); }
+      50% { transform: rotate(2deg) translateY(-2px); }
+      100% { transform: rotate(-2deg) translateY(0); }
+    }
+    .rolling { animation: diceJitter 0.16s infinite; }
 
     @media (max-width:480px){
       .slot-grid{ grid-template-rows:repeat(3,68px); }
       .cell{ font-size:2rem; }
-      .bonus-card,
-      .reset-card { max-width: 95%; }
+      .bonus-card, .popup{ max-width:95%; }
+      .dice-grid{ grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -421,27 +363,27 @@
 
     <h1>🎰 SPIN Ролетка</h1>
     <p class="subtitle">
-      Реална игра с виртуални монети.<br>
-      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра.</small>
+      Реална игра с виртуални монети, без вход.<br>
+      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. Портфейлът е моментен за тази сесия.</small>
     </p>
 
     <div id="balancesInfo">
-      Начален баланс: <span class="highlight">1000</span> монети.
+      Начален баланс: <span class="highlight">1000</span> монети (записва се в браузъра ти).
     </div>
 
     <div id="walletInfo">
-      <div><strong>Моят портфейл:</strong></div>
+      <div><strong>Моят портфейл (моментен):</strong></div>
       <div>
-        БАЛАНС: <span id="walletCoins">0</span> |
-        <span id="walletBgn">0</span> BGN (~<span id="walletEur">0</span> EUR)
+        Натрупани монети: <span id="walletCoins">0</span> |
+        Стойност: <span id="walletBgn">0</span> BGN (~<span id="walletEur">0</span> EUR)
       </div>
       <div class="wallet-row">
         <span style="font-size:0.75rem; opacity:0.8;">
-          Всеки блок от 10 000 монети дава по 10 BGN<br>
+          Всеки блок от 10 000 монети дава по 10 BGN (10k=10, 20k=20, 30k=30...).<br>
           Можеш да теглиш при минимум 10 000 монети (10 BGN).
         </span>
         <button id="walletCashoutBtn" class="wallet-btn" disabled>
-          💸 Тегли от портфейла 
+          💸 Тегли от портфейла (симулация)
         </button>
       </div>
       <div style="margin-top:4px;font-size:0.75rem;opacity:0.8;">
@@ -454,11 +396,8 @@
       <div>Залог: <span id="betDisplay" class="highlight">5</span> 🪙</div>
     </div>
 
-    <!-- Бутон за купуване -->
     <div style="text-align:right; margin-bottom:6px; display:flex; justify-content:flex-end; gap:6px; flex-wrap:wrap;">
-      <button id="buyCoinsBtn" class="wallet-btn">
-        💳 Купи монети
-      </button>
+      <button id="buyCoinsBtn" class="wallet-btn">💳 Купи монети</button>
     </div>
 
     <div class="slot-frame">
@@ -481,10 +420,11 @@
 
     <div class="controls">
       <div class="bet-box" id="betSelector">
-        <button class="bet-btn" data-bet="1">1</button>
         <button class="bet-btn" data-bet="5">5</button>
+        <button class="bet-btn" data-bet="7">7</button>
         <button class="bet-btn" data-bet="10">10</button>
         <button class="bet-btn" data-bet="25">25</button>
+        <button class="bet-btn" data-bet="40">40</button>
         <button class="bet-btn" data-bet="50">50</button>
         <button class="bet-btn" data-bet="100">100</button>
       </div>
@@ -494,7 +434,7 @@
     <div id="resultText">Печалба при 3 еднакви символа по средния ред.</div>
     <div id="history"></div>
 
-    <!-- БОНУС НИВО -->
+    <!-- BONUS -->
     <div id="bonusOverlay" class="bonus-overlay bonus-hidden">
       <div class="bonus-card">
         <div class="bonus-title">🎁 БОНУС ИГРА</div>
@@ -508,62 +448,99 @@
       </div>
     </div>
 
-    <!-- Popup за покупка на монети -->
-    <div id="buyOverlay" class="reset-overlay reset-hidden">
-      <div class="reset-card">
-        <div class="reset-icon">💳</div>
-        <div class="reset-title">Покупка на монети</div>
-        <div class="reset-message">
+    <!-- BUY POPUP -->
+    <div id="buyOverlay" class="overlay hidden">
+      <div class="popup">
+        <div class="pop-icon">💳</div>
+        <div class="pop-title">Покупка на монети</div>
+        <div class="pop-msg">
           Избери количество монети за покупка:<br>
           <small>(1 монета = 0.02 EUR)</small>
         </div>
 
-        <input type="range" id="buySlider" min="50" max="100000" value="50" step="50"
-          style="width:100%; margin-bottom:10px;">
+        <input type="range" id="buySlider" min="50" max="100000" value="50" step="50" style="width:100%; margin-bottom:10px;">
 
         <div style="font-size:0.9rem; margin-bottom:8px;">
           Монети: <span id="buyCoins">50</span><br>
           Цена: <span id="buyPrice">1.00</span> EUR
         </div>
 
-        <div class="reset-buttons">
-          <button id="buyConfirmBtn" class="reset-btn-primary">🛒 Заяви покупка</button>
-          <button id="buyCancelBtn" class="reset-btn-secondary">Отказ</button>
+        <div class="pop-btns">
+          <button id="buyConfirmBtn" class="btn-primary">🛒 Заяви покупка</button>
+          <button id="buyCancelBtn" class="btn-secondary">Отказ</button>
         </div>
 
-        <div class="reset-note">
+        <div style="font-size:0.75rem;margin-top:8px;opacity:0.9;">
           * Това е заявка, не директно плащане.<br>
-          * След одобрение и външно плащане монетите се добавят по ID.
+          * След одобрение и външно плащане монетите се добавят ръчно.
         </div>
       </div>
     </div>
 
-    <!-- Popup за теглене от портфейла -->
-    <div id="withdrawOverlay" class="reset-overlay reset-hidden">
-      <div class="reset-card">
-        <div class="reset-icon">💸</div>
-        <div class="reset-title">Теглене от портфейла</div>
-        <div class="reset-message">
+    <!-- WITHDRAW POPUP -->
+    <div id="withdrawOverlay" class="overlay hidden">
+      <div class="popup">
+        <div class="pop-icon">💸</div>
+        <div class="pop-title">Теглене от портфейла</div>
+        <div class="pop-msg">
           Избери колко монети да теглиш:<br>
           <small>Минимум 10 000 монети (10 BGN), стъпка 10 000.</small>
         </div>
 
         <input type="range" id="withdrawSlider" min="10000" max="10000" value="10000" step="10000"
-          style="width:100%; margin-bottom:10px;">
+               style="width:100%; margin-bottom:10px;">
 
         <div style="font-size:0.9rem; margin-bottom:8px;">
           Теглиш монети: <span id="withdrawCoins">10000</span><br>
           Стойност: <span id="withdrawBgn">10.00</span> BGN
         </div>
 
-        <div class="reset-buttons">
-          <button id="withdrawConfirmBtn" class="reset-btn-primary">✅ Потвърди тегленето</button>
-          <button id="withdrawCancelBtn" class="reset-btn-secondary">Отказ</button>
+        <div class="pop-btns">
+          <button id="withdrawConfirmBtn" class="btn-primary">✅ Потвърди тегленето</button>
+          <button id="withdrawCancelBtn" class="btn-secondary">Отказ</button>
         </div>
 
-        <div class="reset-note">
-          * Намаляваме портфейла визуално.<br>
+        <div style="font-size:0.75rem;margin-top:8px;opacity:0.9;">
+          * Това е симулация – тук само намаляваме портфейла визуално.<br>
           * При максимум на плъзгача портфейлът става 0.
+        </div>
+      </div>
+    </div>
+
+    <!-- DICE SURPRISE POPUP -->
+    <div id="diceOverlay" class="overlay hidden">
+      <div class="popup dice-popup">
+        <div class="pop-icon">🎲✨</div>
+        <div class="pop-title">Изненада със зарове!</div>
+        <div class="pop-msg">
+          <b>Зар 1</b> се върти сам и дава <b>1–60</b> монети.<br>
+          <b>Зар 2</b> дава множител <b>x1–x6</b> (ти го спираш).<br>
+          Награда = (Зар1) × (Зар2) → добавя се към баланса.
+        </div>
+
+        <div class="dice-grid">
+          <div class="dice-box">
+            <div class="dice-label">🎲 Зар 1 (AUTO бонус 1–60)</div>
+            <div id="diceFace1" class="dice-face">🎲</div>
+            <div class="dice-value">Стойност: <span id="diceVal1">?</span></div>
+            <div class="dice-hint">Спира сам.</div>
+          </div>
+
+          <div class="dice-box">
+            <div class="dice-label">🎲 Зар 2 (множител x1–x6)</div>
+            <div id="diceFace2" class="dice-face">🎲</div>
+            <div class="dice-value">Множител: <span id="diceVal2">x?</span></div>
+            <div class="dice-hint">Натисни STOP, за да го заключиш.</div>
+            <button id="diceStopBtn" class="dice-stop">STOP ✋</button>
+          </div>
+        </div>
+
+        <div class="pop-btns" style="margin-top:10px;">
+          <button id="diceCloseBtn" class="btn-secondary" disabled>Затвори</button>
+        </div>
+
+        <div style="font-size:0.75rem;margin-top:8px;opacity:0.95;">
+          * Ако не натиснеш STOP навреме, множителят ще се спре автоматично.
         </div>
       </div>
     </div>
@@ -571,7 +548,7 @@
   </div>
 </div>
 
-<!-- Аудио файлове -->
+<!-- Audio -->
 <audio id="audioSpin" src="spin_effect.wav" preload="auto"></audio>
 <audio id="audioSpinMusic" src="spin_music.wav" preload="auto"></audio>
 <audio id="audioWin" src="win.wav" preload="auto"></audio>
@@ -579,585 +556,691 @@
 <audio id="bgMusic" src="music.wav" preload="auto" loop></audio>
 
 <script>
-const JOKER_SYMBOL = "🃏";
+  const JOKER_SYMBOL = "🃏";
 
-const SYMBOLS = [
-  {emoji:"7️⃣",weightNormal:1,weightEasy:2},
-  {emoji:"🔔",weightNormal:2,weightEasy:3},
-  {emoji:"🍒",weightNormal:3,weightEasy:4},
-  {emoji:"🍑",weightNormal:4,weightEasy:5},
-  {emoji:"🍐",weightNormal:5,weightEasy:6},
-  {emoji:"🍇",weightNormal:6,weightEasy:7},
-  {emoji:JOKER_SYMBOL,weightNormal:1,weightEasy:2}
-];
+  const SYMBOLS = [
+    {emoji:"7️⃣",weightNormal:1,weightEasy:2},
+    {emoji:"🔔",weightNormal:2,weightEasy:3},
+    {emoji:"🍒",weightNormal:3,weightEasy:4},
+    {emoji:"🍑",weightNormal:4,weightEasy:5},
+    {emoji:"🍐",weightNormal:5,weightEasy:6},
+    {emoji:"🍇",weightNormal:6,weightEasy:7},
+    {emoji:JOKER_SYMBOL,weightNormal:1,weightEasy:2}
+  ];
 
-const PAYOUTS = {
-  "7️⃣":100,
-  "🔔":40,
-  "🍒":25,
-  "🍑":15,
-  "🍐":10,
-  "🍇":5,
-  "🃏":30
-};
+  const PAYOUTS = {
+    "7️⃣":100,
+    "🔔":40,
+    "🍒":25,
+    "🍑":15,
+    "🍐":10,
+    "🍇":5,
+    "🃏":30
+  };
 
-// Портфейл – всеки 10k = 10 BGN
-const WALLET_STEP = 10000;
-const WALLET_BASE_BGN = 10;
-const BGN_TO_EUR = 0.51;
+  // Wallet: 10k coins = 10 BGN
+  const WALLET_STEP = 10000;
+  const WALLET_BASE_BGN = 10;
+  const BGN_TO_EUR = 0.51;
+  const MIN_WITHDRAW_COINS = 10000;
 
-// Минимално теглене: 10 000
-const MIN_WITHDRAW_COINS = 10000;
+  // Surprise Dice settings
+  const DICE_MIN_COINS = 1;
+  const DICE_MAX_COINS = 60;
+  const MULT_MIN = 1;
+  const MULT_MAX = 6;
+  const DICE_CHANCE_PER_SPIN = 0.12;      // 12% шанс след спин
+  const DICE_COOLDOWN_SPINS = 4;          // минимум 4 спина пауза
+  const DICE_AUTO_STOP_MS = 2600;         // ако не спреш множителя, спира сам
 
-// баланс (реална игра) – пазим го в localStorage
-let balance = 1000;
+  // state
+  let balance = 1000;
+  let walletCoins = 0;
+  let walletBlocks = 0;
+  let walletBgn = 0;
 
-// портфейл (само в паметта на JS)
-let walletCoins = 0;
-let walletBlocks = 0;
-let walletBgn = 0;
+  let bet = 5;
+  let spinning=false, easyMode=false;
+  let spinInterval=null, stopRequested=false, autoStopTimeout=null;
+  let bgMusicStarted=false;
 
-// игра
-let bet = 5;
-let spinning=false, easyMode=false;
-let spinInterval=null, stopRequested=false, autoStopTimeout=null;
-let bgMusicStarted=false;
+  let boosterMode = false;
+  let holdTimeoutId = null;
+  let isHoldCandidate = false;
 
-// BOOSTER
-let boosterMode = false;
-let holdTimeoutId = null;
-let isHoldCandidate = false;
+  let bonusActive = false;
+  let bonusBaseBet = 0;
 
-// BONUS
-let bonusActive = false;
-let bonusBaseBet = 0;
+  // user id
+  let userId = null;
 
-// User ID
-let userId = null;
+  // dice state
+  let diceActive = false;
+  let diceCooldown = 0;
+  let dice1Interval = null;
+  let dice2Interval = null;
+  let dice1Value = null;
+  let dice2Value = null;
+  let dice2Locked = false;
+  let diceAutoStopTimer = null;
 
-// DOM
-const balanceEl=document.getElementById("balance");
-const betDisplayEl=document.getElementById("betDisplay");
-const spinBtn=document.getElementById("spinBtn");
-const resultText=document.getElementById("resultText");
-const slotWindow=document.getElementById("slotWindow");
-const historyEl=document.getElementById("history");
-const bonusOverlay=document.getElementById("bonusOverlay");
-const bonusButtons=document.querySelectorAll(".bonus-pick");
-const betButtons = document.querySelectorAll(".bet-btn");
+  // DOM
+  const balanceEl=document.getElementById("balance");
+  const betDisplayEl=document.getElementById("betDisplay");
+  const spinBtn=document.getElementById("spinBtn");
+  const resultText=document.getElementById("resultText");
+  const slotWindow=document.getElementById("slotWindow");
+  const historyEl=document.getElementById("history");
 
-const walletCoinsEl=document.getElementById("walletCoins");
-const walletBgnEl=document.getElementById("walletBgn");
-const walletEurEl=document.getElementById("walletEur");
-const walletCashoutBtn=document.getElementById("walletCashoutBtn");
-const userIdDisplayEl=document.getElementById("userIdDisplay");
+  const bonusOverlay=document.getElementById("bonusOverlay");
+  const bonusButtons=document.querySelectorAll(".bonus-pick");
+  const betButtons=document.querySelectorAll(".bet-btn");
 
-// BUY popup DOM
-const buyOverlay=document.getElementById("buyOverlay");
-const buySlider=document.getElementById("buySlider");
-const buyCoinsEl=document.getElementById("buyCoins");
-const buyPriceEl=document.getElementById("buyPrice");
-const buyConfirmBtn=document.getElementById("buyConfirmBtn");
-const buyCancelBtn=document.getElementById("buyCancelBtn");
-const buyCoinsBtn=document.getElementById("buyCoinsBtn");
+  const walletCoinsEl=document.getElementById("walletCoins");
+  const walletBgnEl=document.getElementById("walletBgn");
+  const walletEurEl=document.getElementById("walletEur");
+  const walletCashoutBtn=document.getElementById("walletCashoutBtn");
+  const userIdDisplayEl=document.getElementById("userIdDisplay");
 
-// WITHDRAW popup DOM
-const withdrawOverlay=document.getElementById("withdrawOverlay");
-const withdrawSlider=document.getElementById("withdrawSlider");
-const withdrawCoinsEl=document.getElementById("withdrawCoins");
-const withdrawBgnEl=document.getElementById("withdrawBgn");
-const withdrawConfirmBtn=document.getElementById("withdrawConfirmBtn");
-const withdrawCancelBtn=document.getElementById("withdrawCancelBtn");
+  // buy popup
+  const buyOverlay=document.getElementById("buyOverlay");
+  const buySlider=document.getElementById("buySlider");
+  const buyCoinsEl=document.getElementById("buyCoins");
+  const buyPriceEl=document.getElementById("buyPrice");
+  const buyConfirmBtn=document.getElementById("buyConfirmBtn");
+  const buyCancelBtn=document.getElementById("buyCancelBtn");
+  const buyCoinsBtn=document.getElementById("buyCoinsBtn");
 
-// аудио
-const audioSpin=document.getElementById("audioSpin");
-const audioSpinMusic=document.getElementById("audioSpinMusic");
-const audioWin=document.getElementById("audioWin");
-const audioLose=document.getElementById("audioLose");
-const bgMusic=document.getElementById("bgMusic");
+  // withdraw popup
+  const withdrawOverlay=document.getElementById("withdrawOverlay");
+  const withdrawSlider=document.getElementById("withdrawSlider");
+  const withdrawCoinsEl=document.getElementById("withdrawCoins");
+  const withdrawBgnEl=document.getElementById("withdrawBgn");
+  const withdrawConfirmBtn=document.getElementById("withdrawConfirmBtn");
+  const withdrawCancelBtn=document.getElementById("withdrawCancelBtn");
 
-function getDateTime() {
-  const d = new Date();
-  const pad = n => n.toString().padStart(2,"0");
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ` +
-         `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
+  // dice popup
+  const diceOverlay=document.getElementById("diceOverlay");
+  const diceFace1=document.getElementById("diceFace1");
+  const diceFace2=document.getElementById("diceFace2");
+  const diceVal1=document.getElementById("diceVal1");
+  const diceVal2=document.getElementById("diceVal2");
+  const diceStopBtn=document.getElementById("diceStopBtn");
+  const diceCloseBtn=document.getElementById("diceCloseBtn");
 
-// User ID
-function generateUserId(){
-  return "U-" + Math.random().toString(36).substring(2,10).toUpperCase();
-}
-function initUserId(){
-  const stored = localStorage.getItem("slot_user_id");
-  if(stored){
-    userId = stored;
-  } else {
-    userId = generateUserId();
-    localStorage.setItem("slot_user_id", userId);
-  }
-  if(userIdDisplayEl) userIdDisplayEl.textContent = userId;
-}
+  // audio
+  const audioSpin=document.getElementById("audioSpin");
+  const audioSpinMusic=document.getElementById("audioSpinMusic");
+  const audioWin=document.getElementById("audioWin");
+  const audioLose=document.getElementById("audioLose");
+  const bgMusic=document.getElementById("bgMusic");
 
-// баланс – localStorage
-function loadBalance() {
-  const stored = localStorage.getItem("slot_real_balance_single");
-  balance = stored ? parseInt(stored,10) : 1000;
-}
-function saveBalance() {
-  localStorage.setItem("slot_real_balance_single", balance);
-}
-
-function getBalance() { return balance; }
-function setBalance(val) {
-  balance = val;
-  saveBalance();
-  updateUI();
-}
-
-// автоматично отделяне към портфейла
-function autoBankToWallet(){
-  let bal = getBalance();
-  const blocksToBank = Math.floor(bal / WALLET_STEP);
-  if (blocksToBank <= 0) return;
-
-  const coinsToBank = blocksToBank * WALLET_STEP;
-  bal -= coinsToBank;
-  balance = bal;
-  saveBalance();
-
-  walletCoins += coinsToBank;
-  walletBlocks = walletCoins / WALLET_STEP;
-  walletBgn = walletBlocks * WALLET_BASE_BGN;
-
-  updateUI();
-}
-
-function updateWalletUI(){
-  walletCoinsEl.textContent = walletCoins;
-  walletBgnEl.textContent = walletBgn.toFixed(2);
-  walletEurEl.textContent = (walletBgn * BGN_TO_EUR).toFixed(2);
-  walletCashoutBtn.disabled = walletCoins < MIN_WITHDRAW_COINS;
-}
-
-function updateUI(){
-  balanceEl.textContent = getBalance();
-  betDisplayEl.textContent = bet;
-  updateWalletUI();
-}
-
-function play(audio){
-  if(!audio) return;
-  try { audio.currentTime=0; audio.play(); } catch(e){}
-}
-
-function buildPool(includeJoker){
-  const pool=[];
-  SYMBOLS.forEach(s=>{
-    if(!includeJoker && s.emoji===JOKER_SYMBOL) return;
-    const w = easyMode ? s.weightEasy : s.weightNormal;
-    for(let i=0;i<w;i++) pool.push(s.emoji);
-  });
-  return pool;
-}
-
-function setGrid(matrix){
-  document.querySelectorAll(".cell").forEach(c=>{
-    let r=c.dataset.row, col=c.dataset.col;
-    c.textContent=matrix[r][col];
-  });
-}
-
-function clearWin(){
-  document.querySelectorAll(".cell").forEach(c=>{
-    c.classList.remove("win","seven-win","joker-win");
-  });
-}
-
-// БОНУС
-function showBonus(baseBet) {
-  bonusActive = true;
-  bonusBaseBet = baseBet;
-  boosterMode = false;
-  resultText.textContent = "🎁 Бонус игра – избери една от картите!";
-  bonusOverlay.classList.remove("bonus-hidden");
-}
-function hideBonus() {
-  bonusActive = false;
-  bonusOverlay.classList.add("bonus-hidden");
-}
-
-// BUY popup
-function updateBuyPrice() {
-  const coins = parseInt(buySlider.value,10) || 0;
-  const price = (coins * 0.02).toFixed(2);
-  buyCoinsEl.textContent = coins;
-  buyPriceEl.textContent = price;
-}
-function showBuyPopup(){
-  updateBuyPrice();
-  buyOverlay.classList.remove("reset-hidden");
-}
-function hideBuyPopup(){
-  buyOverlay.classList.add("reset-hidden");
-}
-
-// WITHDRAW popup
-function updateWithdrawInfo(){
-  let val = parseInt(withdrawSlider.value,10) || 0;
-  // закръгляме до стъпка 10 000
-  val = Math.floor(val / WALLET_STEP) * WALLET_STEP;
-  if(val < MIN_WITHDRAW_COINS) val = MIN_WITHDRAW_COINS;
-  if(val > walletCoins) val = walletCoins;
-  withdrawSlider.value = val;
-  withdrawCoinsEl.textContent = val;
-  const bgn = (val / WALLET_STEP) * WALLET_BASE_BGN;
-  withdrawBgnEl.textContent = bgn.toFixed(2);
-}
-function showWithdrawPopup(){
-  if(walletCoins < MIN_WITHDRAW_COINS){
-    resultText.textContent = "Минимум 10 000 монети (10 BGN), за да теглиш.";
-    return;
-  }
-  const maxCoins = Math.floor(walletCoins / WALLET_STEP) * WALLET_STEP;
-  withdrawSlider.min = MIN_WITHDRAW_COINS;
-  withdrawSlider.max = maxCoins;
-  withdrawSlider.step = WALLET_STEP;
-  withdrawSlider.value = maxCoins; // по подразбиране – всичко (портфейлът → 0)
-  updateWithdrawInfo();
-  withdrawOverlay.classList.remove("reset-hidden");
-}
-function hideWithdrawPopup(){
-  withdrawOverlay.classList.add("reset-hidden");
-}
-
-// слот логика
-function startSpin(){
-  if(spinning || bonusActive) return;
-  if(bet>getBalance()){
-    resultText.textContent="Недостатъчен баланс.";
-    return;
+  function getDateTime() {
+    const d = new Date();
+    const pad = n => n.toString().padStart(2,"0");
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
   }
 
-  spinning=true;
-  stopRequested=false;
-  spinBtn.textContent = boosterMode ? "BOOST..." : "STOP";
-
-  historyEl.innerHTML = "";
-  historyEl.className = "";
-  clearWin();
-
-  setBalance(getBalance() - bet);
-
-  if(!bgMusicStarted){ play(bgMusic); bgMusicStarted=true; }
-
-  play(audioSpin);
-  play(audioSpinMusic);
-
-  const poolAll = buildPool(true);
-  const poolNoJoker = buildPool(false);
-
-  let matrix=[["","",""],["","",""],["","",""]];
-  slotWindow.classList.add("spinning");
-
-  spinInterval=setInterval(()=>{
-    for(let c=0;c<3;c++){
-      const pool = (c === 2) ? poolAll : poolNoJoker;
-      for(let r=0;r<3;r++){
-        matrix[r][c]= pool[Math.floor(Math.random()*pool.length)];
-      }
-    }
-    setGrid(matrix);
-    if(stopRequested){
-      clearInterval(spinInterval);
-      finalize(matrix);
-    }
-  },90);
-
-  autoStopTimeout=setTimeout(()=>{stopRequested=true;},1600);
-}
-
-function stopSpin(){ stopRequested=true; }
-
-function finalize(matrix){
-  clearInterval(spinInterval);
-  slotWindow.classList.remove("spinning");
-  if(autoStopTimeout) clearTimeout(autoStopTimeout);
-
-  try{ audioSpinMusic.pause(); audioSpinMusic.currentTime=0; }catch(e){}
-
-  const mid = 1;
-  let a = matrix[mid][0];
-  let b = matrix[mid][1];
-  let c = matrix[mid][2];
-
-  let win=false;
-  let winAmount=0;
-  let viaJoker=false;
-  let winSymbol=null;
-
-  if (c === JOKER_SYMBOL) {
-    win = true;
-    viaJoker = true;
-    winSymbol = JOKER_SYMBOL;
-    a = JOKER_SYMBOL;
-    b = JOKER_SYMBOL;
-    matrix[mid][0] = JOKER_SYMBOL;
-    matrix[mid][1] = JOKER_SYMBOL;
-  } else if (a === b && b === c && PAYOUTS[a]) {
-    win = true;
-    winSymbol = a;
+  function play(audio){
+    if(!audio) return;
+    try { audio.currentTime=0; audio.play(); } catch(e){}
   }
 
-  setGrid(matrix);
+  function generateUserId(){
+    return "U-" + Math.random().toString(36).substring(2,10).toUpperCase();
+  }
+  function initUserId(){
+    const stored = localStorage.getItem("slot_user_id");
+    if(stored){ userId = stored; }
+    else { userId = generateUserId(); localStorage.setItem("slot_user_id", userId); }
+    userIdDisplayEl.textContent = userId;
+  }
 
-  if(win){
-    winAmount = PAYOUTS[winSymbol] * bet;
-    setBalance(getBalance() + winAmount);
+  function loadBalance() {
+    const stored = localStorage.getItem("slot_real_balance_single");
+    balance = stored ? parseInt(stored,10) : 1000;
+  }
+  function saveBalance() {
+    localStorage.setItem("slot_real_balance_single", balance);
+  }
+  function getBalance(){ return balance; }
+  function setBalance(val){
+    balance = val;
+    saveBalance();
+    updateUI();
+  }
 
-    if(viaJoker){
-      resultText.textContent = `🤡 JOKER! Печелиш ${winAmount} монети (x${PAYOUTS[winSymbol]})!`;
-    } else if(winSymbol==="7️⃣"){
-      resultText.textContent = `💎 ДЖАКПОТ! Печелиш ${winAmount} монети (x${PAYOUTS[winSymbol]})!`;
-    } else {
-      resultText.textContent = `🎉 Печелиш ${winAmount} монети (x${PAYOUTS[winSymbol]})!`;
-    }
+  function autoBankToWallet(){
+    let bal = getBalance();
+    const blocksToBank = Math.floor(bal / WALLET_STEP);
+    if (blocksToBank <= 0) return;
 
-    const middleCells = document.querySelectorAll('.cell[data-row="1"]');
-    middleCells.forEach(cel=>{
-      cel.classList.add("win");
-      if(winSymbol==="7️⃣") cel.classList.add("seven-win");
-      if(viaJoker) cel.classList.add("joker-win");
+    const coinsToBank = blocksToBank * WALLET_STEP;
+    bal -= coinsToBank;
+    balance = bal;
+    saveBalance();
+
+    walletCoins += coinsToBank;
+    walletBlocks = walletCoins / WALLET_STEP;
+    walletBgn = walletBlocks * WALLET_BASE_BGN;
+    updateUI();
+  }
+
+  function updateWalletUI(){
+    walletCoinsEl.textContent = walletCoins;
+    walletBgnEl.textContent = walletBgn.toFixed(2);
+    walletEurEl.textContent = (walletBgn * BGN_TO_EUR).toFixed(2);
+    walletCashoutBtn.disabled = walletCoins < MIN_WITHDRAW_COINS;
+  }
+
+  function updateUI(){
+    balanceEl.textContent = getBalance();
+    betDisplayEl.textContent = bet;
+    updateWalletUI();
+  }
+
+  function buildPool(includeJoker){
+    const pool=[];
+    SYMBOLS.forEach(s=>{
+      if(!includeJoker && s.emoji===JOKER_SYMBOL) return;
+      const w = easyMode ? s.weightEasy : s.weightNormal;
+      for(let i=0;i<w;i++) pool.push(s.emoji);
     });
-
-    play(audioWin);
-  } else {
-    resultText.textContent="❌ Няма печалба. Опитай пак!";
-    play(audioLose);
+    return pool;
   }
 
-  // портфейл
-  autoBankToWallet();
-
-  const dt = getDateTime();
-  const comboText = `${a} ${b} ${c}`;
-  if (win) {
-    const cls = viaJoker ? "history-box history-joker" : "history-box history-win";
-    historyEl.innerHTML =
-      `<div class="${cls}">[${dt}] Залог: ${bet} | Печалба: ${winAmount} | Комбинация: ${comboText}</div>`;
-  } else {
-    historyEl.innerHTML =
-      `<div class="history-box history-lose">[${dt}] Залог: ${bet} | Без печалба</div>`;
+  function setGrid(matrix){
+    document.querySelectorAll(".cell").forEach(c=>{
+      let r=c.dataset.row, col=c.dataset.col;
+      c.textContent=matrix[r][col];
+    });
   }
 
-  spinning=false;
-  spinBtn.textContent="SPIN";
-  updateUI();
+  function clearWin(){
+    document.querySelectorAll(".cell").forEach(c=>{
+      c.classList.remove("win","seven-win","joker-win");
+    });
+  }
 
-  // JOKER бонус
-  if (win && viaJoker) {
+  // BONUS
+  function showBonus(baseBet){
+    bonusActive = true;
+    bonusBaseBet = baseBet;
     boosterMode = false;
-    showBonus(bet);
-    return;
+    resultText.textContent = "🎁 Бонус игра – избери една от картите!";
+    bonusOverlay.classList.remove("bonus-hidden");
+  }
+  function hideBonus(){
+    bonusActive = false;
+    bonusOverlay.classList.add("bonus-hidden");
   }
 
-  // BOOSTER
-  if (boosterMode && !bonusActive) {
+  // BUY
+  function updateBuyPrice(){
+    const coins = parseInt(buySlider.value,10) || 0;
+    const price = (coins * 0.02).toFixed(2);
+    buyCoinsEl.textContent = coins;
+    buyPriceEl.textContent = price;
+  }
+  function showBuyPopup(){ updateBuyPrice(); buyOverlay.classList.remove("hidden"); }
+  function hideBuyPopup(){ buyOverlay.classList.add("hidden"); }
+
+  // WITHDRAW
+  function updateWithdrawInfo(){
+    let val = parseInt(withdrawSlider.value,10) || 0;
+    val = Math.floor(val / WALLET_STEP) * WALLET_STEP;
+    if(val < MIN_WITHDRAW_COINS) val = MIN_WITHDRAW_COINS;
+    if(val > walletCoins) val = walletCoins;
+    withdrawSlider.value = val;
+    withdrawCoinsEl.textContent = val;
+    const bgn = (val / WALLET_STEP) * WALLET_BASE_BGN;
+    withdrawBgnEl.textContent = bgn.toFixed(2);
+  }
+  function showWithdrawPopup(){
+    if(walletCoins < MIN_WITHDRAW_COINS){
+      resultText.textContent = "Минимум 10 000 монети (10 BGN), за да теглиш.";
+      return;
+    }
+    const maxCoins = Math.floor(walletCoins / WALLET_STEP) * WALLET_STEP;
+    withdrawSlider.min = MIN_WITHDRAW_COINS;
+    withdrawSlider.max = maxCoins;
+    withdrawSlider.step = WALLET_STEP;
+    withdrawSlider.value = maxCoins; // default: всичко -> портфейл 0
+    updateWithdrawInfo();
+    withdrawOverlay.classList.remove("hidden");
+  }
+  function hideWithdrawPopup(){ withdrawOverlay.classList.add("hidden"); }
+
+  // ========== DICE SURPRISE ==========
+  function randInt(min,max){
+    return Math.floor(Math.random()*(max-min+1))+min;
+  }
+
+  function showDicePopup(){
+    diceActive = true;
+    dice2Locked = false;
+    dice1Value = null;
+    dice2Value = null;
+    diceVal1.textContent = "?";
+    diceVal2.textContent = "x?";
+    diceCloseBtn.disabled = true;
+    diceStopBtn.disabled = false;
+
+    diceOverlay.classList.remove("hidden");
+
+    // disable game actions while dice is active
+    spinBtn.disabled = true;
+    betButtons.forEach(b=>b.disabled=true);
+
+    // Start rolling visuals
+    diceFace1.classList.add("rolling");
+    diceFace2.classList.add("rolling");
+
+    // Dice 1: auto roll fast, then stop by itself
+    dice1Interval = setInterval(()=>{
+      const v = randInt(DICE_MIN_COINS, DICE_MAX_COINS);
+      diceVal1.textContent = v;
+    }, 70);
+
+    // Dice 2: rolls x1-x6 until user stops (or auto stop)
+    dice2Interval = setInterval(()=>{
+      const v = randInt(MULT_MIN, MULT_MAX);
+      diceVal2.textContent = "x" + v;
+    }, 110);
+
+    // stop dice1 automatically after ~1.2s
     setTimeout(()=>{
-      if (boosterMode && !spinning && !bonusActive) {
-        startSpin();
+      if(!diceActive) return;
+      clearInterval(dice1Interval);
+      dice1Interval = null;
+      dice1Value = parseInt(diceVal1.textContent,10);
+      diceFace1.classList.remove("rolling");
+      diceFace1.textContent = "🎲";
+    }, 1200);
+
+    // auto stop dice2 if no user stop
+    diceAutoStopTimer = setTimeout(()=>{
+      if(!diceActive) return;
+      lockDice2();
+    }, DICE_AUTO_STOP_MS);
+
+    resultText.textContent = "🎲 Изненада! Заровете се въртят...";
+  }
+
+  function lockDice2(){
+    if(dice2Locked) return;
+    dice2Locked = true;
+
+    clearInterval(dice2Interval);
+    dice2Interval = null;
+
+    const current = diceVal2.textContent.replace("x","");
+    dice2Value = parseInt(current,10);
+    if(!dice2Value || dice2Value < 1) dice2Value = 1;
+
+    diceFace2.classList.remove("rolling");
+    diceFace2.textContent = "🎲";
+
+    diceStopBtn.disabled = true;
+
+    // if dice1 hasn't stopped yet, wait a tiny bit then award
+    const tryAward = () => {
+      if(dice1Value === null){
+        // wait until dice1 is ready
+        setTimeout(tryAward, 120);
+        return;
       }
-    }, 200);
+      awardDiceBonus();
+    };
+    tryAward();
   }
 
-  if (getBalance() <= 0) {
-    resultText.textContent = "Балансът е 0. Играта за тази сесия приключи, освен ако не купиш монети.";
-  }
-}
+  function awardDiceBonus(){
+    // clear timers
+    if(diceAutoStopTimer){ clearTimeout(diceAutoStopTimer); diceAutoStopTimer = null; }
+    if(dice1Interval){ clearInterval(dice1Interval); dice1Interval = null; }
+    if(dice2Interval){ clearInterval(dice2Interval); dice2Interval = null; }
 
-// бонус избор
-bonusButtons.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    if(!bonusActive) return;
-    const mult = parseInt(btn.dataset.mult,10);
-    const bonusWin = bonusBaseBet * mult;
-    setBalance(getBalance() + bonusWin);
+    const coins = (dice1Value || 1);
+    const mult  = (dice2Value || 1);
+    const award = coins * mult;
+
+    setBalance(getBalance() + award);
     play(audioWin);
-    resultText.textContent = `🎁 Бонус печалба: ${bonusWin} монети (x${mult} от залога)!`;
+
     const dt = getDateTime();
     historyEl.innerHTML =
-      `<div class="history-box history-joker">[${dt}] БОНУС | Множител: x${mult} | Допълнителна печалба: ${bonusWin}</div>`;
+      `<div class="history-box history-dice">[${dt}] 🎲 DICE BONUS | ${coins} × ${mult} = +${award} монети</div>`;
+
+    resultText.textContent = `🎲 БОНУС: ${coins} × x${mult} = +${award} монети към баланса!`;
+
+    // close enabled
+    diceCloseBtn.disabled = false;
+
+    // start cooldown
+    diceCooldown = DICE_COOLDOWN_SPINS;
+
+    // allow close after short beat
+    setTimeout(()=>{ diceCloseBtn.disabled = false; }, 250);
+  }
+
+  function closeDicePopup(){
+    diceOverlay.classList.add("hidden");
+    diceActive = false;
+
+    // re-enable game actions
+    spinBtn.disabled = false;
+    betButtons.forEach(b=>b.disabled=false);
+
+    // if booster was on, do not auto spin immediately; user continues normally
+  }
+
+  function maybeTriggerDiceSurprise(){
+    if(diceActive || bonusActive || spinning) return;
+    if(diceCooldown > 0) return;
+
+    const r = Math.random();
+    if(r < DICE_CHANCE_PER_SPIN){
+      showDicePopup();
+    }
+  }
+
+  // ========== SLOT ==========
+  function startSpin(){
+    if(spinning || bonusActive || diceActive) return;
+    if(bet > getBalance()){
+      resultText.textContent="Недостатъчен баланс.";
+      return;
+    }
+
+    spinning=true;
+    stopRequested=false;
+    spinBtn.textContent = boosterMode ? "BOOST..." : "STOP";
+
+    historyEl.innerHTML = "";
+    historyEl.className = "";
+    clearWin();
+
+    setBalance(getBalance() - bet);
+
+    if(!bgMusicStarted){ play(bgMusic); bgMusicStarted=true; }
+
+    play(audioSpin);
+    play(audioSpinMusic);
+
+    const poolAll = buildPool(true);
+    const poolNoJoker = buildPool(false);
+
+    let matrix=[["","",""],["","",""],["","",""]];
+    slotWindow.classList.add("spinning");
+
+    spinInterval=setInterval(()=>{
+      for(let c=0;c<3;c++){
+        const pool = (c === 2) ? poolAll : poolNoJoker;
+        for(let r=0;r<3;r++){
+          matrix[r][c]= pool[Math.floor(Math.random()*pool.length)];
+        }
+      }
+      setGrid(matrix);
+      if(stopRequested){
+        clearInterval(spinInterval);
+        finalize(matrix);
+      }
+    },90);
+
+    autoStopTimeout=setTimeout(()=>{stopRequested=true;},1600);
+  }
+
+  function stopSpin(){ stopRequested=true; }
+
+  function finalize(matrix){
+    clearInterval(spinInterval);
+    slotWindow.classList.remove("spinning");
+    if(autoStopTimeout) clearTimeout(autoStopTimeout);
+
+    try{ audioSpinMusic.pause(); audioSpinMusic.currentTime=0; }catch(e){}
+
+    const mid = 1;
+    let a = matrix[mid][0];
+    let b = matrix[mid][1];
+    let c = matrix[mid][2];
+
+    let win=false;
+    let winAmount=0;
+    let viaJoker=false;
+    let winSymbol=null;
+
+    if (c === JOKER_SYMBOL) {
+      win = true;
+      viaJoker = true;
+      winSymbol = JOKER_SYMBOL;
+      a = JOKER_SYMBOL;
+      b = JOKER_SYMBOL;
+      matrix[mid][0] = JOKER_SYMBOL;
+      matrix[mid][1] = JOKER_SYMBOL;
+    } else if (a === b && b === c && PAYOUTS[a]) {
+      win = true;
+      winSymbol = a;
+    }
+
+    setGrid(matrix);
+
+    if(win){
+      winAmount = PAYOUTS[winSymbol] * bet;
+      setBalance(getBalance() + winAmount);
+
+      if(viaJoker){
+        resultText.textContent = `🤡 JOKER! Печелиш ${winAmount} монети (x${PAYOUTS[winSymbol]})!`;
+      } else if(winSymbol==="7️⃣"){
+        resultText.textContent = `💎 ДЖАКПОТ! Печелиш ${winAmount} монети (x${PAYOUTS[winSymbol]})!`;
+      } else {
+        resultText.textContent = `🎉 Печелиш ${winAmount} монети (x${PAYOUTS[winSymbol]})!`;
+      }
+
+      const middleCells = document.querySelectorAll('.cell[data-row="1"]');
+      middleCells.forEach(cel=>{
+        cel.classList.add("win");
+        if(winSymbol==="7️⃣") cel.classList.add("seven-win");
+        if(viaJoker) cel.classList.add("joker-win");
+      });
+
+      play(audioWin);
+    } else {
+      resultText.textContent="❌ Няма печалба. Опитай пак!";
+      play(audioLose);
+    }
+
     autoBankToWallet();
-    hideBonus();
+
+    const dt = getDateTime();
+    const comboText = `${a} ${b} ${c}`;
+    if (win) {
+      const cls = viaJoker ? "history-box history-joker" : "history-box history-win";
+      historyEl.innerHTML = `<div class="${cls}">[${dt}] Залог: ${bet} | Печалба: ${winAmount} | Комбинация: ${comboText}</div>`;
+    } else {
+      historyEl.innerHTML = `<div class="history-box history-lose">[${dt}] Залог: ${bet} | Без печалба</div>`;
+    }
+
+    spinning=false;
+    spinBtn.textContent="SPIN";
+    updateUI();
+
+    // bonus
+    if (win && viaJoker) {
+      boosterMode = false;
+      showBonus(bet);
+      return;
+    }
+
+    // dice cooldown decrease after each completed spin
+    if(diceCooldown > 0) diceCooldown--;
+
+    // surprise dice (after spin)
+    maybeTriggerDiceSurprise();
+
+    // booster loop
+    if (boosterMode && !bonusActive && !diceActive) {
+      setTimeout(()=>{
+        if (boosterMode && !spinning && !bonusActive && !diceActive) startSpin();
+      }, 200);
+    }
 
     if (getBalance() <= 0) {
       resultText.textContent = "Балансът е 0. Играта за тази сесия приключи, освен ако не купиш монети.";
     }
+  }
+
+  // BONUS picks
+  bonusButtons.forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      if(!bonusActive) return;
+      const mult = parseInt(btn.dataset.mult,10);
+      const bonusWin = bonusBaseBet * mult;
+      setBalance(getBalance() + bonusWin);
+      play(audioWin);
+      resultText.textContent = `🎁 Бонус печалба: ${bonusWin} монети (x${mult} от залога)!`;
+      const dt = getDateTime();
+      historyEl.innerHTML = `<div class="history-box history-joker">[${dt}] БОНУС | Множител: x${mult} | +${bonusWin} монети</div>`;
+      autoBankToWallet();
+      hideBonus();
+    });
   });
-});
 
-// Фиксирани залози
-betButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    if (spinning || bonusActive) return;
-    const value = parseInt(btn.dataset.bet, 10);
-    bet = value;
-    betButtons.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    updateUI();
+  // fixed bets
+  betButtons.forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      if (spinning || bonusActive || diceActive) return;
+      const value = parseInt(btn.dataset.bet,10);
+      bet = value;
+      betButtons.forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      updateUI();
+    });
   });
-});
+  document.querySelector('.bet-btn[data-bet="5"]').classList.add("active");
 
-// начален активен залог (5)
-document.querySelector('.bet-btn[data-bet="5"]').classList.add("active");
+  // Booster hold
+  function handlePointerDown(e){
+    e.preventDefault();
+    if (spinBtn.disabled || bonusActive || diceActive) return;
+    isHoldCandidate = true;
 
-// BOOSTER – задържане
-function handlePointerDown(e){
-  e.preventDefault();
-  if (spinBtn.disabled || bonusActive) return;
-  isHoldCandidate = true;
-
-  holdTimeoutId = setTimeout(()=>{
-    if (isHoldCandidate && !boosterMode) {
-      boosterMode = true;
-      resultText.textContent = "🚀 BOOSTER сега: автоматични завъртания – пусни бутона, за да спреш.";
-      if (!spinning) {
-        startSpin();
+    holdTimeoutId = setTimeout(()=>{
+      if (isHoldCandidate && !boosterMode) {
+        boosterMode = true;
+        resultText.textContent = "🚀 BOOSTER режим: автоматични завъртания – пусни бутона, за да спреш.";
+        if (!spinning) startSpin();
       }
+    }, 400);
+  }
+  function handlePointerUp(e){
+    e.preventDefault();
+    if (holdTimeoutId){ clearTimeout(holdTimeoutId); holdTimeoutId=null; }
+
+    if (boosterMode){
+      boosterMode=false;
+      isHoldCandidate=false;
+      resultText.textContent="BOOSTER режим изключен. Вие сте в нормален режим.";
+      return;
     }
-  }, 400);
-}
 
-function handlePointerUp(e){
-  e.preventDefault();
-  if (holdTimeoutId) {
-    clearTimeout(holdTimeoutId);
-    holdTimeoutId = null;
-  }
-
-  if (boosterMode) {
-    boosterMode = false;
-    isHoldCandidate = false;
-    resultText.textContent = "BOOSTER режим изключен. Вие сте в нормален режим.";
-    return;
-  }
-
-  if (isHoldCandidate && !bonusActive) {
-    isHoldCandidate = false;
-    if (spinning) {
-      stopSpin();
-    } else {
-      startSpin();
+    if (isHoldCandidate && !bonusActive && !diceActive){
+      isHoldCandidate=false;
+      if (spinning) stopSpin();
+      else startSpin();
     }
   }
-}
 
-spinBtn.addEventListener("mousedown", handlePointerDown);
-spinBtn.addEventListener("mouseup", handlePointerUp);
-spinBtn.addEventListener("mouseleave", handlePointerUp);
-spinBtn.addEventListener("touchstart", handlePointerDown, {passive:false});
-spinBtn.addEventListener("touchend", handlePointerUp, {passive:false});
-spinBtn.addEventListener("touchcancel", handlePointerUp, {passive:false});
+  spinBtn.addEventListener("mousedown", handlePointerDown);
+  spinBtn.addEventListener("mouseup", handlePointerUp);
+  spinBtn.addEventListener("mouseleave", handlePointerUp);
+  spinBtn.addEventListener("touchstart", handlePointerDown, {passive:false});
+  spinBtn.addEventListener("touchend", handlePointerUp, {passive:false});
+  spinBtn.addEventListener("touchcancel", handlePointerUp, {passive:false});
 
-// Теглене от портфейла – плъзгач
-walletCashoutBtn.onclick = () => {
-  showWithdrawPopup();
-};
+  // Withdraw events
+  walletCashoutBtn.onclick = showWithdrawPopup;
+  withdrawSlider.addEventListener("input", updateWithdrawInfo);
+  withdrawCancelBtn.onclick = hideWithdrawPopup;
+  withdrawConfirmBtn.onclick = ()=>{
+    let amount = parseInt(withdrawSlider.value,10) || 0;
+    amount = Math.floor(amount / WALLET_STEP) * WALLET_STEP;
+    if(amount < MIN_WITHDRAW_COINS){
+      resultText.textContent="Минимално теглене: 10 000 монети.";
+      return;
+    }
+    if(amount > walletCoins){
+      resultText.textContent="Нямаш толкова монети в портфейла.";
+      return;
+    }
 
-withdrawSlider.addEventListener("input", updateWithdrawInfo);
+    walletCoins -= amount;
+    walletBlocks = walletCoins / WALLET_STEP;
+    walletBgn = walletBlocks * WALLET_BASE_BGN;
+    updateWalletUI();
+    hideWithdrawPopup();
 
-withdrawCancelBtn.onclick = () => {
-  hideWithdrawPopup();
-};
+    const bgn = (amount / WALLET_STEP) * WALLET_BASE_BGN;
+    const dt = getDateTime();
+    historyEl.innerHTML = `<div class="history-box history-win">[${dt}] ТЕГЛЕНЕ | -${amount} монети (${bgn.toFixed(2)} BGN)</div>`;
+    resultText.textContent = `💸 Теглиш ${amount} монети (${bgn.toFixed(2)} BGN, симулация). Остават ${walletBgn.toFixed(2)} BGN в портфейла.`;
+  };
 
-withdrawConfirmBtn.onclick = () => {
-  let amount = parseInt(withdrawSlider.value,10) || 0;
-  amount = Math.floor(amount / WALLET_STEP) * WALLET_STEP;
-  if (amount < MIN_WITHDRAW_COINS) {
-    resultText.textContent = "Минимално теглене: 10 000 монети.";
-    return;
-  }
-  if (amount > walletCoins) {
-    resultText.textContent = "Нямаш толкова монети в портфейла.";
-    return;
-  }
+  // Buy events
+  buySlider.addEventListener("input", updateBuyPrice);
+  buyCoinsBtn.onclick = showBuyPopup;
+  buyCancelBtn.onclick = hideBuyPopup;
+  buyConfirmBtn.onclick = ()=>{
+    const coins = parseInt(buySlider.value,10) || 0;
+    if(coins < 50){ resultText.textContent="Минимум 50 монети."; return; }
+    const price = (coins * 0.02).toFixed(2);
+    const dt = getDateTime();
 
-  walletCoins -= amount;
-  walletBlocks = walletCoins / WALLET_STEP;
-  walletBgn = walletBlocks * WALLET_BASE_BGN;
-  updateWalletUI();
-  hideWithdrawPopup();
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = "https://formsubmit.io/send/uzunov.angel@abv.bg";
+    form.target = "_blank";
 
-  const bgn = (amount / WALLET_STEP) * WALLET_BASE_BGN;
-  resultText.textContent = `💸 Теглиш ${amount} монети (${bgn.toFixed(2)} BGN) от портфейла. Остават ${walletBgn.toFixed(2)} BGN.`;
+    form.innerHTML = `
+      <input type="hidden" name="subject" value="Заявка за покупка на монети от слот играта">
+      <input type="hidden" name="user_id" value="${userId || ""}">
+      <input type="hidden" name="coins_requested" value="${coins}">
+      <input type="hidden" name="price_eur" value="${price}">
+      <input type="hidden" name="current_balance_coins" value="${getBalance()}">
+      <input type="hidden" name="wallet_coins" value="${walletCoins}">
+      <input type="hidden" name="wallet_bgn" value="${walletBgn.toFixed(2)}">
+      <input type="hidden" name="datetime" value="${dt}">
+      <input type="hidden" name="message" value="Потребител ${userId || ""} заявява покупка на ${coins} монети за ${price} EUR.">
+    `;
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
 
-  const dt = getDateTime();
-  historyEl.innerHTML =
-    `<div class="history-box history-win">[${dt}] ТЕГЛЕНЕ | -${amount} монети (${bgn.toFixed(2)} BGN)</div>`;
-};
+    hideBuyPopup();
+    resultText.textContent = `Заявка за покупка на ${coins} монети е изпратена. Асистент ще я обработи.`;
+  };
 
-// BUY popup логика
-buySlider.addEventListener("input", updateBuyPrice);
+  // Dice events
+  diceStopBtn.onclick = ()=> lockDice2();
+  diceCloseBtn.onclick = ()=> closeDicePopup();
 
-buyCoinsBtn.onclick = () => {
-  showBuyPopup();
-};
+  // initial grid
+  setGrid([
+    ["🔔","🍒","🍇"],
+    ["🍑","🍐","🍇"],
+    ["🍒","🍇","🔔"],
+  ]);
 
-buyCancelBtn.onclick = () => {
-  hideBuyPopup();
-};
+  window.onload = ()=>{
+    initUserId();
+    loadBalance();
+    updateUI();
+  };
 
-buyConfirmBtn.onclick = () => {
-  const coins = parseInt(buySlider.value,10) || 0;
-  if(coins < 50){
-    resultText.textContent = "Минимум 50 монети.";
-    return;
-  }
-  const price = (coins * 0.02).toFixed(2);
-  const dt = getDateTime();
-
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = "https://formsubmit.io/send/uzunov.angel@abv.bg";
-  form.target = "_blank";
-
-  form.innerHTML = `
-    <input type="hidden" name="subject" value="Заявка за покупка на монети от слот играта">
-    <input type="hidden" name="user_id" value="${userId || ""}">
-    <input type="hidden" name="coins_requested" value="${coins}">
-    <input type="hidden" name="price_eur" value="${price}">
-    <input type="hidden" name="current_balance_coins" value="${getBalance()}">
-    <input type="hidden" name="wallet_coins" value="${walletCoins}">
-    <input type="hidden" name="wallet_bgn" value="${walletBgn.toFixed(2)}">
-    <input type="hidden" name="datetime" value="${dt}">
-    <input type="hidden" name="message" value="Потребител ${userId || ""} заявява покупка на ${coins} монети за ${price} EUR.">
-  `;
-
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-
-  hideBuyPopup();
-  resultText.textContent = `Заявка за покупка на ${coins} монети е изпратена. Асистент ще я обработи.`;
-};
-
-// начална подредба
-setGrid([
-  ["🔔","🍒","🍇"],
-  ["🍑","🍐","🍇"],
-  ["🍒","🍇","🔔"],
-]);
-
-// зареждане
-window.onload = function() {
-  initUserId();
-  loadBalance();
-  updateUI();
-};
-
-// PWA service worker
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js").catch(()=>{});
-}
+  // PWA
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  };
 </script>
 
 </body>
