@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
-  <title>🎰 SPIN Ролетка – Реална игра</title>
+  <title>🎰 SPIN*4ER </title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <link rel="manifest" href="manifest.json">
@@ -361,29 +361,29 @@
 <div class="game-wrapper">
   <div class="card">
 
-    <h1>🎰 SPIN Ролетка</h1>
+    <h1>🎰 SPIN*4ER</h1>
     <p class="subtitle">
-      Реална игра с виртуални монети, без вход.<br>
-      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. Портфейлът е моментен за тази сесия.</small>
+      Реална игра с виртуални монети.<br>
+      <small>Печели само средният ред. 🃏 JOKER на трети барабан → бонус игра. </small>
     </p>
 
     <div id="balancesInfo">
-      Начален баланс: <span class="highlight">1000</span> монети (записва се в браузъра ти).
+      Начален баланс: <span class="highlight">1000</span> монети.
     </div>
 
     <div id="walletInfo">
-      <div><strong>Моят портфейл (моментен):</strong></div>
+      <div><strong>БАЛАНС:</strong></div>
       <div>
         Натрупани монети: <span id="walletCoins">0</span> |
         Стойност: <span id="walletBgn">0</span> BGN (~<span id="walletEur">0</span> EUR)
       </div>
       <div class="wallet-row">
         <span style="font-size:0.75rem; opacity:0.8;">
-          Всеки блок от 10 000 монети дава по 10 BGN (10k=10, 20k=20, 30k=30...).<br>
+          Всеки блок от 10 000 монети дава по +10 BGN .<br>
           Можеш да теглиш при минимум 10 000 монети (10 BGN).
         </span>
         <button id="walletCashoutBtn" class="wallet-btn" disabled>
-          💸 Тегли от портфейла (симулация)
+          💸 Тегли от портфейла
         </button>
       </div>
       <div style="margin-top:4px;font-size:0.75rem;opacity:0.8;">
@@ -420,11 +420,9 @@
 
     <div class="controls">
       <div class="bet-box" id="betSelector">
+        <button class="bet-btn" data-bet="1">1</button>
         <button class="bet-btn" data-bet="5">5</button>
-        <button class="bet-btn" data-bet="7">7</button>
-        <button class="bet-btn" data-bet="10">10</button>
         <button class="bet-btn" data-bet="25">25</button>
-        <button class="bet-btn" data-bet="40">40</button>
         <button class="bet-btn" data-bet="50">50</button>
         <button class="bet-btn" data-bet="100">100</button>
       </div>
@@ -501,7 +499,7 @@
         </div>
 
         <div style="font-size:0.75rem;margin-top:8px;opacity:0.9;">
-          * Това е симулация – тук само намаляваме портфейла визуално.<br>
+          * Тук само намаляваме портфейла ти.<br>
           * При максимум на плъзгача портфейлът става 0.
         </div>
       </div>
@@ -1183,7 +1181,7 @@
     const bgn = (amount / WALLET_STEP) * WALLET_BASE_BGN;
     const dt = getDateTime();
     historyEl.innerHTML = `<div class="history-box history-win">[${dt}] ТЕГЛЕНЕ | -${amount} монети (${bgn.toFixed(2)} BGN)</div>`;
-    resultText.textContent = `💸 Теглиш ${amount} монети (${bgn.toFixed(2)} BGN, симулация). Остават ${walletBgn.toFixed(2)} BGN в портфейла.`;
+    resultText.textContent = `💸 Теглиш ${amount} монети (${bgn.toFixed(2)} BGN). Остават ${walletBgn.toFixed(2)} BGN в портфейла.`;
   };
 
   // Buy events
