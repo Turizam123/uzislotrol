@@ -1,63 +1,330 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8">
-<title>Моето Онлайн Радио</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Моето Онлайн Радио</title>
+  <meta name="description" content="Онлайн радио плеър - слушай на живо." />
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0b0b0b;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+  <style>
+    :root{
+      --bg1:#060606;
+      --bg2:#101010;
+      --card:#121212;
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.75);
+      --glow:rgba(0,255,0,.25);
+      --border:rgba(255,255,255,.12);
+    }
 
-.player {
-    background: #111;
-    border-radius: 15px;
-    padding: 20px;
-    width: 320px;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(0,255,0,0.4);
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      font-family: Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 600px at 50% 10%, #1c1c1c 0%, var(--bg1) 45%, var(--bg2) 100%);
+    }
 
-.player h1 {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
+    .wrap{
+      width:min(420px, 100%);
+    }
 
-.status {
-    color: #00ff00;
-    font-size: 14px;
-    margin-bottom: 15px;
-}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      box-shadow: 0 0 26px var(--glow);
+      backdrop-filter: blur(6px);
+    }
 
-audio {
-    width: 100%;
-}
-</style>
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .logo{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      border:1px solid var(--border);
+      background: rgba(0,255,0,.06);
+      font-size:22px;
+      box-shadow: 0 0 18px rgba(0,255,0,.18) inset;
+    }
+
+    .title{
+      line-height:1.15;
+    }
+
+    .title h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+
+    .title .sub{
+      margin-top:4px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .pill{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      font-size:12px;
+      color:var(--muted);
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:#6b6b6b;
+      box-shadow:none;
+    }
+    .dot.on{
+      background:#00ff6a;
+      box-shadow: 0 0 14px rgba(0,255,106,.55);
+    }
+
+    .player{
+      margin-top:10px;
+    }
+
+    audio{
+      width:100%;
+      margin-top:10px;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    button{
+      flex:1;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:11px 12px;
+      border-radius:14px;
+      font-weight:700;
+      cursor:pointer;
+      transition: transform .06s ease, background .2s ease;
+    }
+    button:hover{background: rgba(255,255,255,.09)}
+    button:active{transform: scale(.99)}
+    button.secondary{font-weight:600;color:var(--muted)}
+
+    .hint{
+      margin-top:12px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .small{
+      margin-top:10px;
+      font-size:11px;
+      color:rgba(255,255,255,.6);
+      text-align:center;
+    }
+
+    .err{
+      margin-top:10px;
+      display:none;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,80,80,.35);
+      background: rgba(255,80,80,.10);
+      color: rgba(255,220,220,.95);
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px dashed rgba(255,255,255,.12);
+    }
+
+    .vol{
+      width:150px;
+      max-width:45%;
+    }
+
+    input[type="range"]{
+      width:100%;
+      accent-color:#00ff6a;
+    }
+
+    .link{
+      color:rgba(255,255,255,.85);
+      text-decoration:none;
+      border-bottom:1px dotted rgba(255,255,255,.35);
+    }
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <div class="card">
+      <div class="top">
+        <div class="brand">
+          <div class="logo">📻</div>
+          <div class="title">
+            <h1>Моето Онлайн Радио</h1>
+            <div class="sub">Излъчване чрез Winamp + SHOUTcast</div>
+          </div>
+        </div>
 
-<div class="player">
-    <h1>📻 LIVE RADIO</h1>
-    <div class="status">ON AIR</div>
+        <div class="pill" id="statusPill">
+          <span class="dot" id="statusDot"></span>
+          <span id="statusText">OFFLINE</span>
+        </div>
+      </div>
 
-    <audio controls>
-        <source src="http://uk25freenew.listen2myradio.com:4871/stream" type="audio/mpeg">
-        Браузърът не поддържа аудио.
-    </audio>
+      <!-- ПУБЛИЧЕН СТРИЙМ ЛИНК (само това трябва) -->
+      <!-- Ако сайтът ти е HTTPS, пробвай с https://. Ако не тръгне, смени на http:// -->
+      <div class="player">
+        <div style="font-size:13px;color:rgba(255,255,255,.8);">
+          Натисни „Пусни“ (браузърите често блокират автоплей със звук).
+        </div>
 
-    <p style="font-size:12px;color:#aaa;margin-top:10px;">
-        Излъчване чрез Winamp
-    </p>
-</div>
+        <audio id="radio" controls preload="none">
+          <source id="src1" src="https://uk25freenew.listen2myradio.com:4871/stream" type="audio/mpeg" />
+          Вашият браузър не поддържа HTML5 аудио.
+        </audio>
 
+        <div class="controls">
+          <button id="playBtn">▶️ Пусни</button>
+          <button class="secondary" id="stopBtn">⏹️ Спри</button>
+        </div>
+
+        <div class="row">
+          <div style="font-size:12px;color:rgba(255,255,255,.7);">Звук</div>
+          <div class="vol">
+            <input id="vol" type="range" min="0" max="100" value="80" />
+          </div>
+        </div>
+
+        <div class="err" id="errBox"></div>
+
+        <div class="hint">
+          ✅ Ако не тръгва: отвори директно стрийма в браузър:
+          <a class="link" href="https://uk25freenew.listen2myradio.com:4871/stream" target="_blank" rel="noopener">тест линк</a>.
+          <br />
+          ⚠️ Ако сайтът ти е HTTPS, а стриймът е само HTTP, може да се блокира. Тогава смени линка в кода на <b>http://</b>.
+        </div>
+
+        <div class="small">© Твоето радио • LIVE</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const audio = document.getElementById('radio');
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const vol = document.getElementById('vol');
+
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const errBox = document.getElementById('errBox');
+
+    function setOnline(isOnline){
+      if(isOnline){
+        statusDot.classList.add('on');
+        statusText.textContent = 'ON AIR';
+      }else{
+        statusDot.classList.remove('on');
+        statusText.textContent = 'OFFLINE';
+      }
+    }
+
+    function showError(msg){
+      errBox.style.display = 'block';
+      errBox.textContent = msg;
+    }
+    function clearError(){
+      errBox.style.display = 'none';
+      errBox.textContent = '';
+    }
+
+    // volume init
+    audio.volume = 0.8;
+    vol.addEventListener('input', () => {
+      audio.volume = Number(vol.value) / 100;
+    });
+
+    // Play (user gesture)
+    playBtn.addEventListener('click', async () => {
+      clearError();
+      try{
+        await audio.play();
+      }catch(e){
+        showError("Браузърът блокира пускането. Натисни Play от самия плеър или разреши autoplay за сайта.");
+      }
+    });
+
+    stopBtn.addEventListener('click', () => {
+      clearError();
+      audio.pause();
+      try { audio.currentTime = 0; } catch(e) {}
+      setOnline(false);
+    });
+
+    // Events for status
+    audio.addEventListener('playing', () => setOnline(true));
+    audio.addEventListener('pause', () => {
+      // ако е pause, не значи задължително offline, но за простота го показваме като offline
+      if(audio.paused) setOnline(false);
+    });
+    audio.addEventListener('waiting', () => {
+      // buffering
+      statusDot.classList.add('on');
+      statusText.textContent = 'BUFFERING…';
+    });
+    audio.addEventListener('error', () => {
+      setOnline(false);
+      showError(
+        "Грешка при зареждане на стрийма. " +
+        "1) Провери дали Winamp е Connected и има музика. " +
+        "2) Ако сайтът е HTTPS, пробвай да смениш стрийма на http:// (в source src=...)."
+      );
+    });
+
+    // start as OFFLINE
+    setOnline(false);
+  </script>
 </body>
 </html>
