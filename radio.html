@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>Моето Онлайн Радио</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #111, #222);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.radio-player {
+    background: #000;
+    border-radius: 20px;
+    padding: 25px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0,255,255,0.3);
+}
+
+.radio-player h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.status {
+    font-size: 14px;
+    color: #0f0;
+    margin-bottom: 15px;
+}
+
+audio {
+    width: 100%;
+    outline: none;
+}
+
+.footer {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="radio-player">
+    <h1>🎵 Моето Онлайн Радио</h1>
+    <div class="status">LIVE STREAM</div>
+
+    <audio controls autoplay>
+        <source src="http://37.157.242.103:4871/stream" type="audio/mpeg">
+        Вашият браузър не поддържа audio player.
+    </audio>
+
+    <div class="footer">
+        Излъчване чрез Winamp
+    </div>
+</div>
+
+</body>
+</html>
