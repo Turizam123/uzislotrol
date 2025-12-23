@@ -9,7 +9,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #111, #222);
+    background: #0b0b0b;
     color: #fff;
     display: flex;
     justify-content: center;
@@ -17,53 +17,46 @@ body {
     height: 100vh;
 }
 
-.radio-player {
-    background: #000;
-    border-radius: 20px;
-    padding: 25px;
+.player {
+    background: #111;
+    border-radius: 15px;
+    padding: 20px;
     width: 320px;
     text-align: center;
-    box-shadow: 0 0 30px rgba(0,255,255,0.3);
+    box-shadow: 0 0 20px rgba(0,255,0,0.4);
 }
 
-.radio-player h1 {
-    font-size: 22px;
+.player h1 {
+    font-size: 20px;
     margin-bottom: 10px;
 }
 
 .status {
+    color: #00ff00;
     font-size: 14px;
-    color: #0f0;
     margin-bottom: 15px;
 }
 
 audio {
     width: 100%;
-    outline: none;
-}
-
-.footer {
-    margin-top: 15px;
-    font-size: 12px;
-    color: #aaa;
 }
 </style>
 </head>
 
 <body>
 
-<div class="radio-player">
-    <h1>🎵 Моето Онлайн Радио</h1>
-    <div class="status">LIVE STREAM</div>
+<div class="player">
+    <h1>📻 LIVE RADIO</h1>
+    <div class="status">ON AIR</div>
 
-    <audio controls autoplay>
-        <source src="http://37.157.242.103:4871/stream" type="audio/mpeg">
-        Вашият браузър не поддържа audio player.
+    <audio controls>
+        <source src="http://uk25freenew.listen2myradio.com:4871/stream" type="audio/mpeg">
+        Браузърът не поддържа аудио.
     </audio>
 
-    <div class="footer">
+    <p style="font-size:12px;color:#aaa;margin-top:10px;">
         Излъчване чрез Winamp
-    </div>
+    </p>
 </div>
 
 </body>
