@@ -1,2 +1,0 @@
-# uzislotrol
-UZiRool
