@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <title>🎬 TikTok LIVE – Поздрави</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>🎬 TikTok LIVE – Поздрави</h1>
+  <p>Изпрати поздрав и го виж на екрана</p>
+</header>
+
+<main class="container">
+
+  <section class="card">
+    <h2>🔴 LIVE</h2>
+
+    <div class="controls">
+      <input id="tiktokLink" placeholder="Постави TikTok линк (Share → Copy link)">
+      <button onclick="applyLink()">Смени LIVE</button>
+    </div>
+
+    <div id="videoId">VIDEO_ID: —</div>
+
+    <div class="player">
+      <iframe id="player" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>💬 Поздрави</h2>
+
+    <div id="messages"></div>
+
+    <form onsubmit="sendGreeting(event)">
+      <input id="name" placeholder="Име (по желание)">
+      <textarea id="text" placeholder="Напиши поздрав…" required></textarea>
+      <button>✨ Изпрати</button>
+    </form>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
