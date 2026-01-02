@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <title>Поздрави на живо</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+  <section class="left">
+    <h1>🎥 TikTok LIVE</h1>
+
+    <div class="player">
+      <iframe
+        src="https://www.tiktok.com/player/v1/VIDEO_ID"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </section>
+
+  <section class="right">
+    <h2>💬 Поздрави в реално време</h2>
+
+    <div id="list" class="list"></div>
+
+    <form id="form" class="form">
+      <input id="name" placeholder="Име (по желание)">
+      <textarea id="text" placeholder="Напиши поздрав..." required></textarea>
+      <button>Изпрати</button>
+      <div id="status" class="status"></div>
+    </form>
+  </section>
+</div>
+
+<script src="client.js"></script>
+</body>
+</html>
