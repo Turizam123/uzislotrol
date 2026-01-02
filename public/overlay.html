@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+body {
+  background: transparent;
+  font-family: Arial;
+  color: white;
+}
+#last {
+  font-size: 32px;
+  padding: 20px;
+}
+</style>
+</head>
+<body>
+<div id="last"></div>
+
+<script>
+const el = document.getElementById("last");
+const wsProto = location.protocol === "https:" ? "wss" : "ws";
+const ws = new WebSocket(`${wsProto}://${location.host}`);
+
+ws.onmessage = e => {
+  const msg = JSON.parse(e.data);
+  if (msg.type === "new") {
+    el.textContent = `${msg.item.name}: ${msg.item.text}`;
+  }
+};
+</script>
+</body>
+</html>
