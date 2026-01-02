@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <title>🎉 Поздрави на живо</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="top">
+  <h1>🎬 TikTok LIVE – Поздрави в реално време</h1>
+  <p>Изпрати поздрав и го виж на живо в стрийма</p>
+</header>
+
+<main class="container">
+
+  <!-- LIVE -->
+  <section class="card live">
+    <h2>🔴 LIVE</h2>
+
+    <div class="live-controls">
+      <input id="tiktokLink" placeholder="Постави TikTok линк (Share → Copy link)">
+      <button id="applyLink">Смени LIVE</button>
+    </div>
+
+    <div id="vidBadge" class="badge">VIDEO_ID: —</div>
+
+    <div class="player">
+      <iframe id="ttFrame" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <!-- ПОЗДРАВИ -->
+  <section class="card greetings">
+    <h2>💬 Поздрави (след одобрение)</h2>
+
+    <div id="list" class="messages"></div>
+
+    <form id="form" class="send">
+      <input id="name" placeholder="Име (по желание)">
+      <textarea id="text" placeholder="Напиши поздрав…" required></textarea>
+      <button type="submit">✨ Изпрати поздрав</button>
+      <div id="status" class="status">Свързване…</div>
+    </form>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <span>📱 Сканирай QR кода на екрана, за да изпратиш поздрав от телефона</span>
+</footer>
+
+<script src="client.js"></script>
+</body>
+</html>
