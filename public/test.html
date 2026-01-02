@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TikTok LIVE – ТЕСТ</title>
+
+<style>
+/* ====== RESET ====== */
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* ====== THEME ====== */
+body{
+  min-height:100vh;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: radial-gradient(circle at top, #1b1f3b, #05060d);
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* ====== CARD ====== */
+.card{
+  width:95%;
+  max-width:1100px;
+  background:linear-gradient(180deg,#151a2f,#0c1020);
+  border-radius:24px;
+  box-shadow:0 30px 80px rgba(0,0,0,.7);
+  padding:24px;
+}
+
+/* ====== HEADER ====== */
+.header{
+  text-align:center;
+  margin-bottom:20px;
+}
+.header h1{
+  font-size:28px;
+  font-weight:800;
+}
+.header p{
+  color:#b8c0ff;
+  margin-top:6px;
+}
+
+/* ====== GRID ====== */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+}
+
+/* ====== LIVE ====== */
+.live{
+  background:#0a0d1f;
+  border-radius:20px;
+  padding:16px;
+}
+.live h2{
+  margin-bottom:10px;
+}
+.player{
+  aspect-ratio:9/16;
+  background:black;
+  border-radius:16px;
+  overflow:hidden;
+  border:2px solid #ff2c55;
+}
+.player iframe{
+  width:100%;
+  height:100%;
+  border:0;
+}
+
+/* ====== FORM ====== */
+.form{
+  background:#0a0d1f;
+  border-radius:20px;
+  padding:16px;
+}
+.form h2{margin-bottom:10px}
+input,textarea{
+  width:100%;
+  background:#11163a;
+  border:none;
+  border-radius:14px;
+  padding:12px;
+  color:white;
+  margin-bottom:10px;
+  font-size:14px;
+}
+textarea{min-height:90px}
+button{
+  width:100%;
+  background:linear-gradient(135deg,#ff2c55,#00f2ea);
+  border:none;
+  padding:14px;
+  border-radius:16px;
+  font-weight:800;
+  cursor:pointer;
+  color:black;
+  font-size:16px;
+}
+
+/* ====== FAKE MESSAGE ====== */
+.msg{
+  margin-top:14px;
+  padding:12px;
+  border-radius:14px;
+  background:#12174a;
+  animation:pop .3s ease;
+}
+@keyframes pop{
+  from{transform:scale(.95);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="header">
+    <h1>🎬 TikTok LIVE – Поздрави</h1>
+    <p>ТЕСТ СТРАНИЦА (ако това е красиво → проблемът НЕ е в дизайна)</p>
+  </div>
+
+  <div class="grid">
+
+    <div class="live">
+      <h2>🔴 LIVE</h2>
+      <div class="player">
+        <iframe src="https://www.tiktok.com/player/v1/7263498123456789012" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="form">
+      <h2>💬 Изпрати поздрав</h2>
+      <input placeholder="Име (по желание)">
+      <textarea placeholder="Напиши поздрав…"></textarea>
+      <button>✨ Изпрати</button>
+
+      <div class="msg">
+        <strong>Мария:</strong> Честит рожден ден! 🎉
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
