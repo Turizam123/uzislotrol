@@ -2,43 +2,53 @@
 <html lang="bg">
 <head>
   <meta charset="utf-8">
-  <title>🎬 TikTok LIVE – Поздрави</title>
+  <title>🔥 TikTok LIVE – Поздрави</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<header>
-  <h1>🎬 TikTok LIVE – Поздрави</h1>
-  <p>Изпрати поздрав и го виж на екрана</p>
+<div class="bg-glow"></div>
+
+<header class="hero">
+  <h1>🔥 TikTok LIVE</h1>
+  <p>Поздрави в реално време • Streaming Wall</p>
 </header>
 
-<main class="container">
+<main class="layout">
 
-  <section class="card">
-    <h2>🔴 LIVE</h2>
+  <!-- LIVE CARD -->
+  <section class="card live-card">
+    <div class="card-header">
+      <span class="dot"></span>
+      <h2>LIVE STREAM</h2>
+    </div>
 
     <div class="controls">
       <input id="tiktokLink" placeholder="Постави TikTok линк (Share → Copy link)">
       <button onclick="applyLink()">Смени LIVE</button>
     </div>
 
-    <div id="videoId">VIDEO_ID: —</div>
+    <div id="videoId" class="video-id">VIDEO_ID: —</div>
 
-    <div class="player">
+    <div class="player-frame">
       <iframe id="player" allowfullscreen></iframe>
     </div>
   </section>
 
-  <section class="card">
-    <h2>💬 Поздрави</h2>
+  <!-- GREETINGS -->
+  <section class="card chat-card">
+    <div class="card-header">
+      <h2>💬 Поздрави</h2>
+    </div>
 
-    <div id="messages"></div>
+    <div id="messages" class="messages"></div>
 
-    <form onsubmit="sendGreeting(event)">
+    <form class="send" onsubmit="sendGreeting(event)">
       <input id="name" placeholder="Име (по желание)">
       <textarea id="text" placeholder="Напиши поздрав…" required></textarea>
-      <button>✨ Изпрати</button>
+      <button>✨ Изпрати поздрав</button>
     </form>
   </section>
 
