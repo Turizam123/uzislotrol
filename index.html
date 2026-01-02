@@ -1,61 +1,58 @@
 <!doctype html>
 <html lang="bg">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Поздрави на живо</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- QR генератор (малък и стабилен) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <meta charset="utf-8">
+  <title>🎉 Поздрави на живо</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="wrap">
-    <section class="card">
-      <h1>🎥 TikTok LIVE</h1>
 
-      <div class="row">
-        <div style="flex:1;min-width:260px">
-          <input id="tiktokLink" placeholder="Постави TikTok линк (Share → Copy link)" />
-          <div class="small">Сайтът сам вади VIDEO ID и го запомня на това устройство.</div>
-        </div>
-        <div style="display:flex;gap:10px;align-items:flex-start">
-          <button id="applyLink" class="secondary" type="button">Смени LIVE</button>
-          <span id="vidBadge" class="badge">VIDEO_ID: —</span>
-        </div>
-      </div>
+<header class="top">
+  <h1>🎬 TikTok LIVE – Поздрави в реално време</h1>
+  <p>Изпрати поздрав и го виж на живо в стрийма</p>
+</header>
 
-      <hr />
+<main class="container">
 
-      <div class="player">
-        <iframe id="ttFrame" src="" allowfullscreen></iframe>
-      </div>
+  <!-- LIVE -->
+  <section class="card live">
+    <h2>🔴 LIVE</h2>
 
-      <hr />
+    <div class="live-controls">
+      <input id="tiktokLink" placeholder="Постави TikTok линк (Share → Copy link)">
+      <button id="applyLink">Смени LIVE</button>
+    </div>
 
-      <div class="qrBox">
-        <div class="qr" id="qr"></div>
-        <div>
-          <div class="qrNote">📱 Сканирай, за да отвориш формата на телефона.</div>
-          <div class="small" id="qrLink"></div>
-        </div>
-      </div>
-    </section>
+    <div id="vidBadge" class="badge">VIDEO_ID: —</div>
 
-    <section class="card">
-      <h2>💬 Поздрави (след одобрение)</h2>
-      <div id="list" class="list"></div>
+    <div class="player">
+      <iframe id="ttFrame" allowfullscreen></iframe>
+    </div>
+  </section>
 
-      <hr />
+  <!-- ПОЗДРАВИ -->
+  <section class="card greetings">
+    <h2>💬 Поздрави (след одобрение)</h2>
 
-      <form id="form">
-        <input id="name" maxlength="40" placeholder="Име (по желание)" />
-        <textarea id="text" maxlength="200" placeholder="Напиши поздрав..." required></textarea>
-        <button type="submit">Изпрати за одобрение</button>
-        <div id="status" class="status">Свързване…</div>
-      </form>
-    </section>
-  </div>
+    <div id="list" class="messages"></div>
 
-  <script src="client.js"></script>
+    <form id="form" class="send">
+      <input id="name" placeholder="Име (по желание)">
+      <textarea id="text" placeholder="Напиши поздрав…" required></textarea>
+      <button type="submit">✨ Изпрати поздрав</button>
+      <div id="status" class="status">Свързване…</div>
+    </form>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <span>📱 Сканирай QR кода на екрана, за да изпратиш поздрав от телефона</span>
+</footer>
+
+<script src="client.js"></script>
 </body>
 </html>
