@@ -1,33 +1,71 @@
 <!doctype html>
-<html>
+<html lang="bg">
 <head>
-<meta charset="utf-8">
-<style>
-body {
-  background: transparent;
-  font-family: Arial;
-  color: white;
-}
-#last {
-  font-size: 32px;
-  padding: 20px;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OBS Overlay</title>
+  <style>
+    body{margin:0;background:transparent;font-family:system-ui,Segoe UI,Roboto,Arial}
+    .wrap{position:fixed;left:30px;bottom:30px;max-width:900px}
+    .toast{
+      display:inline-block;
+      background:rgba(18,26,39,.92);
+      color:#fff;
+      padding:16px 18px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 12px 40px rgba(0,0,0,.35);
+      transform: translateY(20px);
+      opacity:0;
+      animation: in 420ms ease forwards;
+      font-size:28px;
+      line-height:1.2;
+      backdrop-filter: blur(6px);
+    }
+    .name{font-weight:900}
+    .sep{opacity:.6;margin:0 10px}
+    .out{animation: out 420ms ease forwards}
+    @keyframes in{
+      from{transform:translateY(24px) scale(.98);opacity:0}
+      to{transform:translateY(0) scale(1);opacity:1}
+    }
+    @keyframes out{
+      from{transform:translateY(0) scale(1);opacity:1}
+      to{transform:translateY(18px) scale(.98);opacity:0}
+    }
+  </style>
 </head>
 <body>
-<div id="last"></div>
+  <div class="wrap" id="wrap"></div>
 
 <script>
-const el = document.getElementById("last");
-const wsProto = location.protocol === "https:" ? "wss" : "ws";
-const ws = new WebSocket(`${wsProto}://${location.host}`);
+  const wrap = document.getElementById("wrap");
 
-ws.onmessage = e => {
-  const msg = JSON.parse(e.data);
-  if (msg.type === "new") {
-    el.textContent = `${msg.item.name}: ${msg.item.text}`;
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
   }
-};
+
+  function show(item){
+    wrap.innerHTML = "";
+    const div = document.createElement("div");
+    div.className = "toast";
+    div.innerHTML = `<span class="name">${esc(item.name)}</span><span class="sep">•</span>${esc(item.text)}`;
+    wrap.appendChild(div);
+
+    // стои 6 секунди, после изчезва
+    setTimeout(() => div.classList.add("out"), 6000);
+    setTimeout(() => { if (div.parentNode) div.remove(); }, 6500);
+  }
+
+  const wsProto = location.protocol === "https:" ? "wss" : "ws";
+  const ws = new WebSocket(`${wsProto}://${location.host}`);
+
+  ws.addEventListener("message", (ev) => {
+    const msg = JSON.parse(ev.data);
+    if (msg.type === "approved_new") show(msg.item);
+  });
 </script>
 </body>
 </html>
