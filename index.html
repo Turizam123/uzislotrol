@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Premium IT Услуги | Изработка на сайт • Поддръжка • Интеграции</title>
+  <meta name="description" content="Луксозен сайт за поръчка на IT услуги: изработка на сайт, поддръжка, SEO, оптимизация и интеграции. Всичко в евро." />
+  <style>
+    :root{
+      --bg:#07080b;
+      --card:#0e1016;
+      --muted:#a8b0c2;
+      --text:#eef2ff;
+      --line:rgba(255,255,255,.08);
+      --gold1:#f7d77a;
+      --gold2:#b58b2a;
+      --accent:#7c5cff;
+      --ok:#3ddc97;
+      --shadow: 0 18px 45px rgba(0,0,0,.55);
+      --radius: 18px;
+      --radius2: 28px;
+      --max: 1140px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 15% 10%, rgba(124,92,255,.22), transparent 60%),
+        radial-gradient(900px 600px at 80% 15%, rgba(247,215,122,.18), transparent 55%),
+        radial-gradient(900px 600px at 70% 90%, rgba(61,220,151,.10), transparent 55%),
+        var(--bg);
+      overflow-x:hidden;
+    }
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:var(--max); margin:0 auto; padding:0 18px}
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(14px);
+      background: rgba(7,8,11,.65);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+      gap:14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; font-weight:700;
+      letter-spacing:.3px;
+    }
+    .logo{
+      width:34px; height:34px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(247,215,122,.95), rgba(124,92,255,.95));
+      box-shadow: 0 10px 30px rgba(124,92,255,.25);
+      position:relative;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:7px;
+      border-radius:10px;
+      background: linear-gradient(135deg, rgba(0,0,0,.3), rgba(255,255,255,.08));
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .menu{
+      display:flex; gap:16px; align-items:center;
+      color:var(--muted);
+      font-weight:600; font-size:14px;
+    }
+    .menu a{padding:8px 10px; border-radius:12px}
+    .menu a:hover{background:rgba(255,255,255,.06); color:var(--text)}
+    .cta{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+    .btn{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:14px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.10)}
+    .btn.primary{
+      border-color: rgba(247,215,122,.35);
+      background: linear-gradient(135deg, rgba(247,215,122,.95), rgba(181,139,42,.9));
+      color:#1b1406;
+      box-shadow: 0 14px 35px rgba(247,215,122,.18);
+    }
+    .btn.primary:hover{filter:saturate(1.02); transform: translateY(-1px)}
+    .hero{
+      padding: 62px 0 22px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 24px;
+      align-items:stretch;
+    }
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
+    }
+    .pill b{color:var(--text)}
+    h1{
+      margin:14px 0 10px;
+      font-size: clamp(30px, 4vw, 52px);
+      line-height:1.05;
+      letter-spacing:-.8px;
+    }
+    .grad{
+      background: linear-gradient(90deg, rgba(247,215,122,.95), rgba(124,92,255,.95));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .lead{
+      margin: 12px 0 18px;
+      color: var(--muted);
+      font-size: 16.5px;
+      line-height:1.55;
+      max-width: 54ch;
+    }
+    .trust{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top:16px;
+    }
+    .chip{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-weight:700;
+      font-size:13px;
+    }
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .panel:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(600px 220px at 25% 0%, rgba(247,215,122,.14), transparent 55%),
+                  radial-gradient(520px 220px at 85% 20%, rgba(124,92,255,.16), transparent 55%);
+      pointer-events:none;
+    }
+    .panel > *{position:relative}
+    .quote{
+      color:var(--muted);
+      line-height:1.6;
+      font-weight:600;
+      margin:0;
+    }
+    .mini{
+      display:grid; gap:12px;
+      margin-top:14px;
+    }
+    .mini .row{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+    }
+    .mini .row b{font-size:14px}
+    .mini .row span{color:var(--muted); font-weight:700; font-size:13px}
+    section{padding: 34px 0}
+    .sec-title{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap:12px; margin-bottom:14px;
+    }
+    .sec-title h2{
+      margin:0;
+      font-size: 24px;
+      letter-spacing:-.3px;
+    }
+    .sec-title p{
+      margin:0;
+      color:var(--muted);
+      font-weight:600;
+      max-width:60ch;
+      line-height:1.5;
+      font-size:14px;
+    }
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .card{
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.35);
+      transition:.18s ease;
+    }
+    .card:hover{transform: translateY(-2px); background: rgba(255,255,255,.07)}
+    .card h3{margin:0 0 8px; font-size:16px}
+    .card p{margin:0; color:var(--muted); line-height:1.55; font-weight:600; font-size:14px}
+    .price{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap:12px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.10);
+    }
+    .price b{font-size:20px}
+    .badge{
+      font-weight:800;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(247,215,122,.30);
+      background: rgba(247,215,122,.12);
+      color: var(--gold1);
+      letter-spacing:.3px;
+    }
+
+    .steps{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .step{
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      padding: 14px;
+    }
+    .step b{display:block; margin-bottom:6px}
+    .step span{color:var(--muted); font-weight:600; font-size:14px; line-height:1.5}
+    .num{
+      width:30px; height:30px; border-radius:12px;
+      display:grid; place-items:center;
+      background: rgba(124,92,255,.18);
+      border:1px solid rgba(124,92,255,.25);
+      margin-bottom:10px;
+      font-weight:900;
+    }
+    .form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    label{display:block; font-weight:800; font-size:13px; margin-bottom:6px}
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      color: var(--text);
+      outline:none;
+      font-weight:650;
+    }
+    textarea{min-height:120px; resize:vertical}
+    .full{grid-column: 1 / -1}
+    .hint{color:var(--muted); font-size:12.5px; font-weight:600; margin-top:6px}
+    .foot{
+      border-top:1px solid var(--line);
+      padding: 24px 0;
+      color: var(--muted);
+      font-weight:600;
+      font-size: 13px;
+    }
+    .rowflex{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .ok{color:var(--ok); font-weight:900}
+    .hide-mobile{display:block}
+
+    @media (max-width: 980px){
+      .hero-grid{grid-template-columns:1fr; }
+      .grid3{grid-template-columns:1fr; }
+      .steps{grid-template-columns:1fr 1fr;}
+      .form{grid-template-columns:1fr;}
+      .hide-mobile{display:none}
+      .menu{display:none}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="wrap">
+      <div class="nav">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <div style="font-size:14px; opacity:.95;">Luxury IT Services</div>
+            <div style="font-size:12px; color:var(--muted); font-weight:700;">Поръчка на услуги • Всичко в €</div>
+          </div>
+        </div>
+
+        <nav class="menu">
+          <a href="#services">Услуги</a>
+          <a href="#pricing">Цени</a>
+          <a href="#process">Процес</a>
+          <a href="#order">Поръчай</a>
+        </nav>
+
+        <div class="cta">
+          <a class="btn" href="#pricing">Виж пакетите</a>
+          <a class="btn primary" href="#order">Поръчай</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="pill">⭐ <b>Premium</b> изработка на сайтове • поддръжка • интеграции</div>
+          <h1>Луксозен сайт за <span class="grad">поръчка на IT услуги</span>, който продава.</h1>
+          <p class="lead">
+            Елегантен дизайн, ясни пакети в евро и бърза поръчка. Подходящ за агенция или фрийланс бранд – с фокус върху доверие, качество и конверсия.
+          </p>
+
+          <div class="rowflex">
+            <a class="btn primary" href="#order">Поръчай услуга</a>
+            <a class="btn" href="#services">Разгледай услугите</a>
+            <span class="chip hide-mobile">⚡ Отговор до 24ч</span>
+            <span class="chip hide-mobile">🔒 Сигурност & Backups</span>
+          </div>
+
+          <div class="trust">
+            <span class="chip">✅ GDPR-приятелски</span>
+            <span class="chip">✅ Мобилен дизайн</span>
+            <span class="chip">✅ SEO основа</span>
+            <span class="chip">✅ Плащания/CRM при нужда</span>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <p class="quote">
+            „Работим като бутиково студио: качество, скорост и перфектен детайл.
+            Кажи какво ти трябва – ще получиш точна оферта в €.“
+          </p>
+
+          <div class="mini">
+            <div class="row">
+              <div><b>Стартова цена сайт</b><div class="hint">Landing / 1 страница</div></div>
+              <span><b>€790</b></span>
+            </div>
+            <div class="row">
+              <div><b>Поддръжка</b><div class="hint">месечно</div></div>
+              <span><b>от €59</b></span>
+            </div>
+            <div class="row">
+              <div><b>Срок</b><div class="hint">според пакет</div></div>
+              <span><b>7–21 дни</b></span>
+            </div>
+          </div>
+
+          <div style="margin-top:14px" class="rowflex">
+            <span class="ok">●</span><span class="hint" style="margin:0">Свободни слотове тази седмица (пример)</span>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section id="services">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Услуги</h2>
+        <p>Избираш услуга, пакет и срок — попълваш формата — получаваш отговор с детайли и план.</p>
+      </div>
+
+      <div class="grid3">
+        <div class="card">
+          <h3>Изработка на сайт</h3>
+          <p>Landing, корпоративен сайт, премиум бранд сайт, оптимизация за конверсии и мобилни устройства.</p>
+          <div class="price"><b>€790+</b><span class="badge">Most requested</span></div>
+        </div>
+        <div class="card">
+          <h3>Поддръжка и сигурност</h3>
+          <p>Ъпдейти, бекъпи, мониторинг, защита, малки промени и приоритетна реакция.</p>
+          <div class="price"><b>€59/мес+</b><span class="badge">Care</span></div>
+        </div>
+        <div class="card">
+          <h3>Интеграции и подобрения</h3>
+          <p>Форми, CRM, плащания, автоматизации, оптимизация на скорост и SEO подобрения.</p>
+          <div class="price"><b>€90+</b><span class="badge">Boost</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Пакети и цени (EUR)</h2>
+        <p>Прозрачен ценоразпис. Ако проектът е по-голям — ще направим персонална оферта.</p>
+      </div>
+
+      <div class="grid3">
+        <div class="card">
+          <h3>Starter Site</h3>
+          <p>Landing (1 страница), мобилна версия, базово SEO, контактна форма.</p>
+          <div class="price"><b>€790</b><span class="badge">7–10 дни</span></div>
+        </div>
+
+        <div class="card">
+          <h3>Business Website</h3>
+          <p>До 6 страници, SEO основа, блог/новини, оптимизация на скорост.</p>
+          <div class="price"><b>€1,490</b><span class="badge">10–14 дни</span></div>
+        </div>
+
+        <div class="card">
+          <h3>Premium Brand</h3>
+          <p>Дизайн по бранд, до 12 страници, премиум UX, анимации, performance пакет.</p>
+          <div class="price"><b>€2,900</b><span class="badge">14–21 дни</span></div>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="grid3">
+        <div class="card">
+          <h3>Care Basic</h3>
+          <p>Ъпдейти, бекъп, мониторинг.</p>
+          <div class="price"><b>€59/мес</b><span class="badge">Monthly</span></div>
+        </div>
+
+        <div class="card">
+          <h3>Care Pro</h3>
+          <p>Basic + малки промени до 2ч/мес + приоритет.</p>
+          <div class="price"><b>€129/мес</b><span class="badge">Popular</span></div>
+        </div>
+
+        <div class="card">
+          <h3>Care Elite</h3>
+          <p>Pro + до 6ч/мес + performance & security hardening.</p>
+          <div class="price"><b>€249/мес</b><span class="badge">VIP</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="process">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Как работим</h2>
+        <p>Кратък процес, ясни етапи, без хаос.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <b>Заявка</b>
+          <span>Избираш пакет и описваш целта/срока.</span>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <b>Оферта</b>
+          <span>Връщаме се с точна цена в € и план.</span>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <b>Дизайн + разработка</b>
+          <span>Изпипваме визия, UX и скорост.</span>
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <b>Пускане + поддръжка</b>
+          <span>Публикуване, оптимизация и грижа.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="order">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Поръчай услуга</h2>
+        <p>Попълни формата. Ще отговорим с оферта и въпроси за уточнение.</p>
+      </div>
+
+      <div class="panel">
+        <!-- FORM: Replace YOUR_EMAIL with your receiving email or your endpoint -->
+        <form class="form" action="https://formsubmit.co/YOUR_EMAIL" method="POST">
+          <input type="hidden" name="_subject" value="Нова поръчка за IT услуга (EUR)">
+          <input type="hidden" name="_captcha" value="false">
+
+          <div>
+            <label>Име / Компания</label>
+            <input name="name" required placeholder="Напр. Ivan Petrov / ABC Ltd." />
+          </div>
+
+          <div>
+            <label>Имейл</label>
+            <input type="email" name="email" required placeholder="name@domain.com" />
+          </div>
+
+          <div>
+            <label>Услуга</label>
+            <select name="service" required>
+              <option value="">Избери…</option>
+              <option>Изработка на сайт</option>
+              <option>Поддръжка</option>
+              <option>SEO / Оптимизация</option>
+              <option>Интеграции (CRM/плащания/форми)</option>
+              <option>Консултация</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Пакет / Бюджет (EUR)</label>
+            <select name="budget" required>
+              <option value="">Избери…</option>
+              <option>€790 – Starter Site</option>
+              <option>€1,490 – Business Website</option>
+              <option>€2,900 – Premium Brand</option>
+              <option>€59/мес – Care Basic</option>
+              <option>€129/мес – Care Pro</option>
+              <option>€249/мес – Care Elite</option>
+              <option>Персонална оферта</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Срок</label>
+            <select name="deadline" required>
+              <option value="">Избери…</option>
+              <option>До 7 дни</option>
+              <option>До 14 дни</option>
+              <option>До 21 дни</option>
+              <option>Няма спешност</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Телефон (по избор)</label>
+            <input name="phone" placeholder="+359..." />
+          </div>
+
+          <div class="full">
+            <label>Описание</label>
+            <textarea name="details" required placeholder="Какво точно ти трябва? Пример: сайт за услуги, 5 страници, форма за запитване, 2 езика, примери за дизайн..."></textarea>
+            <div class="hint">Ще върнем отговор с конкретни въпроси и стъпки.</div>
+          </div>
+
+          <div class="full rowflex" style="justify-content:space-between;">
+            <span class="hint" style="margin:0">* Цените са в EUR и са ориентировъчни при стандартен обхват.</span>
+            <button class="btn primary" type="submit">Изпрати поръчка</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap">
+      <div class="rowflex" style="justify-content:space-between">
+        <div>© <span id="y"></span> Luxury IT Services • Всички права запазени</div>
+        <div class="rowflex">
+          <a href="#order" class="btn">Контакт</a>
+          <a href="#" class="btn">Terms</a>
+          <a href="#" class="btn">Privacy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+
+    // UX: auto-scroll to order when clicking "Поръчай" links
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener("click",(e)=>{
+        const id = a.getAttribute("href");
+        if(!id || id === "#") return;
+        const el = document.querySelector(id);
+        if(el){ e.preventDefault(); el.scrollIntoView({behavior:"smooth"}); }
+      });
+    });
+  </script>
+</body>
+</html>
