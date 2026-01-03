@@ -1,59 +1,139 @@
 <!doctype html>
 <html lang="bg">
 <head>
-  <meta charset="utf-8">
-  <title>🔥 TikTok LIVE – Поздрави</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LIVE Поздрави</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
-<body>
+<body class="bg">
+  <div class="noise"></div>
 
-<div class="bg-glow"></div>
-
-<header class="hero">
-  <h1>🔥 TikTok LIVE</h1>
-  <p>Поздрави в реално време • Streaming Wall</p>
-</header>
-
-<main class="layout">
-
-  <!-- LIVE CARD -->
-  <section class="card live-card">
-    <div class="card-header">
-      <span class="dot"></span>
-      <h2>LIVE STREAM</h2>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">★</div>
+      <div class="brandText">
+        <div class="brandTitle">LIVE Поздрави</div>
+        <div class="brandSub">Пиши поздрав • Одобрение • OBS Overlay</div>
+      </div>
     </div>
+    <nav class="topActions">
+      <a class="btn ghost" href="admin.html">Админ</a>
+      <a class="btn" href="send.html">Напиши поздрав</a>
+    </nav>
+  </header>
 
-    <div class="controls">
-      <input id="tiktokLink" placeholder="Постави TikTok линк (Share → Copy link)">
-      <button onclick="applyLink()">Смени LIVE</button>
-    </div>
+  <main class="container">
+    <section class="hero card">
+      <div class="heroLeft">
+        <h1>Поздрави в реално време за стрийм 🎥</h1>
+        <p class="muted">
+          Хората пращат поздрави от телефона, ти ги одобряваш, а OBS overlay ги показва с анимации.
+        </p>
 
-    <div id="videoId" class="video-id">VIDEO_ID: —</div>
+        <div class="heroStats">
+          <div class="stat">
+            <div class="statNum" id="statPending">0</div>
+            <div class="statLbl">чакащи</div>
+          </div>
+          <div class="stat">
+            <div class="statNum" id="statApproved">0</div>
+            <div class="statLbl">одобрени</div>
+          </div>
+          <div class="stat">
+            <div class="statNum" id="statShown">0</div>
+            <div class="statLbl">показани</div>
+          </div>
+        </div>
 
-    <div class="player-frame">
-      <iframe id="player" allowfullscreen></iframe>
-    </div>
-  </section>
+        <div class="heroButtons">
+          <a class="btn" href="send.html">✨ Прати поздрав</a>
+          <a class="btn ghost" href="overlay.html" target="_blank" rel="noopener">🎬 Отвори OBS Overlay</a>
+        </div>
 
-  <!-- GREETINGS -->
-  <section class="card chat-card">
-    <div class="card-header">
-      <h2>💬 Поздрави</h2>
-    </div>
+        <div class="miniCard">
+          <div class="miniTitle">TikTok LIVE линк</div>
+          <div class="miniRow">
+            <div class="chip" id="tiktokLinkText">—</div>
+            <button class="btn tiny ghost" id="copyTiktok">Копирай</button>
+          </div>
+          <div class="hint">Сменя се от админ панела.</div>
+        </div>
+      </div>
 
-    <div id="messages" class="messages"></div>
+      <div class="heroRight">
+        <div class="qrCard">
+          <div class="qrTitle">📱 QR към формата</div>
+          <div id="qrcode" class="qrBox"></div>
+          <div class="qrUrl" id="qrUrl">—</div>
+          <div class="hint">Сканирай и прати поздрав за секунди.</div>
+        </div>
 
-    <form class="send" onsubmit="sendGreeting(event)">
-      <input id="name" placeholder="Име (по желание)">
-      <textarea id="text" placeholder="Напиши поздрав…" required></textarea>
-      <button>✨ Изпрати поздрав</button>
-    </form>
-  </section>
+        <div class="liveCard">
+          <div class="liveTitle">Последни одобрени</div>
+          <div id="latestList" class="list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-</main>
+  <!-- QRCode library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-<script src="script.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/shared.js"></script>
+  <script>
+    (function(){
+      const sendUrl = new URL('send.html', location.href).toString();
+      document.getElementById('qrUrl').textContent = sendUrl;
+      new QRCode(document.getElementById("qrcode"), {
+        text: sendUrl,
+        width: 176,
+        height: 176
+      });
+
+      function render(){
+        const data = AppStore.getAll();
+        const pending = data.filter(x=>!x.approved).length;
+        const approved = data.filter(x=>x.approved).length;
+        const shown = data.filter(x=>x.approved && x.shown).length;
+
+        document.getElementById('statPending').textContent = pending;
+        document.getElementById('statApproved').textContent = approved;
+        document.getElementById('statShown').textContent = shown;
+
+        const link = AppStore.getTikTokLink();
+        document.getElementById('tiktokLinkText').textContent = link || '—';
+
+        const latest = data
+          .filter(x=>x.approved)
+          .sort((a,b)=>b.createdAt-a.createdAt)
+          .slice(0,5);
+
+        const wrap = document.getElementById('latestList');
+        wrap.innerHTML = latest.length ? "" : `<div class="empty">Няма одобрени поздрави още.</div>`;
+        latest.forEach(m=>{
+          const el = document.createElement('div');
+          el.className = 'msgRow';
+          el.innerHTML = `
+            <div class="msgName">${escapeHtml(m.name)}</div>
+            <div class="msgText">${escapeHtml(m.text)}</div>
+            <div class="msgMeta">${fmtTime(m.createdAt)}</div>
+          `;
+          wrap.appendChild(el);
+        });
+      }
+
+      document.getElementById('copyTiktok').addEventListener('click', async ()=>{
+        const link = AppStore.getTikTokLink();
+        if(!link) return toast("Няма зададен линк.", "warn");
+        try { await navigator.clipboard.writeText(link); toast("Копирано ✅"); }
+        catch { toast("Не успях да копирам.", "warn"); }
+      });
+
+      render();
+      setInterval(render, 800);
+    })();
+  </script>
 </body>
 </html>
