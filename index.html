@@ -1,484 +1,485 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>UZi Sait — Premium IT Studio</title>
-<meta name="description" content="UZi Sait — premium IT студио. Luxury дизайн, story-mode презентация, оферта по имейл, Viber чат, цени в EUR." />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UZi Sait • Premium IT Services (EUR)</title>
+  <meta name="description" content="UZi Sait — луксозен сайт за поръчка на IT услуги: изработка на сайт, поддръжка, SEO, оптимизация и интеграции. Всичко в евро." />
 
-<style>
-  :root{
-    --bg:#05060a;
-    --ink:#eef1ff;
-    --muted:#9aa3b2;
-    --line:rgba(255,255,255,.10);
-    --glass: rgba(255,255,255,.06);
-    --glass2: rgba(255,255,255,.04);
-    --shadow: 0 18px 55px rgba(0,0,0,.58);
+  <style>
+    :root{
+      --bg:#06070a;
+      --ink:#eef1ff;
+      --muted:#a8b0c2;
+      --line:rgba(255,255,255,.10);
+      --glass: rgba(255,255,255,.06);
+      --glass2: rgba(255,255,255,.04);
+      --shadow: 0 18px 55px rgba(0,0,0,.58);
 
-    --gold:#f7d77a;
-    --gold2:#b58b2a;
-    --vio:#7c5cff;
-    --mint:#3ddc97;
-    --danger:#ff4d6d;
+      --gold:#f7d77a;
+      --gold2:#b58b2a;
+      --vio:#7c5cff;
+      --mint:#3ddc97;
+      --danger:#ff4d6d;
 
-    --r14:14px;
-    --r18:18px;
-    --r24:24px;
+      --r14:14px;
+      --r18:18px;
+      --r24:24px;
+      --max: 1180px;
+    }
 
-    --max: 1120px;
-  }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background: var(--bg);
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    button, input, select, textarea{font:inherit}
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    color:var(--ink);
-    background: var(--bg);
-    overflow-x:hidden;
-  }
-  a{color:inherit;text-decoration:none}
-  button, input, select, textarea{font:inherit}
+    /* ===== Lux animated backdrop ===== */
+    .backdrop{
+      position:fixed; inset:0; z-index:-2;
+      background:
+        radial-gradient(1200px 700px at 15% 10%, rgba(124,92,255,.22), transparent 60%),
+        radial-gradient(1100px 650px at 80% 15%, rgba(247,215,122,.18), transparent 55%),
+        radial-gradient(900px 600px at 70% 90%, rgba(61,220,151,.10), transparent 55%),
+        radial-gradient(800px 500px at 20% 90%, rgba(255,77,109,.08), transparent 55%),
+        var(--bg);
+    }
+    .noise{
+      position:fixed; inset:-20%;
+      z-index:-1;
+      pointer-events:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      opacity:.22;
+      transform: rotate(3deg);
+    }
+    .orb{
+      position:fixed; width:520px; height:520px; border-radius:50%;
+      filter: blur(30px);
+      opacity:.14;
+      z-index:-1;
+      animation: drift 14s ease-in-out infinite alternate;
+      pointer-events:none;
+      background: radial-gradient(circle at 30% 30%, rgba(247,215,122,.95), transparent 55%),
+                  radial-gradient(circle at 70% 60%, rgba(124,92,255,.95), transparent 55%);
+      left:-120px; top: 90px;
+    }
+    .orb.two{
+      width:620px;height:620px; left:auto; right:-180px; top:auto; bottom:-160px;
+      background: radial-gradient(circle at 30% 30%, rgba(61,220,151,.95), transparent 55%),
+                  radial-gradient(circle at 70% 60%, rgba(124,92,255,.95), transparent 55%);
+      animation-duration: 16s;
+    }
+    @keyframes drift{
+      from{transform: translate3d(0,0,0) scale(1)}
+      to{transform: translate3d(60px, -30px, 0) scale(1.06)}
+    }
 
-  /* ===== Animated backdrop ===== */
-  .backdrop{
-    position:fixed; inset:0; z-index:-3;
-    background:
-      radial-gradient(1100px 650px at 18% 12%, rgba(124,92,255,.25), transparent 60%),
-      radial-gradient(1000px 620px at 82% 18%, rgba(247,215,122,.18), transparent 55%),
-      radial-gradient(900px 600px at 70% 90%, rgba(61,220,151,.10), transparent 55%),
-      radial-gradient(900px 500px at 20% 92%, rgba(255,77,109,.07), transparent 55%),
-      var(--bg);
-  }
-  .noise{
-    position:fixed; inset:-20%;
-    z-index:-2;
-    pointer-events:none;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
-    mix-blend-mode: overlay;
-    opacity:.20;
-    transform: rotate(2deg);
-  }
-  .orb{
-    position:fixed; width:520px; height:520px; border-radius:50%;
-    filter: blur(32px);
-    opacity:.14;
-    z-index:-1;
-    pointer-events:none;
-    animation: drift 14s ease-in-out infinite alternate;
-    background: radial-gradient(circle at 30% 30%, rgba(247,215,122,.95), transparent 55%),
-                radial-gradient(circle at 70% 60%, rgba(124,92,255,.95), transparent 55%);
-    left:-140px; top: 100px;
-  }
-  .orb.two{
-    width:650px;height:650px; left:auto; right:-220px; top:auto; bottom:-220px;
-    background: radial-gradient(circle at 30% 30%, rgba(61,220,151,.95), transparent 55%),
-                radial-gradient(circle at 70% 60%, rgba(124,92,255,.95), transparent 55%);
-    animation-duration: 16s;
-  }
-  @keyframes drift{
-    from{transform: translate3d(0,0,0) scale(1)}
-    to{transform: translate3d(70px,-35px,0) scale(1.08)}
-  }
+    /* ===== Layout ===== */
+    .wrap{max-width:var(--max); margin:0 auto; padding: 0 18px;}
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(14px);
+      background: rgba(6,7,10,.72);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:14px; padding: 14px 0;
+    }
+    .brand{display:flex; gap:10px; align-items:center}
+    .logo{
+      width:38px;height:38px;border-radius:14px;
+      background: linear-gradient(135deg, rgba(247,215,122,.95), rgba(124,92,255,.95));
+      box-shadow: 0 14px 40px rgba(124,92,255,.22);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo:after{
+      content:""; position:absolute; inset:7px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(135deg, rgba(0,0,0,.30), rgba(255,255,255,.08));
+    }
+    .brand .t1{font-weight:900; letter-spacing:.3px; font-size:15px}
+    .brand .t2{font-weight:700; color:var(--muted); font-size:12px; margin-top:2px}
 
-  /* ===== Topbar ===== */
-  .topbar{
-    position:fixed; top:0; left:0; right:0; z-index:60;
-    backdrop-filter: blur(14px);
-    background: rgba(5,6,10,.72);
-    border-bottom:1px solid var(--line);
-  }
-  .wrap{max-width:var(--max); margin:0 auto; padding: 0 18px;}
-  .nav{
-    display:flex; align-items:center; justify-content:space-between;
-    gap:12px; padding: 12px 0;
-  }
-  .brand{display:flex; gap:10px; align-items:center}
-  .logo{
-    width:38px;height:38px;border-radius:14px;
-    background: linear-gradient(135deg, rgba(247,215,122,.95), rgba(124,92,255,.95));
-    box-shadow: 0 14px 40px rgba(124,92,255,.22);
-    position:relative;
-    overflow:hidden;
-  }
-  .logo:after{
-    content:""; position:absolute; inset:7px; border-radius:12px;
-    border:1px solid rgba(255,255,255,.12);
-    background: linear-gradient(135deg, rgba(0,0,0,.30), rgba(255,255,255,.08));
-  }
-  .brand .t1{font-weight:950; letter-spacing:.3px; font-size:15px}
-  .brand .t2{font-weight:750; color:var(--muted); font-size:12px; margin-top:2px}
+    .menu{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .menu a{
+      padding: 9px 11px; border-radius: 12px;
+      color:var(--muted); font-weight:800; font-size:13px;
+      border:1px solid transparent;
+    }
+    .menu a:hover{
+      color:var(--ink);
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.08);
+    }
 
-  .menu{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
-  .menu a{
-    padding: 9px 11px; border-radius: 12px;
-    color:var(--muted); font-weight:900; font-size:13px;
-    border:1px solid transparent;
-  }
-  .menu a:hover{
-    color:var(--ink);
-    background: rgba(255,255,255,.06);
-    border-color: rgba(255,255,255,.08);
-  }
+    .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .btn{
+      display:inline-flex; gap:10px; align-items:center; justify-content:center;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color:var(--ink);
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:.2px;
+      transition:.16s ease;
+      user-select:none;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.10)}
+    .btn.primary{
+      border-color: rgba(247,215,122,.35);
+      background: linear-gradient(135deg, rgba(247,215,122,.98), rgba(181,139,42,.90));
+      color:#1b1406;
+      box-shadow: 0 16px 42px rgba(247,215,122,.15);
+    }
+    .btn.primary:hover{filter:saturate(1.02)}
+    .btn.ghost{
+      background: transparent;
+      border-color: rgba(255,255,255,.14);
+    }
+    .cart-badge{
+      min-width: 22px; height: 22px; border-radius: 999px;
+      display:grid; place-items:center;
+      background: rgba(124,92,255,.22);
+      border: 1px solid rgba(124,92,255,.30);
+      font-size: 12px; font-weight: 1000;
+      padding: 0 7px;
+    }
 
-  .btn{
-    display:inline-flex; gap:10px; align-items:center; justify-content:center;
-    padding: 10px 14px;
-    border-radius: 14px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.06);
-    color:var(--ink);
-    cursor:pointer;
-    font-weight:950;
-    letter-spacing:.2px;
-    transition:.16s ease;
-    user-select:none;
-  }
-  .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.10)}
-  .btn.primary{
-    border-color: rgba(247,215,122,.35);
-    background: linear-gradient(135deg, rgba(247,215,122,.98), rgba(181,139,42,.90));
-    color:#1b1406;
-    box-shadow: 0 16px 42px rgba(247,215,122,.15);
-  }
-  .btn.ghost{background:transparent;border-color:rgba(255,255,255,.14)}
-  .pill{
-    display:inline-flex; gap:9px; align-items:center;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: rgba(255,255,255,.06);
-    border: 1px solid rgba(255,255,255,.12);
-    color: var(--muted);
-    font-weight: 950;
-    font-size: 13px;
-  }
-  .pill b{color:var(--ink)}
+    /* ===== Hero ===== */
+    header{padding: 56px 0 18px}
+    .hero{
+      display:grid;
+      grid-template-columns: 1.12fr .88fr;
+      gap: 18px;
+      align-items:stretch;
+    }
+    .pill{
+      display:inline-flex; gap:9px; align-items:center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 13px;
+    }
+    .pill b{color:var(--ink)}
+    h1{
+      margin: 14px 0 10px;
+      font-size: clamp(30px, 4.1vw, 54px);
+      line-height: 1.04;
+      letter-spacing: -1px;
+    }
+    .grad{
+      background: linear-gradient(90deg, rgba(247,215,122,.98), rgba(124,92,255,.98));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .lead{
+      margin: 12px 0 18px;
+      color: var(--muted);
+      font-size: 16.5px;
+      line-height: 1.6;
+      max-width: 62ch;
+      font-weight: 650;
+    }
+    .trust{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    .chip{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 12.5px;
+    }
 
-  .langToggle{
-    display:flex; gap:8px; align-items:center;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.05);
-    padding: 6px;
-    border-radius: 999px;
-  }
-  .langToggle button{
-    border:0; background:transparent; color:var(--muted);
-    padding: 8px 10px; border-radius: 999px;
-    cursor:pointer; font-weight:950; font-size:13px;
-  }
-  .langToggle button.active{
-    color: var(--ink);
-    background: rgba(124,92,255,.18);
-    border: 1px solid rgba(124,92,255,.25);
-  }
+    /* ===== Panels / cards ===== */
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--r24);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .panel:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(700px 250px at 15% 0%, rgba(247,215,122,.14), transparent 55%),
+                  radial-gradient(600px 260px at 90% 20%, rgba(124,92,255,.16), transparent 55%);
+      pointer-events:none;
+    }
+    .panel > *{position:relative}
 
-  /* ===== Story container with snap ===== */
-  .story{
-    height: 100vh;
-    overflow-y: auto;
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-    padding-top: 62px; /* topbar space */
-  }
-  .slide{
-    min-height: calc(100vh - 62px);
-    scroll-snap-align: start;
-    display:flex;
-    align-items:center;
-    padding: 56px 0;
-    position:relative;
-  }
+    section{padding: 34px 0}
+    .sec-title{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:14px}
+    .sec-title h2{margin:0; font-size:24px; letter-spacing:-.3px}
+    .sec-title p{margin:0; color:var(--muted); font-weight:700; font-size:14px; max-width:72ch; line-height:1.5}
 
-  /* Progress bar */
-  .progressWrap{
-    position:fixed; left:0; right:0; top:62px;
-    height: 3px; z-index:61;
-    background: rgba(255,255,255,.05);
-  }
-  .progress{
-    height:100%;
-    width:0%;
-    background: linear-gradient(90deg, rgba(247,215,122,.95), rgba(124,92,255,.95));
-    box-shadow: 0 10px 25px rgba(124,92,255,.22);
-  }
+    .grid3{display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px}
+    .card{
+      border-radius: var(--r18);
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.38);
+      transition: .16s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .card:hover{transform: translateY(-2px); background: rgba(255,255,255,.07)}
+    .card h3{margin:0 0 8px; font-size:16px; letter-spacing:-.1px}
+    .card p{margin:0; color:var(--muted); line-height:1.55; font-weight:650; font-size:14px}
+    .priceRow{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap:12px; margin-top:14px; padding-top:12px;
+      border-top: 1px solid rgba(255,255,255,.10);
+    }
+    .priceRow b{font-size:20px}
+    .tag{
+      font-weight: 1000;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(247,215,122,.30);
+      background: rgba(247,215,122,.12);
+      color: var(--gold);
+      letter-spacing: .2px;
+      white-space:nowrap;
+    }
+    .tag.vio{
+      border-color: rgba(124,92,255,.35);
+      background: rgba(124,92,255,.16);
+      color: rgba(210,205,255,.98);
+    }
+    .tag.mint{
+      border-color: rgba(61,220,151,.35);
+      background: rgba(61,220,151,.14);
+      color: rgba(190,255,225,.98);
+    }
 
-  /* Floating story nav */
-  .storyNav{
-    position: fixed;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 70;
-    display:flex;
-    flex-direction: column;
-    gap:10px;
-  }
-  .dot{
-    width: 11px; height: 11px; border-radius: 999px;
-    border:1px solid rgba(255,255,255,.20);
-    background: rgba(255,255,255,.06);
-    cursor:pointer;
-    transition:.16s ease;
-  }
-  .dot.active{
-    background: rgba(247,215,122,.22);
-    border-color: rgba(247,215,122,.45);
-    box-shadow: 0 10px 25px rgba(247,215,122,.18);
-    transform: scale(1.2);
-  }
+    .ctaRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .miniBtn{
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.14);
+      color: var(--ink);
+      cursor:pointer;
+      font-weight: 950;
+      transition:.16s ease;
+    }
+    .miniBtn:hover{transform: translateY(-1px); background: rgba(255,255,255,.08)}
+    .miniBtn.primary{
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(124,92,255,.55));
+      border-color: rgba(124,92,255,.35);
+    }
 
-  /* ===== Content blocks ===== */
-  .heroGrid{
-    display:grid;
-    grid-template-columns: 1.12fr .88fr;
-    gap: 18px;
-    align-items:stretch;
-  }
-  h1{
-    margin: 14px 0 10px;
-    font-size: clamp(30px, 4.2vw, 56px);
-    line-height: 1.04;
-    letter-spacing: -1px;
-  }
-  .grad{
-    background: linear-gradient(90deg, rgba(247,215,122,.98), rgba(124,92,255,.98));
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-  }
-  .lead{
-    margin: 12px 0 18px;
-    color: var(--muted);
-    font-size: 16.5px;
-    line-height: 1.6;
-    max-width: 62ch;
-    font-weight: 680;
-  }
-  .trust{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
-  .chip{
-    padding: 8px 10px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.18);
-    color: var(--muted);
-    font-weight: 950;
-    font-size: 12.5px;
-  }
+    .steps{display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px}
+    .step{
+      border-radius: var(--r18);
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      padding: 14px;
+    }
+    .num{
+      width:30px;height:30px;border-radius:12px;
+      display:grid;place-items:center;
+      background: rgba(124,92,255,.18);
+      border:1px solid rgba(124,92,255,.25);
+      margin-bottom:10px;
+      font-weight:1000;
+    }
+    .step b{display:block;margin-bottom:6px}
+    .step span{color:var(--muted); font-weight:650; font-size:14px; line-height:1.5}
 
-  .panel{
-    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-    border: 1px solid rgba(255,255,255,.10);
-    border-radius: var(--r24);
-    box-shadow: var(--shadow);
-    padding: 18px;
-    position:relative;
-    overflow:hidden;
-  }
-  .panel:before{
-    content:"";
-    position:absolute; inset:-2px;
-    background: radial-gradient(700px 260px at 15% 0%, rgba(247,215,122,.14), transparent 55%),
-                radial-gradient(600px 260px at 90% 20%, rgba(124,92,255,.16), transparent 55%);
-    pointer-events:none;
-  }
-  .panel > *{position:relative}
+    /* ===== Quote form ===== */
+    .form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    label{display:block; font-weight:950; font-size:13px; margin-bottom:6px}
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      color: var(--ink);
+      outline:none;
+      font-weight: 700;
+    }
+    textarea{min-height:120px; resize:vertical}
+    .full{grid-column: 1 / -1}
+    .hint{color:var(--muted); font-size:12.5px; font-weight:650; margin-top:6px}
+    .note{
+      border-radius: 16px;
+      border: 1px dashed rgba(255,255,255,.14);
+      padding: 12px;
+      background: rgba(0,0,0,.12);
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1.5;
+    }
 
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(4, 1fr);
-    gap: 12px;
-    margin-top: 18px;
-  }
-  .card{
-    border-radius: var(--r18);
-    border: 1px solid rgba(255,255,255,.10);
-    background: rgba(255,255,255,.05);
-    padding: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,.38);
-    position:relative;
-    overflow:hidden;
-  }
-  .card h3{margin:0 0 8px; font-size:15px}
-  .card p{margin:0; color:var(--muted); line-height:1.55; font-weight:650; font-size:14px}
-  .tag{
-    font-weight: 1000;
-    font-size: 12px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    border: 1px solid rgba(247,215,122,.30);
-    background: rgba(247,215,122,.12);
-    color: var(--gold);
-    letter-spacing: .2px;
-    display:inline-block;
-    margin-bottom: 10px;
-  }
-  .tag.vio{
-    border-color: rgba(124,92,255,.35);
-    background: rgba(124,92,255,.16);
-    color: rgba(210,205,255,.98);
-  }
-  .tag.mint{
-    border-color: rgba(61,220,151,.35);
-    background: rgba(61,220,151,.14);
-    color: rgba(190,255,225,.98);
-  }
+    /* ===== Cart drawer ===== */
+    .drawerBackdrop{
+      position:fixed; inset:0; z-index:90;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(6px);
+      display:none;
+    }
+    .drawer{
+      position:fixed; top:0; right:0; height:100vh; width:min(460px, 92vw);
+      z-index:100;
+      transform: translateX(102%);
+      transition: .22s ease;
+      border-left: 1px solid rgba(255,255,255,.10);
+      background: rgba(7,8,11,.86);
+      backdrop-filter: blur(16px);
+      box-shadow: -18px 0 55px rgba(0,0,0,.60);
+      display:flex; flex-direction:column;
+    }
+    .drawer.open{transform: translateX(0)}
+    .drawerBackdrop.open{display:block}
+    .drawerHeader{
+      padding: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+    }
+    .drawerHeader h3{margin:0; letter-spacing:-.2px}
+    .xbtn{
+      width:40px;height:40px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--ink);
+      cursor:pointer;
+      font-weight:1000;
+    }
+    .drawerBody{padding: 14px 16px; overflow:auto; flex:1}
+    .cartItem{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .cartTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .cartTop b{display:block}
+    .cartTop small{color:var(--muted); font-weight:800}
+    .rm{
+      border:1px solid rgba(255,77,109,.35);
+      background: rgba(255,77,109,.12);
+      color: rgba(255,190,200,.95);
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-weight: 1000;
+      font-size: 12px;
+    }
+    .qtyRow{
+      margin-top:10px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+      padding-top:10px;
+      border-top: 1px solid rgba(255,255,255,.10);
+    }
+    .qtyControls{display:flex; gap:8px; align-items:center}
+    .qbtn{
+      width:36px;height:36px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      color:var(--ink);
+      cursor:pointer;
+      font-weight:1000;
+    }
+    .qval{
+      min-width: 34px; text-align:center;
+      font-weight: 1000;
+      color: var(--ink);
+      opacity:.95;
+    }
+    .linePrice{font-weight:1000}
+    .drawerFooter{
+      border-top: 1px solid rgba(255,255,255,.10);
+      padding: 14px 16px;
+    }
+    .totRow{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      margin-bottom: 10px;
+      font-weight: 1000;
+    }
+    .totRow span{color:var(--muted); font-weight:900}
+    .smallRow{display:flex; justify-content:space-between; color:var(--muted); font-weight:800; font-size:13px; margin-top:6px}
+    .toggleRow{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      padding: 10px 12px;
+      border-radius: 16px;
+      margin: 10px 0;
+    }
+    .switch{
+      width:46px; height:26px; border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      position:relative;
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+    .switch::after{
+      content:""; position:absolute; top:3px; left:3px;
+      width:20px; height:20px; border-radius: 999px;
+      background: rgba(255,255,255,.20);
+      border:1px solid rgba(255,255,255,.18);
+      transition:.16s ease;
+    }
+    .switch.on{
+      border-color: rgba(61,220,151,.35);
+      background: rgba(61,220,151,.14);
+    }
+    .switch.on::after{left:22px; background: rgba(61,220,151,.35); border-color: rgba(61,220,151,.35);}
 
-  .steps{
-    display:grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-top: 16px;
-  }
-  .step{
-    border-radius: var(--r18);
-    border: 1px solid rgba(255,255,255,.10);
-    background: rgba(0,0,0,.16);
-    padding: 14px;
-  }
-  .num{
-    width:30px;height:30px;border-radius:12px;
-    display:grid;place-items:center;
-    background: rgba(124,92,255,.18);
-    border:1px solid rgba(124,92,255,.25);
-    margin-bottom:10px;
-    font-weight:1000;
-  }
-  .step b{display:block;margin-bottom:6px}
-  .step span{color:var(--muted); font-weight:650; font-size:14px; line-height:1.5}
+    /* ===== Footer ===== */
+    footer{
+      border-top:1px solid rgba(255,255,255,.10);
+      padding: 24px 0;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+    }
 
-  /* ===== AI Form ===== */
-  .form{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  label{display:block; font-weight:950; font-size:13px; margin-bottom:6px}
-  input, select, textarea{
-    width:100%;
-    padding: 12px 12px;
-    border-radius: 14px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.20);
-    color: var(--ink);
-    outline:none;
-    font-weight: 720;
-  }
-  textarea{min-height:120px; resize:vertical}
-  .full{grid-column: 1 / -1}
-  .hint{color:var(--muted); font-size:12.5px; font-weight:650; margin-top:6px}
-
-  .aiBox{
-    border-radius: var(--r24);
-    border: 1px solid rgba(124,92,255,.26);
-    background: rgba(124,92,255,.10);
-    padding: 14px;
-    overflow:hidden;
-  }
-  .aiRow{
-    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-  }
-  .aiBtn{
-    padding: 10px 12px;
-    border-radius: 14px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.18);
-    color: var(--ink);
-    cursor:pointer;
-    font-weight: 950;
-    transition:.16s ease;
-  }
-  .aiBtn.primary{
-    background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(124,92,255,.50));
-    border-color: rgba(124,92,255,.35);
-  }
-  .aiBtn:hover{transform: translateY(-1px); background: rgba(255,255,255,.08)}
-  .aiOut{
-    margin-top: 12px;
-    padding: 12px;
-    border-radius: 16px;
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.18);
-    color: var(--muted);
-    font-weight: 680;
-    line-height: 1.6;
-    white-space: pre-wrap;
-  }
-  .priceBox{
-    margin-top: 12px;
-    padding: 14px;
-    border-radius: 18px;
-    border:1px solid rgba(247,215,122,.25);
-    background: rgba(247,215,122,.10);
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    font-weight: 950;
-  }
-  .priceBox .big{font-size:20px; color: var(--ink)}
-
-  /* ===== Reveal animations ===== */
-  .reveal{
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity .65s ease, transform .65s ease;
-    will-change: opacity, transform;
-  }
-  .reveal.in{
-    opacity: 1;
-    transform: translateY(0px);
-  }
-  /* Subtle parallax on some elements */
-  .parallax{
-    transform: translateY(var(--py, 0px));
-    transition: transform .05s linear;
-    will-change: transform;
-  }
-
-  /* ===== Footer ===== */
-  footer{
-    border-top:1px solid rgba(255,255,255,.10);
-    padding: 24px 0;
-    color: var(--muted);
-    font-weight: 700;
-    font-size: 13px;
-  }
-
-  /* ===== Viber floating ===== */
-  .viber{
-    position:fixed;
-    right:18px;
-    bottom:18px;
-    width:58px;
-    height:58px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#7c5cff,#8f5bff);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:26px;
-    box-shadow:0 18px 40px rgba(124,92,255,.5);
-    z-index:999;
-    transition: .18s ease;
-  }
-  .viber:hover{transform: translateY(-2px) scale(1.05)}
-
-  /* ===== Responsive ===== */
-  @media (max-width: 980px){
-    .menu{display:none}
-    .heroGrid{grid-template-columns: 1fr}
-    .grid{grid-template-columns: 1fr}
-    .steps{grid-template-columns: 1fr 1fr}
-    .form{grid-template-columns: 1fr}
-    .storyNav{display:none}
-  }
-  @media (max-width: 560px){
-    .steps{grid-template-columns: 1fr}
-  }
-
-  /* Reduce motion */
-  @media (prefers-reduced-motion: reduce){
-    .reveal, .reveal.in{transition:none}
-    .orb{animation:none}
-    .story{scroll-behavior:auto}
-  }
-</style>
+    /* ===== Responsive ===== */
+    @media (max-width: 980px){
+      .menu{display:none}
+      .hero{grid-template-columns: 1fr}
+      .grid3{grid-template-columns: 1fr}
+      .steps{grid-template-columns: 1fr 1fr}
+      .form{grid-template-columns: 1fr}
+    }
+    @media (max-width: 560px){
+      .steps{grid-template-columns: 1fr}
+    }
+  </style>
 </head>
 
 <body>
@@ -487,6 +488,56 @@
   <div class="orb"></div>
   <div class="orb two"></div>
 
+  <!-- Cart drawer -->
+  <div class="drawerBackdrop" id="drawerBackdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" aria-label="Кошница">
+    <div class="drawerHeader">
+      <div>
+        <h3 style="margin:0">Кошница</h3>
+        <div style="color:var(--muted); font-weight:800; font-size:12.5px; margin-top:2px">
+          Всичко е в EUR (€)
+        </div>
+      </div>
+      <button class="xbtn" id="closeCart" title="Затвори">✕</button>
+    </div>
+
+    <div class="drawerBody" id="cartItems"></div>
+
+    <div class="drawerFooter">
+      <div class="toggleRow">
+        <div>
+          <div style="font-weight:1000">VAT (по избор)</div>
+          <div style="color:var(--muted); font-weight:800; font-size:12.5px">Ако искаш да показва ДДС 20%</div>
+        </div>
+        <div class="switch" id="vatSwitch" role="switch" aria-checked="false" tabindex="0"></div>
+      </div>
+
+      <div class="totRow">
+        <span>Сума</span>
+        <div id="subtotal">€0</div>
+      </div>
+      <div class="smallRow"><span>VAT</span><span id="vat">€0</span></div>
+      <div class="smallRow"><span>Общо</span><span id="total" style="color:var(--ink); font-weight:1000">€0</span></div>
+
+      <div class="ctaRow" style="margin-top:12px">
+        <button class="btn ghost" id="clearCart">Изчисти</button>
+        <a class="btn primary" href="#quote" id="goQuote">Искам оферта</a>
+      </div>
+
+      <div class="ctaRow">
+        <!-- Replace with your real Revolut payment link -->
+        <a class="btn" id="revolutBtn" href="https://revolut.me/YOUR_REVOLUT_LINK" target="_blank" rel="noopener">
+          Плати с Revolut
+        </a>
+      </div>
+
+      <div class="hint" style="margin-top:10px">
+        * Плащането е по Revolut линк. При оферта изпращаме детайли и потвърждение.
+      </div>
+    </div>
+  </aside>
+
+  <!-- Topbar -->
   <div class="topbar">
     <div class="wrap">
       <div class="nav">
@@ -494,801 +545,632 @@
           <div class="logo" aria-hidden="true"></div>
           <div>
             <div class="t1">UZi Sait</div>
-            <div class="t2" data-i18n="top_sub">Premium IT Studio • EUR • Viber • Email</div>
+            <div class="t2">Premium IT Services • Order in €</div>
           </div>
         </div>
 
-        <div class="menu">
-          <a href="#s1" data-i18n="nav_1">Начало</a>
-          <a href="#s2" data-i18n="nav_2">История</a>
-          <a href="#s3" data-i18n="nav_3">Услуги</a>
-          <a href="#s4" data-i18n="nav_4">Процес</a>
-          <a href="#s5" data-i18n="nav_5">AI Оферта</a>
-        </div>
+        <nav class="menu">
+          <a href="#services">Услуги</a>
+          <a href="#pricing">Пакети</a>
+          <a href="#extras">Екстри</a>
+          <a href="#process">Процес</a>
+          <a href="#quote">Оферта</a>
+        </nav>
 
-        <div style="display:flex; gap:10px; align-items:center;">
-          <div class="langToggle" aria-label="Language switch">
-            <button type="button" id="btnBG" class="active">BG</button>
-            <button type="button" id="btnEN">EN</button>
-          </div>
-          <a class="btn ghost" href="viber://chat?number=%2B3590890219040">💬 Viber</a>
-          <a class="btn primary" href="#s5" data-i18n="cta_top">Искам оферта</a>
+        <div class="actions">
+          <a class="btn ghost" href="#pricing">Виж пакетите</a>
+          <button class="btn primary" id="openCart">
+            🛒 Кошница <span class="cart-badge" id="cartCount">0</span>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="progressWrap"><div class="progress" id="progress"></div></div>
-
-  <!-- Story dots -->
-  <div class="storyNav" aria-label="Story navigation">
-    <div class="dot active" data-goto="s1" title="Start"></div>
-    <div class="dot" data-goto="s2" title="Story"></div>
-    <div class="dot" data-goto="s3" title="Services"></div>
-    <div class="dot" data-goto="s4" title="Process"></div>
-    <div class="dot" data-goto="s5" title="AI Quote"></div>
-  </div>
-
-  <!-- Story container -->
-  <main class="story" id="story">
-
-    <!-- Slide 1 -->
-    <section class="slide" id="s1" data-slide>
-      <div class="wrap">
-        <div class="heroGrid">
-          <div class="reveal">
-            <div class="pill"><span>✨</span> <b data-i18n="pill_b">Luxury</b> <span data-i18n="pill_t">дизайн • story-mode • оферта по имейл</span></div>
-            <h1 data-i18n="h1">
-              Ние не правим сайтове.<br>Ние създаваме <span class="grad">дигитално присъствие</span>.
-            </h1>
-            <p class="lead" data-i18n="hero_p">
-              UZi Sait е premium IT студио. Работим с хора, не с “продукти”.
-              Изчистен дизайн, бързина, доверие — и процес като презентация.
-            </p>
-
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
-              <a class="btn primary" href="#s2" data-i18n="cta_story">Започни историята</a>
-              <a class="btn" href="#s5" data-i18n="cta_quote">Искам оферта</a>
-              <a class="btn ghost" href="mailto:uzunov.angel@abv.bg">✉️ Email</a>
-            </div>
-
-            <div class="trust">
-              <span class="chip" data-i18n="chip_1">✅ Цени в EUR (€)</span>
-              <span class="chip" data-i18n="chip_2">✅ Viber чат</span>
-              <span class="chip" data-i18n="chip_3">✅ Оферта по имейл</span>
-              <span class="chip" data-i18n="chip_4">✅ Плащане по Revolut линк</span>
-            </div>
-          </div>
-
-          <aside class="panel reveal parallax" data-parallax="0.22">
-            <div class="tag vio" data-i18n="panel_tag">Studio Mode</div>
-            <div style="font-weight:1000; font-size:16px; letter-spacing:-.2px" data-i18n="panel_h">
-              Тук започва доверието.
-            </div>
-            <p class="lead" style="font-size:15px; margin-top:10px" data-i18n="panel_p">
-              Вместо „магазин“, правим guided experience: клиентът избира посока,
-              а ние превеждаме идеята в реален план и оферта.
-            </p>
-
-            <div class="priceBox">
-              <div data-i18n="start_from">Старт (ориентир)</div>
-              <div class="big">€790+</div>
-            </div>
-
-            <div class="hint" style="margin-top:10px" data-i18n="start_hint">
-              Точната цена се определя след кратки уточнения.
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    <!-- Slide 2: Story -->
-    <section class="slide" id="s2" data-slide>
-      <div class="wrap">
-        <div class="reveal">
-          <h1 style="margin:0 0 10px" data-i18n="s2_h">
-            Story mode: скролваш като <span class="grad">презентация</span>.
-          </h1>
-          <p class="lead" data-i18n="s2_p">
-            Всяка секция е “слайд”. Докато скролваш, получаваш ясна картина:
-            как работим, какво доставяме и как започваме.
+  <!-- Hero -->
+  <header>
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <div class="pill">✨ <b>Luxury</b> дизайн • поръчка с кошница • оферта по имейл</div>
+          <h1>Поръчвай IT услуги като в <span class="grad">премиум магазин</span>.</h1>
+          <p class="lead">
+            Избираш пакети и екстри, виждаш сметка в € в реално време, и пращаш заявка за оферта директно към имейла.
+            Подходящо за международни клиенти, агенция или лично портфолио.
           </p>
 
-          <div class="grid">
-            <div class="card reveal">
-              <div class="tag">🎯</div>
-              <h3 data-i18n="s2_c1_h">Фокус върху резултат</h3>
-              <p data-i18n="s2_c1_p">Не дизайн заради дизайна — дизайн за доверие и конверсии.</p>
+          <div class="ctaRow">
+            <a class="btn primary" href="#pricing">Добави пакет</a>
+            <button class="btn" id="openCart2">Отвори кошница</button>
+            <a class="btn ghost" href="#quote">Искам оферта</a>
+          </div>
+
+          <div class="trust">
+            <span class="chip">✅ Цени в EUR (€)</span>
+            <span class="chip">✅ Динамична кошница</span>
+            <span class="chip">✅ Оферта по имейл</span>
+            <span class="chip">✅ Revolut плащане</span>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px">
+            <div>
+              <div style="font-weight:1000; letter-spacing:-.2px; font-size:16px">Бърза калкулация</div>
+              <div class="hint" style="margin:6px 0 0 0">Добави пакет → екстри → оферта</div>
             </div>
-            <div class="card reveal">
-              <div class="tag vio">⚡</div>
-              <h3 data-i18n="s2_c2_h">Бързина</h3>
-              <p data-i18n="s2_c2_p">Performance и оптимизация от първия ден.</p>
+            <span class="tag vio">Live Cart</span>
+          </div>
+
+          <div style="margin-top:14px" class="note">
+            Сайтът е изграден да конвертира: ясни пакети, доверие, “lux” дизайн и процес без излишни стъпки.
+            Клиентът вижда сметка веднага и изпраща заявка за оферта.
+          </div>
+
+          <div style="margin-top:14px; display:grid; gap:10px">
+            <div class="card" style="margin:0; background: rgba(0,0,0,.16)">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px">
+                <div>
+                  <div style="font-weight:1000">Стартова цена сайт</div>
+                  <div class="hint" style="margin:4px 0 0 0">Landing / 1 страница</div>
+                </div>
+                <div style="font-weight:1000; font-size:18px">€790</div>
+              </div>
             </div>
-            <div class="card reveal">
-              <div class="tag mint">🔒</div>
-              <h3 data-i18n="s2_c3_h">Сигурност</h3>
-              <p data-i18n="s2_c3_p">Бекъпи, ъпдейти, добри практики и спокойствие.</p>
-            </div>
-            <div class="card reveal">
-              <div class="tag">🤝</div>
-              <h3 data-i18n="s2_c4_h">Партньорство</h3>
-              <p data-i18n="s2_c4_p">Не приключваме при “publish”. Има грижа и надграждане.</p>
+            <div class="card" style="margin:0; background: rgba(0,0,0,.16)">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px">
+                <div>
+                  <div style="font-weight:1000">Поддръжка</div>
+                  <div class="hint" style="margin:4px 0 0 0">месечно</div>
+                </div>
+                <div style="font-weight:1000; font-size:18px">от €59</div>
+              </div>
             </div>
           </div>
 
-          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:18px">
-            <a class="btn primary" href="#s3" data-i18n="s2_cta">Към услугите</a>
-            <a class="btn" href="#s5" data-i18n="s2_cta2">AI оферта</a>
+          <div class="ctaRow" style="margin-top:12px">
+            <button class="miniBtn primary" data-add="starter_site">+ Starter</button>
+            <button class="miniBtn" data-add="care_basic">+ Care</button>
+            <button class="miniBtn" id="openCart3">Кошница</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <!-- Services -->
+  <section id="services">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Услуги</h2>
+        <p>Избирай основни пакети и допълнителни екстри. Всичко се калкулира в кошницата.</p>
+      </div>
+
+      <div class="grid3">
+        <div class="card">
+          <span class="tag">Web</span>
+          <h3 style="margin-top:10px">Изработка на сайт</h3>
+          <p>Premium дизайн, мобилна версия, оптимизация и структура за продажби.</p>
+          <div class="priceRow">
+            <b>€790+</b>
+            <span class="tag mint">Fast start</span>
+          </div>
+          <div class="ctaRow">
+            <button class="miniBtn primary" data-add="starter_site">Добави Starter</button>
+            <button class="miniBtn" data-add="business_site">Добави Business</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="tag vio">Care</span>
+          <h3 style="margin-top:10px">Поддръжка и сигурност</h3>
+          <p>Ъпдейти, бекъп, мониторинг, приоритет и часове за промени.</p>
+          <div class="priceRow">
+            <b>€59/мес+</b>
+            <span class="tag">Monthly</span>
+          </div>
+          <div class="ctaRow">
+            <button class="miniBtn primary" data-add="care_basic">Basic</button>
+            <button class="miniBtn" data-add="care_pro">Pro</button>
+            <button class="miniBtn" data-add="care_elite">Elite</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="tag mint">Boost</span>
+          <h3 style="margin-top:10px">Интеграции и подобрения</h3>
+          <p>CRM, плащания, форми, автоматизации, speed и SEO подобрения.</p>
+          <div class="priceRow">
+            <b>€90+</b>
+            <span class="tag vio">Custom</span>
+          </div>
+          <div class="ctaRow">
+            <button class="miniBtn primary" data-add="integration">Интеграция</button>
+            <button class="miniBtn" data-add="perf">Speed</button>
+            <button class="miniBtn" data-add="seo">SEO</button>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Slide 3: Services -->
-    <section class="slide" id="s3" data-slide>
-      <div class="wrap">
-        <div class="reveal">
-          <h1 style="margin:0 0 10px" data-i18n="s3_h">
-            Услуги, поднесени като <span class="grad">бутикова селекция</span>.
-          </h1>
-          <p class="lead" data-i18n="s3_p">
-            Ясен обхват, премиум изпълнение. Цените са ориентир в EUR — точна оферта след бриф.
-          </p>
+  <!-- Pricing (packages) -->
+  <section id="pricing">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Пакети</h2>
+        <p>Добавяй в кошницата. Можеш да комбинираш пакет + екстри.</p>
+      </div>
 
-          <div class="grid">
-            <div class="card reveal">
-              <div class="tag">Web</div>
-              <h3 data-i18n="s3_c1_h">Изработка на сайт</h3>
-              <p data-i18n="s3_c1_p">Landing / бизнес / премиум бранд, мобилно UX, SEO основа.</p>
-              <div class="hint" style="margin-top:10px">€790 – €2,900+</div>
-            </div>
-
-            <div class="card reveal">
-              <div class="tag vio">Care</div>
-              <h3 data-i18n="s3_c2_h">Поддръжка</h3>
-              <p data-i18n="s3_c2_p">Ъпдейти, бекъп, мониторинг, приоритет и часове за промени.</p>
-              <div class="hint" style="margin-top:10px">€59 / месец+</div>
-            </div>
-
-            <div class="card reveal">
-              <div class="tag mint">Boost</div>
-              <h3 data-i18n="s3_c3_h">Оптимизация</h3>
-              <p data-i18n="s3_c3_p">Скорост, Core Web Vitals, техническо SEO, структура.</p>
-              <div class="hint" style="margin-top:10px">€190+</div>
-            </div>
-
-            <div class="card reveal">
-              <div class="tag">Integrations</div>
-              <h3 data-i18n="s3_c4_h">Интеграции</h3>
-              <p data-i18n="s3_c4_p">Форми, CRM, автоматизации, плащания (Revolut линк), чат.</p>
-              <div class="hint" style="margin-top:10px">€180+</div>
-            </div>
+      <div class="grid3">
+        <div class="card">
+          <span class="tag">Starter</span>
+          <h3 style="margin-top:10px">Starter Site</h3>
+          <p>Landing (1 страница), мобилна версия, базово SEO, контактна форма.</p>
+          <div class="priceRow"><b>€790</b><span class="tag mint">7–10 дни</span></div>
+          <div class="ctaRow">
+            <button class="miniBtn primary" data-add="starter_site">Добави в кошница</button>
           </div>
+        </div>
 
-          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:18px">
-            <a class="btn primary" href="#s4" data-i18n="s3_cta">Виж процеса</a>
-            <a class="btn" href="#s5" data-i18n="s3_cta2">Започни с AI бриф</a>
+        <div class="card">
+          <span class="tag vio">Business</span>
+          <h3 style="margin-top:10px">Business Website</h3>
+          <p>До 6 страници, SEO основа, блог/новини, оптимизация на скорост.</p>
+          <div class="priceRow"><b>€1,490</b><span class="tag mint">10–14 дни</span></div>
+          <div class="ctaRow">
+            <button class="miniBtn primary" data-add="business_site">Добави в кошница</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="tag">Premium</span>
+          <h3 style="margin-top:10px">Premium Brand Website</h3>
+          <p>Дизайн по бранд, до 12 страници, анимации, premium UX, performance пакет.</p>
+          <div class="priceRow"><b>€2,900</b><span class="tag mint">14–21 дни</span></div>
+          <div class="ctaRow">
+            <button class="miniBtn primary" data-add="premium_brand">Добави в кошница</button>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Slide 4: Process -->
-    <section class="slide" id="s4" data-slide>
-      <div class="wrap">
-        <div class="reveal">
-          <h1 style="margin:0 0 10px" data-i18n="s4_h">
-            Процес: кратък, ясен, <span class="grad">без шум</span>.
-          </h1>
-          <p class="lead" data-i18n="s4_p">
-            Стъпки, които намаляват риска и пазят времето ти.
-          </p>
+  <!-- Extras -->
+  <section id="extras">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Екстри (Add-ons)</h2>
+        <p>Добавяй колкото искаш. Кошницата калкулира автоматично.</p>
+      </div>
 
-          <div class="steps">
-            <div class="step reveal">
-              <div class="num">1</div>
-              <b data-i18n="p1_h">Кратък бриф</b>
-              <span data-i18n="p1_p">Цел, аудитория, примери. (Можеш и с AI формата.)</span>
-            </div>
-            <div class="step reveal">
-              <div class="num">2</div>
-              <b data-i18n="p2_h">Оферта</b>
-              <span data-i18n="p2_p">Цена в EUR + срок + етапи. Всичко ясно.</span>
-            </div>
-            <div class="step reveal">
-              <div class="num">3</div>
-              <b data-i18n="p3_h">Изпълнение</b>
-              <span data-i18n="p3_p">Дизайн, разработка, оптимизация, тестове.</span>
-            </div>
-            <div class="step reveal">
-              <div class="num">4</div>
-              <b data-i18n="p4_h">Пускане + грижа</b>
-              <span data-i18n="p4_p">Публикуване, поддръжка и надграждане.</span>
-            </div>
-          </div>
+      <div class="grid3">
+        <div class="card">
+          <span class="tag mint">Speed</span>
+          <h3 style="margin-top:10px">Performance Optimization</h3>
+          <p>Скорост, Core Web Vitals, кеш, оптимизация изображения и ресурси.</p>
+          <div class="priceRow"><b>€220</b><span class="tag">One-time</span></div>
+          <div class="ctaRow"><button class="miniBtn primary" data-add="perf">Добави</button></div>
+        </div>
 
-          <div class="panel reveal parallax" style="margin-top:18px" data-parallax="0.18">
-            <div class="tag" data-i18n="pay_tag">Payment</div>
-            <div style="font-weight:1000; font-size:16px" data-i18n="pay_h">Плащане чрез Revolut</div>
-            <p class="lead" style="font-size:15px; margin-top:10px" data-i18n="pay_p">
-              След потвърдена оферта изпращаме Revolut payment link.
-              Бързо, сигурно, удобно (EUR).
-            </p>
-            <div class="hint" data-i18n="pay_hint">
-              * Добави твоя Revolut линк в кода (по желание).
-            </div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px">
-              <a class="btn" href="https://revolut.me/YOUR_REVOLUT_LINK" target="_blank" rel="noopener">Revolut</a>
-              <a class="btn ghost" href="viber://chat?number=%2B3590890219040">Viber</a>
-            </div>
-          </div>
+        <div class="card">
+          <span class="tag">SEO</span>
+          <h3 style="margin-top:10px">SEO пакет</h3>
+          <p>On-page SEO, мета, структура, sitemap/robots, базов audit.</p>
+          <div class="priceRow"><b>€190</b><span class="tag">One-time</span></div>
+          <div class="ctaRow"><button class="miniBtn primary" data-add="seo">Добави</button></div>
+        </div>
 
-          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:18px">
-            <a class="btn primary" href="#s5" data-i18n="s4_cta">Генерирай бриф с AI</a>
-            <a class="btn" href="#s1" data-i18n="s4_cta2">Обратно нагоре</a>
-          </div>
+        <div class="card">
+          <span class="tag vio">Integration</span>
+          <h3 style="margin-top:10px">Интеграция (CRM/плащания/форми)</h3>
+          <p>Една интеграция (напр. форма → имейл/CRM, плащане линк, автоматизация).</p>
+          <div class="priceRow"><b>€180</b><span class="tag">Per integration</span></div>
+          <div class="ctaRow"><button class="miniBtn primary" data-add="integration">Добави</button></div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Slide 5: AI Quote Form -->
-    <section class="slide" id="s5" data-slide>
-      <div class="wrap">
-        <div class="reveal">
-          <h1 style="margin:0 0 10px" data-i18n="s5_h">
-            🤖 AI форма: кажи какво искаш да <span class="grad">постигнеш</span>.
-          </h1>
-          <p class="lead" data-i18n="s5_p">
-            Пиши свободно. Ние ще генерираме кратък бриф и ориентир за пакет — и ще го изпратим по имейл.
-          </p>
-
-          <div class="panel reveal">
-            <form class="form" id="quoteForm" action="https://formsubmit.co/uzunov.angel@abv.bg" method="POST">
-              <input type="hidden" name="_subject" value="UZi Sait — Заявка за оферта (BG/EN)">
-              <input type="hidden" name="_captcha" value="false">
-              <input type="hidden" name="_template" value="table">
-
-              <!-- AI payload -->
-              <input type="hidden" name="ai_brief" id="ai_brief">
-              <input type="hidden" name="ai_recommendation" id="ai_reco">
-              <input type="hidden" name="ai_estimate_eur" id="ai_est">
-
-              <div>
-                <label data-i18n="f_name">Име / Компания</label>
-                <input name="client_name" required placeholder="Ivan Petrov / ABC Ltd." />
-              </div>
-
-              <div>
-                <label data-i18n="f_email">Имейл</label>
-                <input type="email" name="client_email" required placeholder="name@domain.com" />
-              </div>
-
-              <div>
-                <label data-i18n="f_deadline">Срок</label>
-                <select name="deadline" required>
-                  <option value="" data-i18n="opt_choose">Избери…</option>
-                  <option>7–10 дни</option>
-                  <option>10–14 дни</option>
-                  <option>14–21 дни</option>
-                  <option data-i18n="opt_norush">Няма спешност</option>
-                </select>
-              </div>
-
-              <div>
-                <label data-i18n="f_contact">Предпочитан контакт</label>
-                <select name="contact_pref" required>
-                  <option value="" data-i18n="opt_choose">Избери…</option>
-                  <option>Email</option>
-                  <option>Viber</option>
-                  <option>Phone</option>
-                </select>
-              </div>
-
-              <div class="full aiBox">
-                <div class="aiRow">
-                  <div class="pill" style="margin:0"><span>🤖</span> <b data-i18n="ai_title_b">AI</b> <span data-i18n="ai_title_t">асистент за бриф</span></div>
-                  <button class="aiBtn primary" type="button" id="aiGenerate" data-i18n="ai_btn">Генерирай бриф</button>
-                  <button class="aiBtn" type="button" id="aiClear" data-i18n="ai_clear">Изчисти</button>
-                </div>
-
-                <label style="margin-top:12px" data-i18n="ai_q">Какво искаш да постигнеш?</label>
-                <textarea id="aiInput" name="goal_free" required
-                  placeholder="Напр.: Искам сайт за услуги, който да ми носи клиенти. Целева аудитория: България/Европа. Искам модерен дизайн, бърза форма за запитване, английска версия..."></textarea>
-
-                <div class="aiOut" id="aiOutput" aria-live="polite" data-i18n="ai_out_empty">
-                  Натисни “Генерирай бриф”, за да получиш структура, препоръка и ориентир в EUR.
-                </div>
-
-                <div class="priceBox">
-                  <div data-i18n="ai_est_label">Ориентир (EUR)</div>
-                  <div class="big" id="aiEstimate">€—</div>
-                </div>
-
-                <div class="hint" data-i18n="ai_hint">
-                  * Това е ориентир. Финалната оферта се уточнява след 2–3 въпроса.
-                </div>
-              </div>
-
-              <div class="full">
-                <label data-i18n="f_notes">Допълнителни бележки</label>
-                <textarea name="notes" placeholder="Примери за сайтове, линкове, предпочитан стил, страници..."></textarea>
-                <div class="hint" data-i18n="f_notes_hint">Можеш да добавиш линкове към конкуренти/вдъхновение.</div>
-              </div>
-
-              <div class="full" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center;">
-                <div class="hint" style="margin:0" data-i18n="send_hint">
-                  Формата изпраща на: uzunov.angel@abv.bg • Цени в EUR • Viber за бързи въпроси
-                </div>
-                <div style="display:flex; gap:10px; flex-wrap:wrap">
-                  <a class="btn ghost" href="viber://chat?number=%2B3590890219040">💬 Viber</a>
-                  <button class="btn primary" type="submit" data-i18n="send_btn">Изпрати оферта</button>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:18px">
-            <a class="btn" href="#s1" data-i18n="back_top">⬆️ Към началото</a>
-            <a class="btn ghost" href="mailto:uzunov.angel@abv.bg">✉️ Email</a>
-          </div>
-        </div>
+  <!-- Process -->
+  <section id="process">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Процес</h2>
+        <p>Ясни стъпки: избор → оферта → изпълнение → поддръжка.</p>
       </div>
-    </section>
 
-    <!-- Footer slide -->
-    <section class="slide" id="s6" data-slide>
-      <div class="wrap">
-        <div class="panel reveal">
-          <div class="tag" data-i18n="footer_tag">UZi Sait</div>
-          <div style="font-weight:1000; font-size:18px" data-i18n="footer_h">Premium IT Studio</div>
-          <p class="lead" style="font-size:15px" data-i18n="footer_p">
-            Оферти по имейл • Viber чат • EUR • Плащане чрез Revolut (линк след оферта)
-          </p>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><b>Избор</b><span>Добавяш пакет и екстри в кошницата.</span></div>
+        <div class="step"><div class="num">2</div><b>Оферта</b><span>Изпращаш заявка — получаваш оферта по имейл.</span></div>
+        <div class="step"><div class="num">3</div><b>Изпълнение</b><span>Дизайн + разработка + оптимизация според плана.</span></div>
+        <div class="step"><div class="num">4</div><b>Плащане</b><span>Плащане по Revolut линк след потвърждение.</span></div>
+      </div>
+    </div>
+  </section>
 
-          <div style="display:flex; gap:10px; flex-wrap:wrap">
-            <a class="btn primary" href="#s5" data-i18n="footer_cta">Искам оферта</a>
-            <a class="btn" href="viber://chat?number=%2B3590890219040">Viber</a>
-            <a class="btn ghost" href="mailto:uzunov.angel@abv.bg">Email</a>
+  <!-- Quote request -->
+  <section id="quote">
+    <div class="wrap">
+      <div class="sec-title">
+        <h2>Искам оферта (по имейл)</h2>
+        <p>Формата изпраща детайлите на кошницата + твоите данни към <b>uzunov.angel@abv.bg</b>.</p>
+      </div>
+
+      <div class="panel">
+        <form class="form" id="quoteForm" action="https://formsubmit.co/uzunov.angel@abv.bg" method="POST">
+          <input type="hidden" name="_subject" value="UZi Sait — Заявка за оферта (EUR)">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+
+          <!-- cart payload -->
+          <input type="hidden" name="cart_details" id="cart_details">
+          <input type="hidden" name="cart_total_eur" id="cart_total_eur">
+
+          <div>
+            <label>Име / Компания</label>
+            <input name="client_name" required placeholder="Напр. Ivan Petrov / ABC Ltd." />
           </div>
 
-          <footer style="margin-top:16px">
-            <div>© <span id="y"></span> UZi Sait • <span data-i18n="footer_small">Всички права запазени</span></div>
-          </footer>
-        </div>
+          <div>
+            <label>Имейл</label>
+            <input type="email" name="client_email" required placeholder="name@domain.com" />
+          </div>
+
+          <div>
+            <label>Срок</label>
+            <select name="deadline" required>
+              <option value="">Избери…</option>
+              <option>До 7 дни</option>
+              <option>До 14 дни</option>
+              <option>До 21 дни</option>
+              <option>Няма спешност</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Предпочитан контакт</label>
+            <select name="contact_pref" required>
+              <option value="">Избери…</option>
+              <option>Имейл</option>
+              <option>Телефон</option>
+              <option>Viber / WhatsApp</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Телефон (по избор)</label>
+            <input name="phone" placeholder="+359..." />
+          </div>
+
+          <div>
+            <label>Revolut плащане</label>
+            <select name="revolut_payment" required>
+              <option>Да — по Revolut линк</option>
+              <option>По-късно</option>
+            </select>
+          </div>
+
+          <div class="full">
+            <label>Описание / Изисквания</label>
+            <textarea name="requirements" required placeholder="Опиши целта, примерни сайтове, страници, език, функционалности..."></textarea>
+            <div class="hint">* Кошницата се добавя автоматично към заявката.</div>
+          </div>
+
+          <div class="full note" id="cartPreviewNote">
+            Кошницата ти е празна. Добави пакет/екстра и после изпрати заявка за оферта.
+          </div>
+
+          <div class="full" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center;">
+            <div class="hint" style="margin:0">Всички суми са в EUR (€). VAT е по избор (в кошницата).</div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap">
+              <button type="button" class="btn" id="quoteOpenCart">Провери кошница</button>
+              <button class="btn primary" type="submit">Изпрати оферта</button>
+            </div>
+          </div>
+        </form>
       </div>
-    </section>
+    </div>
+  </section>
 
-  </main>
+  <footer>
+    <div class="wrap" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between">
+      <div>© <span id="y"></span> UZi Sait • Premium IT Services • Цени в EUR • Плащане чрез Revolut</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap">
+        <a class="btn" href="#quote">Контакт / Оферта</a>
+        <button class="btn ghost" id="openCartFooter">Кошница</button>
+      </div>
+    </div>
+  </footer>
 
-  <!-- Floating Viber -->
-  <a class="viber" href="viber://chat?number=%2B3590890219040" aria-label="Chat in Viber" title="Viber">💬</a>
+  <script>
+    // ===== Catalog (EUR) =====
+    const CATALOG = {
+      starter_site:   { id:"starter_site",   name:"Starter Site (Landing)", price:790,  type:"one_time", tag:"Web", eta:"7–10 дни" },
+      business_site:  { id:"business_site",  name:"Business Website (до 6 стр.)", price:1490, type:"one_time", tag:"Web", eta:"10–14 дни" },
+      premium_brand:  { id:"premium_brand",  name:"Premium Brand Website (до 12 стр.)", price:2900, type:"one_time", tag:"Web", eta:"14–21 дни" },
 
-<script>
-  // ========= i18n =========
-  const I18N = {
-    bg: {
-      top_sub: "Premium IT Studio • EUR • Viber • Email",
-      nav_1:"Начало", nav_2:"История", nav_3:"Услуги", nav_4:"Процес", nav_5:"AI Оферта",
-      cta_top:"Искам оферта",
+      care_basic:     { id:"care_basic",     name:"Care Basic (месечна поддръжка)", price:59,  type:"monthly", tag:"Care", eta:"месечно" },
+      care_pro:       { id:"care_pro",       name:"Care Pro (месечна поддръжка)",   price:129, type:"monthly", tag:"Care", eta:"месечно" },
+      care_elite:     { id:"care_elite",     name:"Care Elite (месечна поддръжка)", price:249, type:"monthly", tag:"Care", eta:"месечно" },
 
-      pill_b:"Luxury", pill_t:"дизайн • story-mode • оферта по имейл",
-      h1:'Ние не правим сайтове.<br>Ние създаваме <span class="grad">дигитално присъствие</span>.',
-      hero_p:"UZi Sait е premium IT студио. Работим с хора, не с “продукти”. Изчистен дизайн, бързина, доверие — и процес като презентация.",
-      cta_story:"Започни историята",
-      cta_quote:"Искам оферта",
-      chip_1:"✅ Цени в EUR (€)",
-      chip_2:"✅ Viber чат",
-      chip_3:"✅ Оферта по имейл",
-      chip_4:"✅ Плащане по Revolut линк",
-
-      panel_tag:"Studio Mode",
-      panel_h:"Тук започва доверието.",
-      panel_p:"Вместо „магазин“, правим guided experience: клиентът избира посока, а ние превеждаме идеята в реален план и оферта.",
-      start_from:"Старт (ориентир)",
-      start_hint:"Точната цена се определя след кратки уточнения.",
-
-      s2_h:'Story mode: скролваш като <span class="grad">презентация</span>.',
-      s2_p:"Всяка секция е “слайд”. Докато скролваш, получаваш ясна картина: как работим, какво доставяме и как започваме.",
-      s2_c1_h:"Фокус върху резултат", s2_c1_p:"Не дизайн заради дизайна — дизайн за доверие и конверсии.",
-      s2_c2_h:"Бързина", s2_c2_p:"Performance и оптимизация от първия ден.",
-      s2_c3_h:"Сигурност", s2_c3_p:"Бекъпи, ъпдейти, добри практики и спокойствие.",
-      s2_c4_h:"Партньорство", s2_c4_p:"Не приключваме при “publish”. Има грижа и надграждане.",
-      s2_cta:"Към услугите",
-      s2_cta2:"AI оферта",
-
-      s3_h:'Услуги, поднесени като <span class="grad">бутикова селекция</span>.',
-      s3_p:"Ясен обхват, премиум изпълнение. Цените са ориентир в EUR — точна оферта след бриф.",
-      s3_c1_h:"Изработка на сайт", s3_c1_p:"Landing / бизнес / премиум бранд, мобилно UX, SEO основа.",
-      s3_c2_h:"Поддръжка", s3_c2_p:"Ъпдейти, бекъп, мониторинг, приоритет и часове за промени.",
-      s3_c3_h:"Оптимизация", s3_c3_p:"Скорост, Core Web Vitals, техническо SEO, структура.",
-      s3_c4_h:"Интеграции", s3_c4_p:"Форми, CRM, автоматизации, плащания (Revolut линк), чат.",
-      s3_cta:"Виж процеса",
-      s3_cta2:"Започни с AI бриф",
-
-      s4_h:'Процес: кратък, ясен, <span class="grad">без шум</span>.',
-      s4_p:"Стъпки, които намаляват риска и пазят времето ти.",
-      p1_h:"Кратък бриф", p1_p:"Цел, аудитория, примери. (Можеш и с AI формата.)",
-      p2_h:"Оферта", p2_p:"Цена в EUR + срок + етапи. Всичко ясно.",
-      p3_h:"Изпълнение", p3_p:"Дизайн, разработка, оптимизация, тестове.",
-      p4_h:"Пускане + грижа", p4_p:"Публикуване, поддръжка и надграждане.",
-      pay_tag:"Payment",
-      pay_h:"Плащане чрез Revolut",
-      pay_p:"След потвърдена оферта изпращаме Revolut payment link. Бързо, сигурно, удобно (EUR).",
-      pay_hint:"* Добави твоя Revolut линк в кода (по желание).",
-      s4_cta:"Генерирай бриф с AI",
-      s4_cta2:"Обратно нагоре",
-
-      s5_h:'🤖 AI форма: кажи какво искаш да <span class="grad">постигнеш</span>.',
-      s5_p:"Пиши свободно. Ние ще генерираме кратък бриф и ориентир за пакет — и ще го изпратим по имейл.",
-      f_name:"Име / Компания",
-      f_email:"Имейл",
-      f_deadline:"Срок",
-      f_contact:"Предпочитан контакт",
-      opt_choose:"Избери…",
-      opt_norush:"Няма спешност",
-      ai_title_b:"AI",
-      ai_title_t:"асистент за бриф",
-      ai_btn:"Генерирай бриф",
-      ai_clear:"Изчисти",
-      ai_q:"Какво искаш да постигнеш?",
-      ai_out_empty:"Натисни “Генерирай бриф”, за да получиш структура, препоръка и ориентир в EUR.",
-      ai_est_label:"Ориентир (EUR)",
-      ai_hint:"* Това е ориентир. Финалната оферта се уточнява след 2–3 въпроса.",
-      f_notes:"Допълнителни бележки",
-      f_notes_hint:"Можеш да добавиш линкове към конкуренти/вдъхновение.",
-      send_hint:"Формата изпраща на: uzunov.angel@abv.bg • Цени в EUR • Viber за бързи въпроси",
-      send_btn:"Изпрати оферта",
-      back_top:"⬆️ Към началото",
-
-      footer_tag:"UZi Sait",
-      footer_h:"Premium IT Studio",
-      footer_p:"Оферти по имейл • Viber чат • EUR • Плащане чрез Revolut (линк след оферта)",
-      footer_cta:"Искам оферта",
-      footer_small:"Всички права запазени"
-    },
-
-    en: {
-      top_sub: "Premium IT Studio • EUR • Viber • Email",
-      nav_1:"Start", nav_2:"Story", nav_3:"Services", nav_4:"Process", nav_5:"AI Quote",
-      cta_top:"Get a quote",
-
-      pill_b:"Luxury", pill_t:"design • story-mode • email quote",
-      h1:'We don’t build websites.<br>We build <span class="grad">digital presence</span>.',
-      hero_p:"UZi Sait is a premium IT studio. We work with people, not “products”. Clean design, speed, trust — presented as a story.",
-      cta_story:"Start the story",
-      cta_quote:"Get a quote",
-      chip_1:"✅ Pricing in EUR (€)",
-      chip_2:"✅ Viber chat",
-      chip_3:"✅ Email quote",
-      chip_4:"✅ Revolut link payment",
-
-      panel_tag:"Studio Mode",
-      panel_h:"Trust starts here.",
-      panel_p:"Instead of a “shop”, we offer a guided experience: you choose a direction, we translate it into a plan and a quote.",
-      start_from:"Starting point",
-      start_hint:"Final pricing is defined after a short clarification.",
-
-      s2_h:'Story mode: scroll like a <span class="grad">presentation</span>.',
-      s2_p:"Each section is a slide. As you scroll, you get a clear picture of how we work and how we start.",
-      s2_c1_h:"Outcome-driven", s2_c1_p:"Not design for design — design for trust and conversion.",
-      s2_c2_h:"Speed", s2_c2_p:"Performance and optimization from day one.",
-      s2_c3_h:"Security", s2_c3_p:"Backups, updates, best practices and peace of mind.",
-      s2_c4_h:"Partnership", s2_c4_p:"We don’t stop at “publish”. We maintain and improve.",
-      s2_cta:"Go to services",
-      s2_cta2:"AI quote",
-
-      s3_h:'Services as a <span class="grad">boutique selection</span>.',
-      s3_p:"Clear scope, premium execution. Prices are indicative in EUR — final quote after the brief.",
-      s3_c1_h:"Website build", s3_c1_p:"Landing / business / premium brand, mobile UX, SEO foundation.",
-      s3_c2_h:"Maintenance", s3_c2_p:"Updates, backups, monitoring, priority support and change hours.",
-      s3_c3_h:"Optimization", s3_c3_p:"Speed, Core Web Vitals, technical SEO, structure.",
-      s3_c4_h:"Integrations", s3_c4_p:"Forms, CRM, automations, payments (Revolut link), chat.",
-      s3_cta:"See the process",
-      s3_cta2:"Start with AI brief",
-
-      s4_h:'Process: short, clear, <span class="grad">no noise</span>.',
-      s4_p:"Steps that reduce risk and save your time.",
-      p1_h:"Short brief", p1_p:"Goal, audience, examples. (You can use the AI form.)",
-      p2_h:"Quote", p2_p:"Price in EUR + timeline + milestones. Crystal clear.",
-      p3_h:"Execution", p3_p:"Design, build, optimization, QA.",
-      p4_h:"Launch + care", p4_p:"Go live, maintenance and improvements.",
-      pay_tag:"Payment",
-      pay_h:"Revolut payment",
-      pay_p:"After the quote is approved, we send a Revolut payment link. Fast, secure, convenient (EUR).",
-      pay_hint:"* Add your Revolut link in the code (optional).",
-      s4_cta:"Generate AI brief",
-      s4_cta2:"Back to top",
-
-      s5_h:'🤖 AI form: what do you want to <span class="grad">achieve</span>?',
-      s5_p:"Write freely. We generate a short brief and a recommended package — and send it by email.",
-      f_name:"Name / Company",
-      f_email:"Email",
-      f_deadline:"Timeline",
-      f_contact:"Preferred contact",
-      opt_choose:"Choose…",
-      opt_norush:"No rush",
-      ai_title_b:"AI",
-      ai_title_t:"brief assistant",
-      ai_btn:"Generate brief",
-      ai_clear:"Clear",
-      ai_q:"What do you want to achieve?",
-      ai_out_empty:"Click “Generate brief” to get a structure, recommendation and an EUR estimate.",
-      ai_est_label:"Estimate (EUR)",
-      ai_hint:"* This is indicative. Final quote comes after 2–3 questions.",
-      f_notes:"Additional notes",
-      f_notes_hint:"You can add links to inspiration or competitors.",
-      send_hint:"Form sends to: uzunov.angel@abv.bg • EUR pricing • Viber for quick questions",
-      send_btn:"Send request",
-      back_top:"⬆️ Back to start",
-
-      footer_tag:"UZi Sait",
-      footer_h:"Premium IT Studio",
-      footer_p:"Email quotes • Viber chat • EUR • Revolut link payment (after quote)",
-      footer_cta:"Get a quote",
-      footer_small:"All rights reserved"
-    }
-  };
-
-  let lang = "bg";
-  const langKey = "uzi_lang_v1";
-  const savedLang = localStorage.getItem(langKey);
-  if(savedLang === "en" || savedLang === "bg") lang = savedLang;
-
-  function applyLang(){
-    document.documentElement.lang = lang;
-    document.querySelectorAll("[data-i18n]").forEach(el=>{
-      const key = el.getAttribute("data-i18n");
-      const val = I18N[lang][key];
-      if(typeof val === "string"){
-        el.innerHTML = val;
-      }
-    });
-    document.getElementById("btnBG").classList.toggle("active", lang==="bg");
-    document.getElementById("btnEN").classList.toggle("active", lang==="en");
-  }
-  document.getElementById("btnBG").addEventListener("click", ()=>{ lang="bg"; localStorage.setItem(langKey,"bg"); applyLang(); });
-  document.getElementById("btnEN").addEventListener("click", ()=>{ lang="en"; localStorage.setItem(langKey,"en"); applyLang(); });
-
-  // ========= Story mode: dots + progress =========
-  const story = document.getElementById("story");
-  const slides = Array.from(document.querySelectorAll("[data-slide]"));
-  const dots = Array.from(document.querySelectorAll(".dot"));
-  const progress = document.getElementById("progress");
-
-  function scrollToSlide(id){
-    const el = document.getElementById(id);
-    if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
-  }
-  dots.forEach(d=>{
-    d.addEventListener("click", ()=> scrollToSlide(d.getAttribute("data-goto")));
-  });
-
-  function updateProgress(){
-    const max = story.scrollHeight - story.clientHeight;
-    const p = max <= 0 ? 0 : (story.scrollTop / max) * 100;
-    progress.style.width = `${p}%`;
-  }
-
-  // Active dot by visible slide
-  function updateActiveDot(){
-    const mid = story.scrollTop + story.clientHeight * 0.45;
-    let activeId = slides[0]?.id;
-    for(const s of slides){
-      const top = s.offsetTop;
-      const bottom = top + s.offsetHeight;
-      if(mid >= top && mid < bottom){
-        activeId = s.id;
-        break;
-      }
-    }
-    dots.forEach(dot=>{
-      dot.classList.toggle("active", dot.getAttribute("data-goto") === activeId);
-    });
-  }
-
-  story.addEventListener("scroll", ()=>{
-    updateProgress();
-    updateActiveDot();
-    runParallax();
-  }, {passive:true});
-
-  // ========= Micro-motions: reveal on scroll =========
-  const io = new IntersectionObserver((entries)=>{
-    for(const e of entries){
-      if(e.isIntersecting) e.target.classList.add("in");
-    }
-  }, { root: story, threshold: 0.18 });
-
-  document.querySelectorAll(".reveal").forEach(el=> io.observe(el));
-
-  // ========= Micro-motions: subtle parallax =========
-  function runParallax(){
-    const top = story.scrollTop;
-    document.querySelectorAll("[data-parallax]").forEach(el=>{
-      const k = parseFloat(el.getAttribute("data-parallax")) || 0.15;
-      // offset relative to viewport
-      const rect = el.getBoundingClientRect();
-      const y = (rect.top - (window.innerHeight * 0.5)) * k;
-      el.style.setProperty("--py", `${y}px`);
-    });
-  }
-
-  // ========= AI-style brief generator (offline heuristic) =========
-  // (No API needed. This is a "smart" assistant style, based on keywords + structure.)
-  const aiInput = document.getElementById("aiInput");
-  const aiOutput = document.getElementById("aiOutput");
-  const aiEstimateEl = document.getElementById("aiEstimate");
-  const aiBrief = document.getElementById("ai_brief");
-  const aiReco = document.getElementById("ai_reco");
-  const aiEst = document.getElementById("ai_est");
-
-  function moneyEUR(n){
-    const fixed = (Math.round(n*100)/100).toFixed(2);
-    return fixed.endsWith(".00") ? ("€" + fixed.slice(0,-3)) : ("€" + fixed);
-  }
-
-  function analyze(text){
-    const t = (text || "").toLowerCase();
-
-    // base packages
-    let pkg = "Starter Site";
-    let base = 790;
-
-    // signals for complexity
-    const signals = {
-      pages: /страниц|pages|sections|menu|navigation/.test(t),
-      brand: /бранд|brand|premium|lux|лукс|identity|ui|ux/.test(t),
-      multiLang: /англ|english|en\b|двуез|multi[- ]?language|language switch/.test(t),
-      ecommerce: /магазин|e-?commerce|products|checkout|cart|кошниц|плащан/.test(t),
-      booking: /резервац|booking|calendar|календар|appointment/.test(t),
-      seo: /seo|оптимизац|keywords|структур|sitemap|robots|meta/.test(t),
-      speed: /скорост|performance|core web vitals|lighthouse/.test(t),
-      crm: /crm|automation|zapier|hubspot|mailchimp|pipeline/.test(t),
-      forms: /форма|forms|lead|заявк|contact/.test(t),
-      blog: /блог|blog|news|articles/.test(t),
+      seo:            { id:"seo",            name:"SEO пакет (one-time)",           price:190, type:"one_time", tag:"SEO", eta:"2–4 дни" },
+      perf:           { id:"perf",           name:"Performance Optimization",       price:220, type:"one_time", tag:"Speed", eta:"1–3 дни" },
+      integration:    { id:"integration",    name:"Интеграция (CRM/плащания/форми)", price:180, type:"one_time", tag:"Integration", eta:"1–3 дни" },
     };
 
-    // choose package
-    if(signals.brand || signals.blog || signals.multiLang){
-      pkg = "Business Website";
-      base = 1490;
-    }
-    if(signals.brand && (signals.multiLang || signals.crm || signals.booking)){
-      pkg = "Premium Brand Website";
-      base = 2900;
-    }
+    // ===== State =====
+    const CART_KEY = "uzi_cart_v1";
+    const VAT_KEY = "uzi_vat_on_v1";
+    let cart = loadCart();
+    let vatOn = (localStorage.getItem(VAT_KEY) === "1");
 
-    // add-ons estimate
-    let addons = 0;
-    const addList = [];
+    // ===== Elements =====
+    const drawer = document.getElementById("drawer");
+    const drawerBackdrop = document.getElementById("drawerBackdrop");
+    const openCartBtns = [
+      document.getElementById("openCart"),
+      document.getElementById("openCart2"),
+      document.getElementById("openCart3"),
+      document.getElementById("openCartFooter"),
+      document.getElementById("quoteOpenCart")
+    ].filter(Boolean);
 
-    if(signals.seo){ addons += 190; addList.push("SEO пакет (~€190)"); }
-    if(signals.speed){ addons += 220; addList.push("Performance оптимизация (~€220)"); }
-    if(signals.crm){ addons += 180; addList.push("Интеграция CRM/автоматизация (~€180)"); }
-    if(signals.booking){ addons += 180; addList.push("Booking/Calendar интеграция (~€180)"); }
-    if(signals.ecommerce){ addons += 490; addList.push("E-commerce модул (ориентир ~€490+)"); }
-    if(signals.multiLang){ addons += 180; addList.push("EN версия/локализация (ориентир ~€180+)"); }
+    const closeCartBtn = document.getElementById("closeCart");
+    const cartItemsEl = document.getElementById("cartItems");
+    const cartCountEl = document.getElementById("cartCount");
+    const subtotalEl = document.getElementById("subtotal");
+    const vatEl = document.getElementById("vat");
+    const totalEl = document.getElementById("total");
+    const clearCartBtn = document.getElementById("clearCart");
+    const vatSwitch = document.getElementById("vatSwitch");
 
-    // final estimate (range-ish)
-    const estimate = base + addons;
+    const cartDetailsInput = document.getElementById("cart_details");
+    const cartTotalInput = document.getElementById("cart_total_eur");
+    const cartPreviewNote = document.getElementById("cartPreviewNote");
+    const quoteForm = document.getElementById("quoteForm");
 
-    // brief structure
-    const brief =
-`BRIEF (auto-generated)
-1) Goal:
-- ${guessGoal(t)}
+    // Footer year
+    document.getElementById("y").textContent = new Date().getFullYear();
 
-2) Audience:
-- ${guessAudience(t)}
-
-3) Key sections:
-- ${guessSections(t)}
-
-4) Recommended package:
-- ${pkg} (${moneyEUR(base)} base)
-
-5) Suggested add-ons:
-- ${addList.length ? addList.join(", ") : "None / To be уточнено"}
-
-6) Next questions:
-- ${nextQuestions(signals).join("\n- ")}
-`;
-
-    const recommendation =
-`Recommended: ${pkg}
-Indicative estimate: ${moneyEUR(estimate)} (EUR)
-Note: final quote after short clarification.`;
-
-    return { pkg, base, addons, estimate, brief, recommendation };
-  }
-
-  function guessGoal(t){
-    if(/клиент|lead|заявк|продаж|sales|clients/.test(t)) return "Generate leads / clients";
-    if(/имидж|brand|довер|trust|portfolio/.test(t)) return "Brand trust & presentation";
-    if(/информ|info|catalog|каталог/.test(t)) return "Informational / catalog presence";
-    return "Clarify during call";
-  }
-  function guessAudience(t){
-    if(/europe|европа|international|global/.test(t)) return "International / EU clients";
-    if(/bulgaria|българия|bg\b/.test(t)) return "Bulgaria-based audience";
-    return "To be уточнено";
-  }
-  function guessSections(t){
-    const parts = [];
-    if(/услуг|services/.test(t)) parts.push("Services");
-    if(/цени|pricing|packages/.test(t)) parts.push("Packages / Pricing");
-    if(/контакт|contact|форма|forms/.test(t)) parts.push("Contact / Lead form");
-    if(/за нас|about/.test(t)) parts.push("About");
-    if(/портфолио|projects|case/.test(t)) parts.push("Portfolio / Case studies");
-    if(/faq/.test(t)) parts.push("FAQ");
-    return parts.length ? parts.join(", ") : "Home + Services + Contact";
-  }
-  function nextQuestions(s){
-    const q = [];
-    q.push("Do you have a domain/hosting already?");
-    q.push("Do you prefer BG only or BG+EN?");
-    if(s.ecommerce) q.push("What products & payment method (Revolut link vs full checkout)?");
-    if(s.crm) q.push("Which CRM/tool do you use?");
-    if(s.booking) q.push("Do you need online booking or just contact requests?");
-    q.push("Any reference websites you like?");
-    return q;
-  }
-
-  document.getElementById("aiGenerate").addEventListener("click", ()=>{
-    const txt = aiInput.value.trim();
-    if(!txt){
-      aiOutput.textContent = (lang === "bg")
-        ? "Моля, опиши какво искаш да постигнеш."
-        : "Please describe what you want to achieve.";
-      aiEstimateEl.textContent = "€—";
-      return;
-    }
-
-    const res = analyze(txt);
-
-    // UI
-    aiOutput.textContent = res.brief;
-    aiEstimateEl.textContent = moneyEUR(res.estimate);
-
-    // hidden fields for email
-    aiBrief.value = res.brief;
-    aiReco.value = res.recommendation;
-    aiEst.value = moneyEUR(res.estimate);
-  });
-
-  document.getElementById("aiClear").addEventListener("click", ()=>{
-    aiInput.value = "";
-    aiOutput.textContent = I18N[lang].ai_out_empty;
-    aiEstimateEl.textContent = "€—";
-    aiBrief.value = "";
-    aiReco.value = "";
-    aiEst.value = "";
-  });
-
-  // ========= misc =========
-  // year
-  document.getElementById("y").textContent = new Date().getFullYear();
-
-  // smooth anchor scroll within story container
-  document.querySelectorAll('a[href^="#"]').forEach(a=>{
-    a.addEventListener("click",(e)=>{
-      const id = a.getAttribute("href");
-      if(!id || id === "#") return;
-      const el = document.querySelector(id);
-      if(el){
-        e.preventDefault();
-        el.scrollIntoView({behavior:"smooth", block:"start"});
-      }
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener("click",(e)=>{
+        const id = a.getAttribute("href");
+        if(!id || id === "#") return;
+        const el = document.querySelector(id);
+        if(el){ e.preventDefault(); el.scrollIntoView({behavior:"smooth"}); }
+      });
     });
-  });
 
-  // Init
-  applyLang();
-  updateProgress();
-  updateActiveDot();
-  runParallax();
-</script>
+    // ===== Drawer open/close =====
+    function openDrawer(){
+      drawer.classList.add("open");
+      drawerBackdrop.classList.add("open");
+      drawerBackdrop.setAttribute("aria-hidden","false");
+    }
+    function closeDrawer(){
+      drawer.classList.remove("open");
+      drawerBackdrop.classList.remove("open");
+      drawerBackdrop.setAttribute("aria-hidden","true");
+    }
+
+    openCartBtns.forEach(btn => btn.addEventListener("click", () => { openDrawer(); render(); }));
+    closeCartBtn.addEventListener("click", closeDrawer);
+    drawerBackdrop.addEventListener("click", closeDrawer);
+
+    // ===== Add buttons =====
+    document.querySelectorAll("[data-add]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.getAttribute("data-add");
+        addToCart(id, 1);
+        openDrawer();
+        render();
+      });
+    });
+
+    // ===== VAT toggle =====
+    function setVatUI(){
+      vatSwitch.classList.toggle("on", vatOn);
+      vatSwitch.setAttribute("aria-checked", vatOn ? "true" : "false");
+    }
+    function toggleVat(){
+      vatOn = !vatOn;
+      localStorage.setItem(VAT_KEY, vatOn ? "1" : "0");
+      setVatUI();
+      render();
+    }
+    vatSwitch.addEventListener("click", toggleVat);
+    vatSwitch.addEventListener("keydown", (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggleVat(); } });
+
+    // ===== Cart operations =====
+    function loadCart(){
+      try{
+        const raw = localStorage.getItem(CART_KEY);
+        return raw ? JSON.parse(raw) : {};
+      }catch{ return {}; }
+    }
+    function saveCart(){
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    }
+
+    function addToCart(id, qty){
+      if(!CATALOG[id]) return;
+      cart[id] = (cart[id] || 0) + qty;
+      if(cart[id] < 1) delete cart[id];
+      saveCart();
+    }
+    function setQty(id, qty){
+      if(!CATALOG[id]) return;
+      if(qty <= 0) delete cart[id];
+      else cart[id] = qty;
+      saveCart();
+    }
+    function removeItem(id){
+      delete cart[id];
+      saveCart();
+    }
+    function clearCart(){
+      cart = {};
+      saveCart();
+    }
+
+    clearCartBtn.addEventListener("click", ()=>{
+      clearCart();
+      render();
+    });
+
+    // ===== Totals =====
+    function moneyEUR(n){
+      // no Intl currency styling to keep it consistent across browsers; simple:
+      const fixed = (Math.round(n * 100) / 100).toFixed(2);
+      // remove .00 for cleaner look
+      return fixed.endsWith(".00") ? ("€" + fixed.slice(0,-3)) : ("€" + fixed);
+    }
+
+    function calc(){
+      let subtotal = 0;
+      const lines = [];
+      for(const [id, qty] of Object.entries(cart)){
+        const item = CATALOG[id];
+        if(!item) continue;
+        const line = item.price * qty;
+        subtotal += line;
+        lines.push({ id, qty, name:item.name, unit:item.price, line, type:item.type, tag:item.tag });
+      }
+      const vat = vatOn ? subtotal * 0.20 : 0;
+      const total = subtotal + vat;
+      return { subtotal, vat, total, lines };
+    }
+
+    // ===== Render cart =====
+    function render(){
+      setVatUI();
+
+      const { subtotal, vat, total, lines } = calc();
+      cartCountEl.textContent = lines.reduce((s,l)=>s+l.qty,0);
+
+      subtotalEl.textContent = moneyEUR(subtotal);
+      vatEl.textContent = moneyEUR(vat);
+      totalEl.textContent = moneyEUR(total);
+
+      // Items
+      cartItemsEl.innerHTML = "";
+      if(lines.length === 0){
+        cartItemsEl.innerHTML = `
+          <div class="note">
+            Кошницата е празна. Добави пакет или екстра от секциите „Пакети“ и „Екстри“.
+          </div>
+        `;
+      } else {
+        lines.forEach(l=>{
+          const item = CATALOG[l.id];
+          const tagClass = item.tag === "Care" ? "vio" : (item.tag === "Speed" ? "mint" : "");
+          const tag = `<span class="tag ${tagClass}" style="font-size:11.5px; padding:5px 9px">${item.tag}${item.type==="monthly" ? " • /мес" : ""}</span>`;
+
+          const el = document.createElement("div");
+          el.className = "cartItem";
+          el.innerHTML = `
+            <div class="cartTop">
+              <div>
+                <b>${escapeHtml(item.name)}</b>
+                <small>${tag} <span style="margin-left:8px; opacity:.9">Ед. цена: ${moneyEUR(item.price)}</span></small>
+              </div>
+              <button class="rm" data-rm="${item.id}">Премахни</button>
+            </div>
+
+            <div class="qtyRow">
+              <div class="qtyControls">
+                <button class="qbtn" data-dec="${item.id}" aria-label="Намали">−</button>
+                <div class="qval" id="q_${item.id}">${l.qty}</div>
+                <button class="qbtn" data-inc="${item.id}" aria-label="Увеличи">+</button>
+              </div>
+              <div class="linePrice">${moneyEUR(l.line)}</div>
+            </div>
+          `;
+          cartItemsEl.appendChild(el);
+        });
+      }
+
+      // Bind item controls
+      cartItemsEl.querySelectorAll("[data-rm]").forEach(b=>{
+        b.addEventListener("click", ()=>{ removeItem(b.getAttribute("data-rm")); render(); });
+      });
+      cartItemsEl.querySelectorAll("[data-inc]").forEach(b=>{
+        b.addEventListener("click", ()=>{
+          const id = b.getAttribute("data-inc");
+          setQty(id, (cart[id]||0)+1);
+          render();
+        });
+      });
+      cartItemsEl.querySelectorAll("[data-dec]").forEach(b=>{
+        b.addEventListener("click", ()=>{
+          const id = b.getAttribute("data-dec");
+          setQty(id, (cart[id]||0)-1);
+          render();
+        });
+      });
+
+      // Prepare quote payload
+      const cartText = buildCartText(lines, subtotal, vat, total);
+      cartDetailsInput.value = cartText;
+      cartTotalInput.value = moneyEUR(total);
+
+      // Preview note on quote section
+      if(lines.length === 0){
+        cartPreviewNote.textContent = "Кошницата ти е празна. Добави пакет/екстра и после изпрати заявка за оферта.";
+      } else {
+        cartPreviewNote.textContent =
+          `Кошница: ${lines.length} артикула • Общо: ${moneyEUR(total)} ${vatOn ? "(с VAT)" : "(без VAT)"} — при изпращане се добавя автоматично към имейла.`;
+      }
+    }
+
+    function buildCartText(lines, subtotal, vat, total){
+      const header = `UZi Sait — Детайли на кошницата (EUR)\n` +
+                     `VAT: ${vatOn ? "ON (20%)" : "OFF"}\n` +
+                     `----------------------------------------\n`;
+      const body = lines.map(l=>{
+        const suffix = (l.type === "monthly") ? " / месец" : "";
+        return `• ${l.name}${suffix}\n  Qty: ${l.qty} | Unit: €${l.unit} | Line: €${l.line}`;
+      }).join("\n\n");
+      const footer = `\n\n----------------------------------------\n` +
+                     `Subtotal: €${round2(subtotal)}\n` +
+                     `VAT: €${round2(vat)}\n` +
+                     `TOTAL: €${round2(total)}\n`;
+      return header + (body || "(Празна кошница)") + footer;
+    }
+
+    function round2(n){ return (Math.round(n*100)/100).toFixed(2); }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    // Quote validation: prevent sending if cart empty
+    quoteForm.addEventListener("submit", (e)=>{
+      const { lines } = calc();
+      if(lines.length === 0){
+        e.preventDefault();
+        openDrawer();
+        alert("Кошницата е празна. Добави пакет/екстра и после изпрати заявка за оферта.");
+        return;
+      }
+      // ensure latest payload
+      render();
+    });
+
+    // Initial render + close on Escape
+    render();
+    document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeDrawer(); });
+
+    // Also open drawer from "Искам оферта" button inside drawer
+    document.getElementById("goQuote").addEventListener("click", ()=>{ closeDrawer(); });
+
+  </script>
 </body>
 </html>
