@@ -1,25 +1,66 @@
 <!doctype html>
-<html>
+<html lang="bg">
 <head>
-<meta charset="utf-8">
-<style>
-body{
-  background:transparent;
-  font-family:system-ui;
-}
-.box{
-  position:fixed;
-  bottom:30px;
-  left:30px;
-  background:rgba(0,0,0,.75);
-  color:white;
-  padding:16px 20px;
-  border-radius:18px;
-  font-size:28px;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>OBS Overlay</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    /* Overlay: прозрачна страница */
+    body { background: transparent !important; overflow: hidden; }
+    .overlayWrap{
+      position: fixed; inset: 0;
+      display:flex; align-items:flex-end; justify-content:center;
+      padding: 40px;
+      pointer-events:none;
+    }
+    .overlayCard{
+      width:min(920px, 96vw);
+      transform: translateY(30px) scale(.98);
+      opacity:0;
+      transition: all .5s ease;
+    }
+    .overlayCard.show{
+      transform: translateY(0) scale(1);
+      opacity:1;
+    }
+    .badge{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 12px; border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      margin-bottom:10px;
+      font-weight:700;
+    }
+    .bigMsg{
+      font-size: clamp(22px, 2.6vw, 34px);
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: .2px;
+      text-shadow: 0 8px 32px rgba(0,0,0,.45);
+      word-wrap: break-word;
+    }
+    .from{
+      margin-top: 10px;
+      font-size: clamp(16px, 1.6vw, 20px);
+      opacity:.9;
+      font-weight:700;
+    }
+  </style>
 </head>
 <body>
-<div class="box">🎉 Поздравите ще се показват тук</div>
+  <audio id="notify" src="assets/audio/notify.mp3" preload="auto"></audio>
+
+  <div class="overlayWrap">
+    <div id="card" class="card overlayCard">
+      <div class="badge">🎉 LIVE ПОЗДРАВ</div>
+      <div id="msg" class="bigMsg"></div>
+      <div id="from" class="from"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/shared.js"></script>
+  <script src="assets/js/overlay.js"></script>
 </body>
 </html>
