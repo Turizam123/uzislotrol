@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Прати поздрав</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg">
+  <div class="noise"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">★</div>
+      <div class="brandText">
+        <div class="brandTitle">Прати поздрав</div>
+        <div class="brandSub">Ще се появи след одобрение</div>
+      </div>
+    </div>
+    <nav class="topActions">
+      <a class="btn ghost" href="index.html">Начало</a>
+      <a class="btn ghost" href="admin.html">Админ</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="card formCard">
+      <h2>✨ Напиши поздрав</h2>
+      <p class="muted">Добави емоджи (🎉❤️🔥😂) — разрешено е.</p>
+
+      <form id="sendForm" class="form">
+        <label class="field">
+          <span>Име / Ник</span>
+          <input id="name" maxlength="24" required placeholder="Напр. Мими" />
+        </label>
+
+        <label class="field">
+          <span>Поздрав</span>
+          <textarea id="text" maxlength="200" required placeholder="Напр. Честит рожден ден! 🎉❤️"></textarea>
+          <div class="counter"><span id="count">0</span>/200</div>
+        </label>
+
+        <div class="row">
+          <button class="btn" type="submit">Изпрати ✅</button>
+          <button class="btn ghost" type="button" id="previewBtn">Преглед</button>
+        </div>
+
+        <div class="hint">
+          След изпращане, поздравът ти отива в „чакащи“ и се показва след одобрение.
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="miniTitle">TikTok LIVE линк</div>
+      <div class="miniRow">
+        <div class="chip" id="tiktokLinkText">—</div>
+        <button class="btn tiny ghost" id="copyTiktok">Копирай</button>
+      </div>
+      <div class="hint">Сменя се от админ панела.</div>
+    </section>
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="modalBack"></div>
+    <div class="modalBox card">
+      <div class="modalTop">
+        <div class="modalTitle">Преглед</div>
+        <button class="btn tiny ghost" id="closeModal">Затвори</button>
+      </div>
+      <div class="previewMsg">
+        <div class="msgName" id="pvName"></div>
+        <div class="msgText" id="pvText"></div>
+      </div>
+      <div class="hint">Така ще изглежда след одобрение.</div>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/shared.js"></script>
+  <script src="assets/js/send.js"></script>
+</body>
+</html>
