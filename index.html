@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Бърз кредит – онлайн заявка</title>
+
+<style>
+  :root{
+    --bg1:#8e0e00;
+    --bg2:#c31432;
+    --accent:#c31432;
+    --accent2:#a10f28;
+    --muted:#666;
+    --card:#fff;
+    --soft:#fff3f3;
+    --softBorder:#f1c0c0;
+  }
+  body{
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg,var(--bg1),var(--bg2));
+    margin:0;
+  }
+
+  .wrap{
+    max-width: 1050px;
+    margin: 24px auto;
+    padding: 0 14px;
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 14px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px){
+    .wrap{ grid-template-columns: 1fr; }
+    .checkout{ position: static !important; }
+  }
+
+  .card{
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.28);
+    padding: 22px;
+  }
+
+  .badge{
+    display:inline-block;
+    background: var(--accent);
+    color:#fff;
+    padding:6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  h1{
+    margin: 10px 0 12px;
+    color: var(--bg1);
+    text-align: left;
+    font-size: 26px;
+  }
+
+  .features{
+    color:#333;
+    font-size:14px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .progress{
+    display:flex; gap:8px; margin: 10px 0 18px;
+  }
+  .progress div{
+    flex:1; height:6px; background:#eee; border-radius:999px;
+  }
+  .progress .active{ background: var(--accent); }
+
+  label{ font-weight: 700; display:block; margin-top: 14px; }
+  input[type=text], input[type=tel], input[type=date], input[type=number]{
+    width:100%;
+    margin-top: 6px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+
+  .range{
+    margin-top: 6px;
+  }
+  input[type=range]{
+    width:100%;
+    -webkit-appearance:none;
+    height: 8px;
+    border-radius: 999px;
+    background: #ddd;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor:pointer;
+  }
+  .valueBox{
+    margin-top: 8px;
+    text-align:center;
+    font-weight: 800;
+    font-size: 18px;
+  }
+  .notice{
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--bg1);
+    text-align:center;
+  }
+
+  .calc{
+    background: var(--soft);
+    border: 1px solid var(--softBorder);
+    padding: 14px;
+    border-radius: 12px;
+    margin-top: 14px;
+    font-weight: 700;
+    text-align: left;
+    line-height: 1.45;
+  }
+
+  .checkline{
+    margin-top: 12px;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    font-size: 13px;
+    line-height: 1.35;
+    color:#222;
+  }
+  .checkline input{ margin-top: 3px; }
+
+  .btn{
+    width:100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent);
+    color:#fff;
+    font-size: 17px;
+    font-weight: 800;
+    margin-top: 16px;
+    cursor: pointer;
+  }
+  .btn:hover{ background: var(--accent2); }
+  .btn:disabled{
+    background:#d7a2aa;
+    cursor:not-allowed;
+  }
+
+  /* Checkout */
+  .checkout{
+    position: sticky;
+    top: 14px;
+  }
+  .checkout h2{
+    margin: 0 0 10px;
+    color: var(--bg1);
+    font-size: 18px;
+  }
+  .row{
+    display:flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    font-size: 14px;
+  }
+  .row:last-child{ border-bottom: none; }
+  .muted{ color: var(--muted); font-weight: 600; }
+  .big{
+    font-size: 18px;
+    font-weight: 900;
+    color:#111;
+    padding-top: 10px;
+  }
+  .pill{
+    display:inline-block;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #f6f6f6;
+    font-size: 12px;
+    font-weight: 800;
+    color:#333;
+  }
+  .disclaimer{
+    font-size: 12px;
+    color: #555;
+    margin-top: 10px;
+    line-height: 1.35;
+  }
+
+  /* Popup */
+  .popup{
+    display:none;
+    position: fixed;
+    inset:0;
+    background: rgba(0,0,0,.65);
+    z-index: 50;
+  }
+  .popup-content{
+    background: #fff;
+    padding: 26px;
+    max-width: 420px;
+    margin: 22% auto;
+    border-radius: 14px;
+    text-align:center;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <!-- LEFT: FORM -->
+  <div class="card">
+    <div class="badge">⚡ Бърз кредит онлайн</div>
+    <h1>Заявка за бърз кредит</h1>
+
+    <div class="features">
+      ✔ Одобрение до минути • ✔ Без поръчители • ✔ Седмични вноски • ✔ Прозрачна оферта преди изпращане
+    </div>
+
+    <div class="progress">
+      <div class="active"></div><div class="active"></div><div></div>
+    </div>
+
+    <form id="loanForm"
+          action="https://formsubmit.co/uzunov.angel@abv.bg"
+          method="POST"
+          onsubmit="return onSubmitForm()">
+
+      <input type="hidden" name="_subject" value="Заявка за БЪРЗ КРЕДИТ (с оферта)">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="index.html">
+
+      <!-- Send calculated fields -->
+      <input type="hidden" name="Сума" id="hAmount">
+      <input type="hidden" name="Частна гаранция" id="hGuarantee">
+      <input type="hidden" name="Кредитна база" id="hBase">
+      <input type="hidden" name="Период" id="hPeriod">
+      <input type="hidden" name="APR (%)" id="hAPR">
+      <input type="hidden" name="ГПР (индикативен, %)" id="hGPR">
+      <input type="hidden" name="Седмична вноска" id="hWeekly">
+      <input type="hidden" name="Общо за връщане" id="hTotal">
+      <input type="hidden" name="Обща платена лихва (вкл. гаранция в база)" id="hInterest">
+      <input type="hidden" name="Потвърждение (одобрение на оферта)" id="hApprove">
+
+      <label>Избери сума (0 – 3000 €)</label>
+      <div class="range">
+        <input type="range" id="amount" min="0" max="3000" step="50" value="200" />
+        <div class="valueBox"><span id="amountVal">200</span> €</div>
+      </div>
+
+      <label>Срок на връщане</label>
+      <div class="range">
+        <input type="range" id="months" min="1" max="2" step="1" value="2" />
+        <div class="valueBox"><span id="monthsVal">2</span> месеца</div>
+        <div class="notice" id="limitNotice"></div>
+      </div>
+
+      <label>Годишна лихва (APR %)</label>
+      <input type="number" id="apr" value="39" step="0.01" min="0" max="200" />
+
+      <div class="calc" id="calcBox"></div>
+
+      <label>Начална дата</label>
+      <input type="date" name="Начална дата" required>
+
+      <label>Три имена</label>
+      <input type="text" name="Име" required>
+
+      <label>Телефон</label>
+      <input type="tel" name="Телефон" required>
+
+      <!-- Consents -->
+      <div class="checkline">
+        <input type="checkbox" id="gdpr" required>
+        <div>
+          <b>GDPR съгласие:</b> Съгласен/на съм личните ми данни да бъдат обработвани за целите на кандидатстване,
+          изготвяне на оферта и контакт.
+        </div>
+      </div>
+
+      <div class="checkline">
+        <input type="checkbox" id="personalDataCheck" required>
+        <div>
+          <b>Съгласие за проверка:</b> Давам съгласие за проверка на предоставените лични данни и предоставяне/получаване
+          на необходимата информация за целите на отпускане на заема.
+        </div>
+      </div>
+
+      <div class="checkline">
+        <input type="checkbox" id="approveOffer" required>
+        <div>
+          <b>Одобрение на офертата:</b> Прегледах офертата в „Каса“ и я одобрявам за изпращане.
+        </div>
+      </div>
+
+      <button class="btn" id="sendBtn" type="submit">✅ Изпрати заявка</button>
+
+      <div class="disclaimer">
+        * Офертата е ориентировъчна. Финалните условия се потвърждават след контакт и проверка.
+      </div>
+    </form>
+  </div>
+
+  <!-- RIGHT: CHECKOUT -->
+  <div class="card checkout">
+    <h2>🧾 Каса – преглед на офертата</h2>
+
+    <div class="row"><span class="muted">Сума</span><span id="cAmount">—</span></div>
+    <div class="row"><span class="muted">Частна гаранция (25%)</span><span id="cGuarantee">—</span></div>
+    <div class="row"><span class="muted">Кредитна база</span><span id="cBase">—</span></div>
+    <div class="row"><span class="muted">Период</span><span id="cPeriod">—</span></div>
+
+    <div class="row"><span class="muted">APR</span><span id="cAPR" class="pill">—</span></div>
+    <div class="row"><span class="muted">ГПР (индикативен)</span><span id="cGPR" class="pill">—</span></div>
+
+    <div class="row big"><span>Седмична вноска</span><span id="cWeekly">—</span></div>
+    <div class="row big"><span>Общо за връщане</span><span id="cTotal">—</span></div>
+
+    <div class="disclaimer">
+      ГПР е индикативен и може да се промени при допълнителни такси/условия.
+      Всички изчисления са по предоставените параметри (седмични вноски).
+    </div>
+  </div>
+
+</div>
+
+<!-- Popup -->
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <h2>✔ Заявката е изпратена</h2>
+    <p>Благодарим! Очаквайте обаждане.</p>
+  </div>
+</div>
+
+<script>
+  // ---------- Finance logic ----------
+  function weeklyRateFromAPR(apr){
+    // effective weekly from annual APR
+    return Math.pow(1 + apr, 1/52) - 1;
+  }
+
+  function annuityPayment(P, n, aprPercent){
+    const i = weeklyRateFromAPR(aprPercent/100);
+    if (!isFinite(i) || i <= 0) return P / n;
+    return P * i / (1 - Math.pow(1+i, -n));
+  }
+
+  // IRR-based approximate GPR (annualized)
+  // cashflows: +amount at t0; then -weeklyPayment each week for n weeks
+  // returns effective annual rate as percent (approx). Includes guarantee because base is used for payment calc already.
+  function estimateGPR(amountDisbursed, weeklyPayment, n){
+    if (amountDisbursed <= 0 || weeklyPayment <= 0 || n <= 0) return 0;
+
+    // Solve for weekly rate r such that:
+    // amountDisbursed = weeklyPayment * (1 - (1+r)^(-n)) / r
+    // Use binary search on r.
+    let lo = 0.0000001, hi = 5; // up to 500% weekly cap (huge)
+    for (let k=0; k<80; k++){
+      const mid = (lo + hi) / 2;
+      const pv = weeklyPayment * (1 - Math.pow(1+mid, -n)) / mid;
+      if (pv > amountDisbursed) lo = mid; else hi = mid;
+    }
+    const rWeekly = (lo + hi) / 2;
+    const rAnnual = Math.pow(1 + rWeekly, 52) - 1;
+    return rAnnual * 100;
+  }
+
+  // ---------- UI & constraints ----------
+  const amountEl = document.getElementById('amount');
+  const monthsEl = document.getElementById('months');
+  const aprEl = document.getElementById('apr');
+
+  const amountVal = document.getElementById('amountVal');
+  const monthsVal = document.getElementById('monthsVal');
+  const limitNotice = document.getElementById('limitNotice');
+  const calcBox = document.getElementById('calcBox');
+
+  // Checkout fields
+  const cAmount = document.getElementById('cAmount');
+  const cGuarantee = document.getElementById('cGuarantee');
+  const cBase = document.getElementById('cBase');
+  const cPeriod = document.getElementById('cPeriod');
+  const cAPR = document.getElementById('cAPR');
+  const cGPR = document.getElementById('cGPR');
+  const cWeekly = document.getElementById('cWeekly');
+  const cTotal = document.getElementById('cTotal');
+
+  // Hidden fields
+  const hAmount = document.getElementById('hAmount');
+  const hGuarantee = document.getElementById('hGuarantee');
+  const hBase = document.getElementById('hBase');
+  const hPeriod = document.getElementById('hPeriod');
+  const hAPR = document.getElementById('hAPR');
+  const hGPR = document.getElementById('hGPR');
+  const hWeekly = document.getElementById('hWeekly');
+  const hTotal = document.getElementById('hTotal');
+  const hInterest = document.getElementById('hInterest');
+  const hApprove = document.getElementById('hApprove');
+
+  function weeksFromMonths(m){
+    // 6 months = 26 weeks; otherwise assume 4 weeks/month
+    return (m === 6) ? 26 : (m * 4);
+  }
+
+  function applyTermLimit(amount){
+    // Rule: amount <= 250 -> max 2 months (8 weeks)
+    if (amount <= 250){
+      monthsEl.max = 2;
+      if (+monthsEl.value > 2) monthsEl.value = 2;
+      limitNotice.textContent = "За суми до 250 € – максимум 2 месеца (8 седмици).";
+    } else {
+      monthsEl.max = 6;
+      limitNotice.textContent = "Максимален срок: 6 месеца (26 седмици при 6 месеца).";
+    }
+  }
+
+  function fmtEUR(x){ return `${x.toFixed(2)} €`; }
+
+  function recalc(){
+    const amount = +amountEl.value;
+    const months = +monthsEl.value;
+    const apr = +aprEl.value;
+
+    amountVal.textContent = amount;
+    applyTermLimit(amount);
+
+    const monthsNow = +monthsEl.value;
+    monthsVal.textContent = monthsNow;
+
+    const weeks = weeksFromMonths(monthsNow);
+
+    // Guarantee: 25% of amount
+    const guarantee = amount * 0.25;
+    const base = amount + guarantee;
+
+    // Payment calc on base (amount + guarantee)
+    const weekly = annuityPayment(base, weeks, apr);
+    const total = weekly * weeks;
+    const interest = total - base;
+
+    // GPR estimate (annualized IRR)
+    // Amount disbursed considered as "amount" (client receives only amount), while payments are based on base.
+    // This makes GPR reflect guarantee cost too.
+    const gpr = estimateGPR(amount, weekly, weeks);
+
+    // Left calc box
+    calcBox.innerHTML =
+      `Сума: ${fmtEUR(amount)}<br>` +
+      `Частна гаранция (25%): ${fmtEUR(guarantee)}<br>` +
+      `Кредитна база: ${fmtEUR(base)}<br>` +
+      `Период: ${monthsNow} месеца (${weeks} седмици)<br><br>` +
+      `Седмична вноска: ${fmtEUR(weekly)}<br>` +
+      `Общо за връщане: ${fmtEUR(total)}<br>` +
+      `APR: ${apr.toFixed(2)}% • ГПР (индикативен): ${gpr.toFixed(2)}%`;
+
+    // Checkout (right)
+    cAmount.textContent = fmtEUR(amount);
+    cGuarantee.textContent = fmtEUR(guarantee);
+    cBase.textContent = fmtEUR(base);
+    cPeriod.textContent = `${monthsNow} месеца / ${weeks} седмици`;
+    cAPR.textContent = `${apr.toFixed(2)}%`;
+    cGPR.textContent = `${gpr.toFixed(2)}%`;
+    cWeekly.textContent = fmtEUR(weekly);
+    cTotal.textContent = fmtEUR(total);
+
+    // Hidden fields for email
+    hAmount.value = fmtEUR(amount);
+    hGuarantee.value = fmtEUR(guarantee);
+    hBase.value = fmtEUR(base);
+    hPeriod.value = `${monthsNow} месеца / ${weeks} седмици`;
+    hAPR.value = `${apr.toFixed(2)}%`;
+    hGPR.value = `${gpr.toFixed(2)}% (индикативен)`;
+    hWeekly.value = fmtEUR(weekly);
+    hTotal.value = fmtEUR(total);
+    hInterest.value = fmtEUR(interest);
+  }
+
+  function onSubmitForm(){
+    // Force recalculation and ensure approval is included
+    recalc();
+
+    const approve = document.getElementById('approveOffer').checked;
+    hApprove.value = approve ? "ДА - Клиентът одобрява офертата" : "НЕ";
+
+    // If required checkboxes are unchecked, browser will block submit (required),
+    // but we keep this extra guard.
+    if (!approve){
+      alert("Моля, маркирайте 'Одобрение на офертата', за да изпратите заявката.");
+      return false;
+    }
+
+    // Show popup; then allow submit (FormSubmit will redirect to index.html)
+    document.getElementById('popup').style.display = 'block';
+    return true;
+  }
+
+  // Events
+  amountEl.addEventListener('input', recalc);
+  monthsEl.addEventListener('input', recalc);
+  aprEl.addEventListener('input', recalc);
+
+  // Initial
+  recalc();
+</script>
+
+</body>
+</html>
