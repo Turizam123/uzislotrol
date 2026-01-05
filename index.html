@@ -961,6 +961,9 @@
 
   // Submit handler (do BOTH: optional DB + email fallback)
   form.addEventListener('submit', async (e)=>{
+    const appId = makeAppId();
+hAppId.value = appId;
+cAppId.textContent = appId;
     // Let browser check required checkboxes in step 4
     // But we still validate step 4 essentials:
     recalc();
