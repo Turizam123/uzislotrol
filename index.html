@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Бърз кредит – онлайн заявка</title>
+<title>Бърз кредит – онлайн заявка (V2)</title>
 
 <style>
   :root{
@@ -15,35 +15,35 @@
     --card:#fff;
     --soft:#fff3f3;
     --softBorder:#f1c0c0;
+    --ok:#0f7a3a;
+    --warn:#a85b00;
+    --bad:#a10f28;
+    --shadow: 0 15px 40px rgba(0,0,0,.28);
   }
   body{
     font-family: Arial, Helvetica, sans-serif;
     background: linear-gradient(135deg,var(--bg1),var(--bg2));
     margin:0;
   }
-
   .wrap{
-    max-width: 1050px;
+    max-width: 1100px;
     margin: 24px auto;
     padding: 0 14px;
     display: grid;
-    grid-template-columns: 1fr 360px;
+    grid-template-columns: 1fr 380px;
     gap: 14px;
     align-items: start;
   }
-
-  @media (max-width: 900px){
+  @media (max-width: 980px){
     .wrap{ grid-template-columns: 1fr; }
     .checkout{ position: static !important; }
   }
-
   .card{
     background: var(--card);
     border-radius: 14px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.28);
+    box-shadow: var(--shadow);
     padding: 22px;
   }
-
   .badge{
     display:inline-block;
     background: var(--accent);
@@ -53,31 +53,54 @@
     font-size: 13px;
     margin-bottom: 8px;
   }
-
   h1{
-    margin: 10px 0 12px;
+    margin: 10px 0 10px;
     color: var(--bg1);
     text-align: left;
     font-size: 26px;
   }
-
   .features{
     color:#333;
     font-size:14px;
     line-height: 1.5;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
-  .progress{
-    display:flex; gap:8px; margin: 10px 0 18px;
+  /* Wizard */
+  .stepper{
+    display:flex; gap:10px; align-items:center; margin: 10px 0 14px;
+    flex-wrap: wrap;
   }
-  .progress div{
-    flex:1; height:6px; background:#eee; border-radius:999px;
+  .stepDot{
+    width: 30px; height: 30px; border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    background:#eee; color:#444; font-weight: 900; font-size: 13px;
   }
-  .progress .active{ background: var(--accent); }
+  .stepDot.active{ background: var(--accent); color:#fff; }
+  .stepDot.done{ background: var(--ok); color:#fff; }
+  .stepLabel{ font-size: 13px; color:#222; font-weight: 800; }
+  .stepLine{
+    flex:1; height: 4px; border-radius: 999px; background:#eee;
+    min-width: 40px;
+  }
+  .stepLine.active{ background: var(--accent); }
+  .stepLine.done{ background: var(--ok); }
+
+  .wizard{
+    margin-top: 8px;
+  }
+  .step{
+    display:none;
+    animation: fade .18s ease-in;
+  }
+  .step.active{ display:block; }
+  @keyframes fade{
+    from{ opacity: .4; transform: translateY(4px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
 
   label{ font-weight: 700; display:block; margin-top: 14px; }
-  input[type=text], input[type=tel], input[type=date], input[type=number]{
+  input[type=text], input[type=tel], input[type=date], input[type=number], select{
     width:100%;
     margin-top: 6px;
     padding: 12px;
@@ -87,9 +110,7 @@
     box-sizing: border-box;
   }
 
-  .range{
-    margin-top: 6px;
-  }
+  .range{ margin-top: 6px; }
   input[type=range]{
     width:100%;
     -webkit-appearance:none;
@@ -108,7 +129,7 @@
   .valueBox{
     margin-top: 8px;
     text-align:center;
-    font-weight: 800;
+    font-weight: 900;
     font-size: 18px;
   }
   .notice{
@@ -124,9 +145,45 @@
     padding: 14px;
     border-radius: 12px;
     margin-top: 14px;
-    font-weight: 700;
+    font-weight: 800;
     text-align: left;
     line-height: 1.45;
+  }
+
+  .assistant{
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 14px;
+    border-radius: 12px;
+    margin-top: 10px;
+    line-height: 1.45;
+  }
+  .assistant b{ color: #111; }
+  .hintOk{ color: var(--ok); font-weight: 900; }
+  .hintWarn{ color: var(--warn); font-weight: 900; }
+  .hintBad{ color: var(--bad); font-weight: 900; }
+
+  .mini{
+    font-size: 13px;
+    color:#333;
+    margin-top: 8px;
+    line-height: 1.35;
+  }
+  .tiprow{
+    margin-top: 10px;
+    display:flex;
+    gap:8px;
+    flex-wrap: wrap;
+  }
+  .pill{
+    display:inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #f6f6f6;
+    font-size: 12px;
+    font-weight: 900;
+    color:#333;
+    cursor: default;
   }
 
   .checkline{
@@ -140,6 +197,11 @@
   }
   .checkline input{ margin-top: 3px; }
 
+  .btnRow{
+    display:flex;
+    gap:10px;
+    margin-top: 16px;
+  }
   .btn{
     width:100%;
     padding: 14px;
@@ -147,15 +209,26 @@
     border-radius: 12px;
     background: var(--accent);
     color:#fff;
-    font-size: 17px;
-    font-weight: 800;
-    margin-top: 16px;
+    font-size: 16px;
+    font-weight: 900;
     cursor: pointer;
   }
   .btn:hover{ background: var(--accent2); }
+  .btn.secondary{
+    background: #f1f1f1;
+    color:#111;
+  }
+  .btn.secondary:hover{ background:#e7e7e7; }
   .btn:disabled{
     background:#d7a2aa;
     cursor:not-allowed;
+  }
+
+  .disclaimer{
+    font-size: 12px;
+    color: #555;
+    margin-top: 10px;
+    line-height: 1.35;
   }
 
   /* Checkout */
@@ -177,27 +250,28 @@
     font-size: 14px;
   }
   .row:last-child{ border-bottom: none; }
-  .muted{ color: var(--muted); font-weight: 600; }
+  .muted{ color: var(--muted); font-weight: 800; }
   .big{
     font-size: 18px;
     font-weight: 900;
     color:#111;
     padding-top: 10px;
   }
-  .pill{
-    display:inline-block;
-    padding: 5px 10px;
-    border-radius: 999px;
-    background: #f6f6f6;
-    font-size: 12px;
-    font-weight: 800;
-    color:#333;
-  }
-  .disclaimer{
+  .disclaimerBox{
     font-size: 12px;
     color: #555;
     margin-top: 10px;
     line-height: 1.35;
+  }
+  .kpi{
+    display:flex;
+    gap:10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .kpi .pill{
+    background: #fff3f3;
+    border: 1px solid #f1c0c0;
   }
 
   /* Popup */
@@ -207,14 +281,28 @@
     inset:0;
     background: rgba(0,0,0,.65);
     z-index: 50;
+    padding: 16px;
   }
   .popup-content{
     background: #fff;
     padding: 26px;
-    max-width: 420px;
-    margin: 22% auto;
+    max-width: 520px;
+    margin: 12vh auto;
     border-radius: 14px;
-    text-align:center;
+    text-align:left;
+    box-shadow: var(--shadow);
+  }
+  .popup-content h2{ margin:0 0 8px; color: var(--bg1); }
+  .popup-content .small{ color:#444; font-size: 13px; line-height: 1.45; }
+  .closeBtn{
+    margin-top: 14px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: #f1f1f1;
+    cursor:pointer;
+    font-weight: 900;
   }
 </style>
 </head>
@@ -223,29 +311,43 @@
 
 <div class="wrap">
 
-  <!-- LEFT: FORM -->
+  <!-- LEFT -->
   <div class="card">
-    <div class="badge">⚡ Бърз кредит онлайн</div>
+    <div class="badge">⚡ Бърз кредит онлайн (V2)</div>
     <h1>Заявка за бърз кредит</h1>
 
     <div class="features">
       ✔ Одобрение до минути • ✔ Без поръчители • ✔ Седмични вноски • ✔ Прозрачна оферта преди изпращане
+      <div class="mini">
+        Тази заявка е за <b>изготвяне на ориентировъчна оферта</b>. Финалните условия се потвърждават след контакт и проверка.
+      </div>
     </div>
 
-    <div class="progress">
-      <div class="active"></div><div class="active"></div><div></div>
+    <!-- Stepper -->
+    <div class="stepper" id="stepper">
+      <div class="stepDot" id="dot1">1</div><div class="stepLabel">Оферта</div><div class="stepLine" id="line1"></div>
+      <div class="stepDot" id="dot2">2</div><div class="stepLabel">Профил</div><div class="stepLine" id="line2"></div>
+      <div class="stepDot" id="dot3">3</div><div class="stepLabel">Данни</div><div class="stepLine" id="line3"></div>
+      <div class="stepDot" id="dot4">4</div><div class="stepLabel">Потвърждение</div>
     </div>
 
     <form id="loanForm"
           action="https://formsubmit.co/uzunov.angel@abv.bg"
-          method="POST"
-          onsubmit="return onSubmitForm()">
+          method="POST">
 
-      <input type="hidden" name="_subject" value="Заявка за БЪРЗ КРЕДИТ (с оферта)">
+      <!-- FormSubmit setup -->
+      <input type="hidden" name="_subject" value="Заявка за БЪРЗ КРЕДИТ (V2 с оферта)">
       <input type="hidden" name="_captcha" value="false">
       <input type="hidden" name="_next" value="index.html">
 
-      <!-- Send calculated fields -->
+      <!-- Tracking / audit -->
+      <input type="hidden" name="Номер на заявка" id="hAppId">
+      <input type="hidden" name="Източник (referrer)" id="hReferrer">
+      <input type="hidden" name="User Agent" id="hUA">
+      <input type="hidden" name="Часова зона" id="hTZ">
+      <input type="hidden" name="Версия условия URL" id="hTermsURL">
+
+      <!-- Offer (calculated fields) -->
       <input type="hidden" name="Сума" id="hAmount">
       <input type="hidden" name="Частна гаранция" id="hGuarantee">
       <input type="hidden" name="Кредитна база" id="hBase">
@@ -257,82 +359,176 @@
       <input type="hidden" name="Обща платена лихва (вкл. гаранция в база)" id="hInterest">
       <input type="hidden" name="Потвърждение (одобрение на оферта)" id="hApprove">
 
-      <label>Избери сума (0 – 3000 €)</label>
-      <div class="range">
-        <input type="range" id="amount" min="0" max="3000" step="50" value="200" />
-        <div class="valueBox"><span id="amountVal">200</span> €</div>
-      </div>
+      <!-- Applicant profile -->
+      <input type="hidden" name="Нетен доход (мес.)" id="hNetIncome">
+      <input type="hidden" name="Месечни разходи" id="hExpenses">
+      <input type="hidden" name="Заетост" id="hEmployment">
+      <input type="hidden" name="Цел на кредита" id="hPurpose">
 
-      <label>Срок на връщане</label>
-      <div class="range">
-        <input type="range" id="months" min="1" max="2" step="1" value="2" />
-        <div class="valueBox"><span id="monthsVal">2</span> месеца</div>
-        <div class="notice" id="limitNotice"></div>
-      </div>
+      <div class="wizard">
 
-      <label>Годишна лихва (APR %)</label>
-      <input type="number" id="apr" value="39" step="0.01" min="0" max="200" />
+        <!-- STEP 1 -->
+        <div class="step active" id="step1">
+          <label>Избери сума (0 – 3000 €)</label>
+          <div class="range">
+            <input type="range" id="amount" min="0" max="3000" step="50" value="200" />
+            <div class="valueBox"><span id="amountVal">200</span> €</div>
+          </div>
 
-      <div class="calc" id="calcBox"></div>
+          <label>Срок на връщане</label>
+          <div class="range">
+            <input type="range" id="months" min="1" max="2" step="1" value="2" />
+            <div class="valueBox"><span id="monthsVal">2</span> месеца</div>
+            <div class="notice" id="limitNotice"></div>
+          </div>
 
-      <label>Начална дата</label>
-      <input type="date" name="Начална дата" required>
+          <div class="tiprow">
+            <span class="pill" title="Годишна лихва по кредита">❓ APR</span>
+            <span class="pill" title="Индикативна обща цена (ориент.), изчислена чрез IRR">❓ ГПР</span>
+            <span class="pill" title="Гаранцията е допълнителен разход, включен в базата за вноската">❓ Частна гаранция</span>
+          </div>
 
-      <label>Три имена</label>
-      <input type="text" name="Име" required>
+          <label>Годишна лихва (APR %)</label>
+          <input type="number" id="apr" value="39" step="0.01" min="0" max="200" />
 
-      <label>Телефон</label>
-      <input type="tel" name="Телефон" required>
+          <div class="calc" id="calcBox"></div>
+          <div class="assistant" id="assistantBox"></div>
 
-      <!-- Consents -->
-      <div class="checkline">
-        <input type="checkbox" id="gdpr" required>
-        <div>
-          <b>GDPR съгласие:</b> Съгласен/на съм личните ми данни да бъдат обработвани за целите на кандидатстване,
-          изготвяне на оферта и контакт.
+          <div class="btnRow">
+            <button class="btn" type="button" id="next1">➡ Продължи</button>
+          </div>
+
+          <div class="disclaimer">
+            * Офертата е ориентировъчна. Финалните условия се потвърждават след контакт и проверка.
+          </div>
         </div>
-      </div>
 
-      <div class="checkline">
-        <input type="checkbox" id="personalDataCheck" required>
-        <div>
-          <b>Съгласие за проверка:</b> Давам съгласие за проверка на предоставените лични данни и предоставяне/получаване
-          на необходимата информация за целите на отпускане на заема.
+        <!-- STEP 2 -->
+        <div class="step" id="step2">
+          <h3 style="margin:0 0 6px; color: var(--bg1);">Профил (за по-точна оценка)</h3>
+          <div class="mini">
+            Това помага да преценим дали вноската е комфортна и да предложим по-подходящ срок/сума.
+          </div>
+
+          <label>Нетен доход (на месец, €)</label>
+          <input type="number" id="netIncome" min="0" step="10" placeholder="пример: 1200" required>
+
+          <label>Месечни разходи (ориент., €)</label>
+          <input type="number" id="monthlyExpenses" min="0" step="10" placeholder="пример: 600" required>
+
+          <label>Заетост</label>
+          <select id="employment" required>
+            <option value="" selected disabled>Избери…</option>
+            <option>Трудов договор</option>
+            <option>Самонает/Фрийланс</option>
+            <option>Пенсионер</option>
+            <option>Студент</option>
+            <option>Друго</option>
+          </select>
+
+          <label>Цел на кредита</label>
+          <select id="purpose" required>
+            <option value="" selected disabled>Избери…</option>
+            <option>Непредвиден разход</option>
+            <option>Ремонт/дом</option>
+            <option>Здраве</option>
+            <option>Пътуване</option>
+            <option>Консолидация</option>
+            <option>Друго</option>
+          </select>
+
+          <div class="assistant" id="profileAssistant"></div>
+
+          <div class="btnRow">
+            <button class="btn secondary" type="button" id="back2">⬅ Назад</button>
+            <button class="btn" type="button" id="next2">➡ Продължи</button>
+          </div>
         </div>
-      </div>
 
-      <div class="checkline">
-  <input type="checkbox" id="termsCheck" required>
-  <div>
-    <b>Общи условия:</b>
-    Запознат/а съм и приемам
-    <a href="https://turizam123.github.io/uzislotrol/terms.html"
-       target="_blank"
-       rel="noopener noreferrer">
-       Общите условия
-    </a>
-    за предоставяне на бърз кредит.
-  </div>
-</div>
+        <!-- STEP 3 -->
+        <div class="step" id="step3">
+          <h3 style="margin:0 0 6px; color: var(--bg1);">Контактни данни</h3>
 
-      <div class="checkline">
-        <input type="checkbox" id="approveOffer" required>
-        <div>
-          <b>Одобрение на офертата:</b> Прегледах офертата в „Каса“ и я одобрявам за изпращане.
+          <label>Начална дата</label>
+          <input type="date" name="Начална дата" id="startDate" required>
+
+          <label>Три имена</label>
+          <input type="text" name="Име" id="fullName" required>
+
+          <label>Телефон</label>
+          <input type="tel" name="Телефон" id="phone" placeholder="08XXXXXXXX или +359XXXXXXXXX" required>
+
+          <div class="assistant" id="contactAssistant"></div>
+
+          <div class="btnRow">
+            <button class="btn secondary" type="button" id="back3">⬅ Назад</button>
+            <button class="btn" type="button" id="next3">➡ Продължи</button>
+          </div>
         </div>
-      </div>
 
-      <button class="btn" id="sendBtn" type="submit">✅ Изпрати заявка</button>
+        <!-- STEP 4 -->
+        <div class="step" id="step4">
+          <h3 style="margin:0 0 6px; color: var(--bg1);">Потвърждение</h3>
+          <div class="mini">
+            Прегледай офертата в „Каса“ вдясно и потвърди съгласията.
+          </div>
 
-      <div class="disclaimer">
-        * Офертата е ориентировъчна. Финалните условия се потвърждават след контакт и проверка.
+          <!-- Consents -->
+          <div class="checkline">
+            <input type="checkbox" id="gdpr" required>
+            <div>
+              <b>GDPR съгласие:</b> Съгласен/на съм личните ми данни да бъдат обработвани за целите на кандидатстване,
+              изготвяне на оферта и контакт.
+            </div>
+          </div>
+
+          <div class="checkline">
+            <input type="checkbox" id="personalDataCheck" required>
+            <div>
+              <b>Съгласие за проверка:</b> Давам съгласие за проверка на предоставените лични данни и предоставяне/получаване
+              на необходимата информация за целите на отпускане на заема.
+            </div>
+          </div>
+
+          <div class="checkline">
+            <input type="checkbox" id="termsCheck" required>
+            <div>
+              <b>Общи условия:</b>
+              Запознат/а съм и приемам
+              <a href="https://turizam123.github.io/uzislotrol/terms.html"
+                 target="_blank"
+                 rel="noopener noreferrer">Общите условия</a>.
+            </div>
+          </div>
+
+          <div class="checkline">
+            <input type="checkbox" id="approveOffer" required>
+            <div>
+              <b>Одобрение на офертата:</b> Прегледах офертата в „Каса“ и я одобрявам за изпращане.
+            </div>
+          </div>
+
+          <button class="btn" id="sendBtn" type="submit">✅ Изпрати заявка</button>
+
+          <div class="disclaimer">
+            * Офертата е ориентировъчна. Финалните условия се потвърждават след контакт и проверка.
+          </div>
+
+          <div class="btnRow">
+            <button class="btn secondary" type="button" id="back4">⬅ Назад</button>
+          </div>
+        </div>
+
       </div>
     </form>
+
   </div>
 
   <!-- RIGHT: CHECKOUT -->
   <div class="card checkout">
     <h2>🧾 Каса – преглед на офертата</h2>
+
+    <div class="row"><span class="muted">Номер заявка</span><span id="cAppId" class="pill">—</span></div>
 
     <div class="row"><span class="muted">Сума</span><span id="cAmount">—</span></div>
     <div class="row"><span class="muted">Частна гаранция (25%)</span><span id="cGuarantee">—</span></div>
@@ -345,7 +541,12 @@
     <div class="row big"><span>Седмична вноска</span><span id="cWeekly">—</span></div>
     <div class="row big"><span>Общо за връщане</span><span id="cTotal">—</span></div>
 
-    <div class="disclaimer">
+    <div class="kpi">
+      <span class="pill" id="kpiAfford">Affordability: —</span>
+      <span class="pill" id="kpiRisk">Риск: —</span>
+    </div>
+
+    <div class="disclaimerBox">
       ГПР е индикативен и може да се промени при допълнителни такси/условия.
       Всички изчисления са по предоставените параметри (седмични вноски).
     </div>
@@ -356,34 +557,35 @@
 <!-- Popup -->
 <div class="popup" id="popup">
   <div class="popup-content">
-    <h2>✔ Заявката е изпратена</h2>
-    <p>Благодарим! Очаквайте обаждане.</p>
+    <h2>✔ Заявката е подготвена за изпращане</h2>
+    <div class="small" id="popupText"></div>
+    <button class="closeBtn" id="closePopup">Затвори</button>
   </div>
 </div>
 
 <script>
+  /***************
+   * CONFIG (optional)
+   * За реален бизнес: записвай в Supabase.
+   * 1) Създай Supabase проект
+   * 2) Създай таблица "applications" (виж admin.html)
+   * 3) Попълни URL и ANON KEY тук
+   ***************/
+  const SUPABASE_URL = "";     // пример: https://xxxx.supabase.co
+  const SUPABASE_ANON = "";    // Anon public key
+
   // ---------- Finance logic ----------
   function weeklyRateFromAPR(apr){
-    // effective weekly from annual APR
     return Math.pow(1 + apr, 1/52) - 1;
   }
-
   function annuityPayment(P, n, aprPercent){
     const i = weeklyRateFromAPR(aprPercent/100);
     if (!isFinite(i) || i <= 0) return P / n;
     return P * i / (1 - Math.pow(1+i, -n));
   }
-
-  // IRR-based approximate GPR (annualized)
-  // cashflows: +amount at t0; then -weeklyPayment each week for n weeks
-  // returns effective annual rate as percent (approx). Includes guarantee because base is used for payment calc already.
   function estimateGPR(amountDisbursed, weeklyPayment, n){
     if (amountDisbursed <= 0 || weeklyPayment <= 0 || n <= 0) return 0;
-
-    // Solve for weekly rate r such that:
-    // amountDisbursed = weeklyPayment * (1 - (1+r)^(-n)) / r
-    // Use binary search on r.
-    let lo = 0.0000001, hi = 5; // up to 500% weekly cap (huge)
+    let lo = 0.0000001, hi = 5;
     for (let k=0; k<80; k++){
       const mid = (lo + hi) / 2;
       const pv = weeklyPayment * (1 - Math.pow(1+mid, -n)) / mid;
@@ -394,7 +596,29 @@
     return rAnnual * 100;
   }
 
-  // ---------- UI & constraints ----------
+  // ---------- Helpers ----------
+  function weeksFromMonths(m){
+    return (m === 6) ? 26 : (m * 4);
+  }
+  function fmtEUR(x){ return `${x.toFixed(2)} €`; }
+  function phoneLooksValid(p){
+    const s = (p||"").trim().replace(/\s+/g,'');
+    return /^(\+359|00359|0)\d{8,9}$/.test(s);
+  }
+  function genId(){
+    return 'APP-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2,7).toUpperCase();
+  }
+  function affordabilityHint(weekly, netIncome){
+    if (!netIncome || netIncome <= 0) return null;
+    const weeklyIncomeApprox = (netIncome * 12) / 52;
+    const ratio = weekly / weeklyIncomeApprox;
+    return { weeklyIncomeApprox, ratio };
+  }
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+  // ---------- UI elements ----------
+  const form = document.getElementById('loanForm');
+
   const amountEl = document.getElementById('amount');
   const monthsEl = document.getElementById('months');
   const aprEl = document.getElementById('apr');
@@ -403,8 +627,23 @@
   const monthsVal = document.getElementById('monthsVal');
   const limitNotice = document.getElementById('limitNotice');
   const calcBox = document.getElementById('calcBox');
+  const assistantBox = document.getElementById('assistantBox');
 
-  // Checkout fields
+  // Profile
+  const netIncomeEl = document.getElementById('netIncome');
+  const expensesEl = document.getElementById('monthlyExpenses');
+  const employmentEl = document.getElementById('employment');
+  const purposeEl = document.getElementById('purpose');
+  const profileAssistant = document.getElementById('profileAssistant');
+
+  // Contact
+  const startDateEl = document.getElementById('startDate');
+  const nameEl = document.getElementById('fullName');
+  const phoneEl = document.getElementById('phone');
+  const contactAssistant = document.getElementById('contactAssistant');
+
+  // Checkout
+  const cAppId = document.getElementById('cAppId');
   const cAmount = document.getElementById('cAmount');
   const cGuarantee = document.getElementById('cGuarantee');
   const cBase = document.getElementById('cBase');
@@ -413,8 +652,16 @@
   const cGPR = document.getElementById('cGPR');
   const cWeekly = document.getElementById('cWeekly');
   const cTotal = document.getElementById('cTotal');
+  const kpiAfford = document.getElementById('kpiAfford');
+  const kpiRisk = document.getElementById('kpiRisk');
 
   // Hidden fields
+  const hAppId = document.getElementById('hAppId');
+  const hReferrer = document.getElementById('hReferrer');
+  const hUA = document.getElementById('hUA');
+  const hTZ = document.getElementById('hTZ');
+  const hTermsURL = document.getElementById('hTermsURL');
+
   const hAmount = document.getElementById('hAmount');
   const hGuarantee = document.getElementById('hGuarantee');
   const hBase = document.getElementById('hBase');
@@ -426,13 +673,48 @@
   const hInterest = document.getElementById('hInterest');
   const hApprove = document.getElementById('hApprove');
 
-  function weeksFromMonths(m){
-    // 6 months = 26 weeks; otherwise assume 4 weeks/month
-    return (m === 6) ? 26 : (m * 4);
+  const hNetIncome = document.getElementById('hNetIncome');
+  const hExpenses = document.getElementById('hExpenses');
+  const hEmployment = document.getElementById('hEmployment');
+  const hPurpose = document.getElementById('hPurpose');
+
+  // Popup
+  const popup = document.getElementById('popup');
+  const popupText = document.getElementById('popupText');
+  document.getElementById('closePopup').addEventListener('click', ()=> popup.style.display='none');
+
+  // Wizard state
+  let currentStep = 1;
+  let appId = localStorage.getItem('activeApplicationId') || genId();
+  localStorage.setItem('activeApplicationId', appId);
+  hAppId.value = appId;
+  cAppId.textContent = appId;
+
+  function setStepper(step){
+    const dots = [1,2,3,4].map(i=>document.getElementById('dot'+i));
+    const lines = [1,2,3].map(i=>document.getElementById('line'+i));
+    dots.forEach((d,i)=>{
+      const n = i+1;
+      d.classList.remove('active','done');
+      if (n < step) d.classList.add('done');
+      else if (n === step) d.classList.add('active');
+    });
+    lines.forEach((l,i)=>{
+      const n = i+1;
+      l.classList.remove('active','done');
+      if (n < step) l.classList.add('done');
+      else if (n === step) l.classList.add('active');
+    });
+
+    for (let i=1;i<=4;i++){
+      document.getElementById('step'+i).classList.toggle('active', i===step);
+    }
+    currentStep = step;
+    window.scrollTo({top: 0, behavior: 'smooth'});
   }
 
+  // Term constraints
   function applyTermLimit(amount){
-    // Rule: amount <= 250 -> max 2 months (8 weeks)
     if (amount <= 250){
       monthsEl.max = 2;
       if (+monthsEl.value > 2) monthsEl.value = 2;
@@ -443,36 +725,28 @@
     }
   }
 
-  function fmtEUR(x){ return `${x.toFixed(2)} €`; }
-
   function recalc(){
     const amount = +amountEl.value;
-    const months = +monthsEl.value;
-    const apr = +aprEl.value;
-
-    amountVal.textContent = amount;
     applyTermLimit(amount);
 
     const monthsNow = +monthsEl.value;
+    const apr = +aprEl.value;
+
+    amountVal.textContent = amount;
     monthsVal.textContent = monthsNow;
 
     const weeks = weeksFromMonths(monthsNow);
 
-    // Guarantee: 25% of amount
     const guarantee = amount * 0.25;
     const base = amount + guarantee;
 
-    // Payment calc on base (amount + guarantee)
     const weekly = annuityPayment(base, weeks, apr);
     const total = weekly * weeks;
     const interest = total - base;
 
-    // GPR estimate (annualized IRR)
-    // Amount disbursed considered as "amount" (client receives only amount), while payments are based on base.
-    // This makes GPR reflect guarantee cost too.
     const gpr = estimateGPR(amount, weekly, weeks);
 
-    // Left calc box
+    // Left calc
     calcBox.innerHTML =
       `Сума: ${fmtEUR(amount)}<br>` +
       `Частна гаранция (25%): ${fmtEUR(guarantee)}<br>` +
@@ -482,7 +756,7 @@
       `Общо за връщане: ${fmtEUR(total)}<br>` +
       `APR: ${apr.toFixed(2)}% • ГПР (индикативен): ${gpr.toFixed(2)}%`;
 
-    // Checkout (right)
+    // Checkout
     cAmount.textContent = fmtEUR(amount);
     cGuarantee.textContent = fmtEUR(guarantee);
     cBase.textContent = fmtEUR(base);
@@ -492,7 +766,7 @@
     cWeekly.textContent = fmtEUR(weekly);
     cTotal.textContent = fmtEUR(total);
 
-    // Hidden fields for email
+    // Hidden offer
     hAmount.value = fmtEUR(amount);
     hGuarantee.value = fmtEUR(guarantee);
     hBase.value = fmtEUR(base);
@@ -502,33 +776,270 @@
     hWeekly.value = fmtEUR(weekly);
     hTotal.value = fmtEUR(total);
     hInterest.value = fmtEUR(interest);
-  }
 
-  function onSubmitForm(){
-    // Force recalculation and ensure approval is included
-    recalc();
+    // Assistant messages
+    const netIncome = netIncomeEl ? +netIncomeEl.value : 0;
+    const monthlyExpenses = expensesEl ? +expensesEl.value : 0;
 
-    const approve = document.getElementById('approveOffer').checked;
-    hApprove.value = approve ? "ДА - Клиентът одобрява офертата" : "НЕ";
+    let msgs = [];
 
-    // If required checkboxes are unchecked, browser will block submit (required),
-    // but we keep this extra guard.
-    if (!approve){
-      alert("Моля, маркирайте 'Одобрение на офертата', за да изпратите заявката.");
-      return false;
+    // affordability
+    const aff = affordabilityHint(weekly, netIncome);
+    if (aff){
+      const pct = aff.ratio * 100;
+      if (pct > 40){
+        msgs.push(`<span class="hintBad">⚠ Вноската е ~${pct.toFixed(0)}% от ориентировъчния седмичен доход.</span> Помисли за по-дълъг срок или по-ниска сума.`);
+        kpiAfford.textContent = `Affordability: ${pct.toFixed(0)}% (високо)`;
+      } else if (pct > 28){
+        msgs.push(`<span class="hintWarn">⚠ Вноската е ~${pct.toFixed(0)}% от ориентировъчния седмичен доход.</span> Възможно е да се иска по-висок доход/по-дълъг срок.`);
+        kpiAfford.textContent = `Affordability: ${pct.toFixed(0)}% (средно)`;
+      } else {
+        msgs.push(`<span class="hintOk">✅ Вноската е ~${pct.toFixed(0)}% от ориентировъчния седмичен доход.</span> Това често е комфортно за много профили.`);
+        kpiAfford.textContent = `Affordability: ${pct.toFixed(0)}% (OK)`;
+      }
+    } else {
+      msgs.push(`💡 Въведи нетен доход в стъпка 2, за да получиш оценка за комфорт на вноската.`);
+      kpiAfford.textContent = `Affordability: —`;
     }
 
-    // Show popup; then allow submit (FormSubmit will redirect to index.html)
-    document.getElementById('popup').style.display = 'block';
+    // short term risk
+    if (weeks <= 8 && amount >= 1000) msgs.push(`⚠ Кратък срок при по-висока сума увеличава седмичната тежест.`);
+
+    // apr high
+    if (apr >= 80) msgs.push(`⚠ Висок APR → общата цена се увеличава осезаемо. Прегледай внимателно ГПР.`);
+
+    // expenses vs income
+    if (netIncome > 0 && monthlyExpenses > 0){
+      const free = netIncome - monthlyExpenses;
+      if (free < 0) msgs.push(`⚠ Декларираните разходи са по-високи от дохода. Това често води до отказ/по-ниска сума.`);
+      else msgs.push(`ℹ Свободен месечен ресурс (ориент.): <b>${free.toFixed(0)} €</b>.`);
+    }
+
+    // risk KPI
+    let risk = "Нисък";
+    if (apr >= 80 || (weeks <= 8 && amount >= 1000)) risk = "Повишен";
+    if (apr >= 120 || (weeks <= 4 && amount >= 1500)) risk = "Висок";
+    kpiRisk.textContent = `Риск: ${risk}`;
+
+    assistantBox.innerHTML =
+      `<b>🤝 Личен помощник</b><br>` +
+      msgs.map(m=>`• ${m}`).join('<br>') +
+      `<div class="mini">Съвет: сравни 2 срока – по-дълъг срок ↓ вноска, но ↑ обща цена.</div>`;
+
+    // profile assistant quick update
+    if (profileAssistant){
+      if (netIncome > 0 && monthlyExpenses > 0){
+        const free = netIncome - monthlyExpenses;
+        profileAssistant.innerHTML =
+          `<b>📌 Профил оценка</b><br>` +
+          `• Доход: <b>${netIncome.toFixed(0)} €</b> / Разходи: <b>${monthlyExpenses.toFixed(0)} €</b><br>` +
+          `• Свободен ресурс (ориент.): <b>${free.toFixed(0)} €</b><br>` +
+          `• Съвет: ако вноската е тежка, увеличи срока или намали сумата.`;
+      } else {
+        profileAssistant.innerHTML =
+          `<b>📌 Профил оценка</b><br>Въведи доход и разходи за по-точна оценка.`;
+      }
+    }
+  }
+
+  // Prefill audit fields
+  function initAudit(){
+    hReferrer.value = document.referrer || "(direct)";
+    hUA.value = navigator.userAgent || "";
+    try { hTZ.value = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch(e){ hTZ.value = ""; }
+    hTermsURL.value = "https://turizam123.github.io/uzislotrol/terms.html";
+  }
+
+  // Save profile to hidden fields before submit / step change
+  function syncProfileHidden(){
+    hNetIncome.value = netIncomeEl ? (netIncomeEl.value || "") : "";
+    hExpenses.value = expensesEl ? (expensesEl.value || "") : "";
+    hEmployment.value = employmentEl ? (employmentEl.value || "") : "";
+    hPurpose.value = purposeEl ? (purposeEl.value || "") : "";
+  }
+
+  // Wizard validation
+  function validateStep(step){
+    if (step === 1){
+      const amount = +amountEl.value;
+      if (!amount || amount <= 0){
+        alert("Моля, изберете сума над 0 €.");
+        return false;
+      }
+      return true;
+    }
+    if (step === 2){
+      if (!netIncomeEl.value || +netIncomeEl.value <= 0){
+        alert("Моля, въведете нетен доход.");
+        return false;
+      }
+      if (!expensesEl.value || +expensesEl.value < 0){
+        alert("Моля, въведете месечни разходи (0 или повече).");
+        return false;
+      }
+      if (!employmentEl.value){
+        alert("Моля, изберете заетост.");
+        return false;
+      }
+      if (!purposeEl.value){
+        alert("Моля, изберете цел на кредита.");
+        return false;
+      }
+      return true;
+    }
+    if (step === 3){
+      if (!startDateEl.value){
+        alert("Моля, изберете начална дата.");
+        return false;
+      }
+      if (!nameEl.value.trim()){
+        alert("Моля, въведете три имена.");
+        return false;
+      }
+      const phone = phoneEl.value || "";
+      if (!phoneLooksValid(phone)){
+        alert("Моля, въведете валиден телефон (пример: 08XXXXXXXX или +359XXXXXXXXX).");
+        return false;
+      }
+      contactAssistant.innerHTML = `<b>✅ Данните изглеждат коректни.</b><br>Следва потвърждение и изпращане.`;
+      return true;
+    }
     return true;
   }
 
-  // Events
+  // Optional: POST to Supabase (if configured)
+  async function postToSupabase(payload){
+    if (!SUPABASE_URL || !SUPABASE_ANON) return { ok:false, skipped:true };
+
+    const url = `${SUPABASE_URL}/rest/v1/applications`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_ANON,
+        "Authorization": `Bearer ${SUPABASE_ANON}`,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok){
+      const t = await res.text().catch(()=> "");
+      return { ok:false, error: t || res.statusText };
+    }
+    const data = await res.json().catch(()=> null);
+    return { ok:true, data };
+  }
+
+  // Button events
+  document.getElementById('next1').addEventListener('click', ()=>{
+    recalc();
+    if (!validateStep(1)) return;
+    setStepper(2);
+  });
+  document.getElementById('back2').addEventListener('click', ()=> setStepper(1));
+  document.getElementById('next2').addEventListener('click', ()=>{
+    recalc();
+    if (!validateStep(2)) return;
+    syncProfileHidden();
+    setStepper(3);
+  });
+  document.getElementById('back3').addEventListener('click', ()=> setStepper(2));
+  document.getElementById('next3').addEventListener('click', ()=>{
+    recalc();
+    if (!validateStep(3)) return;
+    syncProfileHidden();
+    setStepper(4);
+  });
+  document.getElementById('back4').addEventListener('click', ()=> setStepper(3));
+
+  // Recalc events
   amountEl.addEventListener('input', recalc);
   monthsEl.addEventListener('input', recalc);
   aprEl.addEventListener('input', recalc);
+  if (netIncomeEl) netIncomeEl.addEventListener('input', recalc);
+  if (expensesEl) expensesEl.addEventListener('input', recalc);
 
-  // Initial
+  // Submit handler (do BOTH: optional DB + email fallback)
+  form.addEventListener('submit', async (e)=>{
+    // Let browser check required checkboxes in step 4
+    // But we still validate step 4 essentials:
+    recalc();
+    syncProfileHidden();
+
+    const approve = document.getElementById('approveOffer').checked;
+    hApprove.value = approve ? "ДА - Клиентът одобрява офертата" : "НЕ";
+    if (!approve){
+      e.preventDefault();
+      alert("Моля, маркирайте 'Одобрение на офертата', за да изпратите заявката.");
+      return;
+    }
+
+    // Prepare payload for DB
+    const payload = {
+      app_id: appId,
+      status: "received",
+      created_at: new Date().toISOString(),
+      applicant_name: nameEl.value.trim(),
+      phone: (phoneEl.value||"").trim(),
+      start_date: startDateEl.value,
+      amount: +amountEl.value,
+      months: +monthsEl.value,
+      weeks: weeksFromMonths(+monthsEl.value),
+      apr: +aprEl.value,
+      gpr_est: parseFloat((document.getElementById('cGPR').textContent || "0").replace('%','')) || 0,
+      guarantee: (+amountEl.value) * 0.25,
+      base: (+amountEl.value) * 1.25,
+      weekly_payment: parseFloat((document.getElementById('cWeekly').textContent || "0").replace('€','')) || 0,
+      total_payable: parseFloat((document.getElementById('cTotal').textContent || "0").replace('€','')) || 0,
+      net_income: +(netIncomeEl.value||0),
+      monthly_expenses: +(expensesEl.value||0),
+      employment: employmentEl.value,
+      purpose: purposeEl.value,
+      consents: {
+        gdpr: document.getElementById('gdpr').checked,
+        personal_data_check: document.getElementById('personalDataCheck').checked,
+        terms: document.getElementById('termsCheck').checked,
+        approve_offer: approve,
+        terms_url: hTermsURL.value
+      },
+      meta: {
+        referrer: hReferrer.value,
+        user_agent: hUA.value,
+        timezone: hTZ.value
+      }
+    };
+
+    // Save snapshot locally (support)
+    try{
+      localStorage.setItem('lastLoanApplication', JSON.stringify(payload));
+    } catch(err){}
+
+    // Try DB
+    let dbResult = { ok:false, skipped:true };
+    try{
+      dbResult = await postToSupabase(payload);
+    } catch(err){
+      dbResult = { ok:false, error: String(err) };
+    }
+
+    // Show popup (does NOT block submit; it’s just feedback)
+    popupText.innerHTML =
+      `Номер на заявка: <b>${appId}</b><br>` +
+      (dbResult.ok ? `<span class="hintOk">✅ Записано в системата.</span><br>` :
+        (dbResult.skipped ? `<span class="hintWarn">ℹ Системният запис не е активиран (Supabase не е настроен).</span><br>` :
+          `<span class="hintBad">⚠ Възникна проблем при системния запис.</span><br>`)) +
+      `<br>Ако всичко е наред, заявката ще бъде изпратена и по имейл.`;
+    popup.style.display = 'block';
+
+    // Let FormSubmit proceed (email)
+    // (If you later want DB-only: uncomment next lines and implement your own API endpoint)
+    // e.preventDefault();
+  });
+
+  // Init
+  initAudit();
+  setStepper(1);
   recalc();
 </script>
 
