@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin – Заявки за кредит</title>
+<style>
+  :root{
+    --bg1:#8e0e00;
+    --bg2:#c31432;
+    --accent:#c31432;
+    --card:#fff;
+    --muted:#666;
+    --shadow: 0 15px 40px rgba(0,0,0,.18);
+    --ok:#0f7a3a;
+    --warn:#a85b00;
+    --bad:#a10f28;
+  }
+  body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg,var(--bg1),var(--bg2));
+  }
+  .wrap{
+    max-width: 1200px;
+    margin: 22px auto;
+    padding: 0 14px;
+  }
+  .card{
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 18px;
+  }
+  h1{
+    margin:0 0 10px;
+    color: #fff;
+    font-size: 22px;
+  }
+  .topbar{
+    display:flex;
+    gap:10px;
+    flex-wrap: wrap;
+    align-items:center;
+    margin: 10px 0 14px;
+  }
+  input, select, textarea, button{
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+  }
+  button{
+    border:none;
+    cursor:pointer;
+    font-weight: 900;
+  }
+  .btn{
+    background: var(--accent);
+    color:#fff;
+  }
+  .btn:hover{ opacity: .92; }
+  .btn.secondary{
+    background: #f1f1f1;
+    color:#111;
+    border: 1px solid #ddd;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 14px;
+    align-items: start;
+  }
+  @media (max-width: 980px){
+    .grid{ grid-template-columns: 1fr; }
+  }
+  table{
+    width:100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th, td{
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-align:left;
+    vertical-align: top;
+  }
+  th{ color:#111; font-weight: 900; }
+  tr:hover{ background:#fafafa; }
+  .muted{ color: var(--muted); }
+  .pill{
+    display:inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+    background:#f6f6f6;
+  }
+  .pill.ok{ background:#e9f7ef; color: var(--ok); }
+  .pill.warn{ background:#fff4e6; color: var(--warn); }
+  .pill.bad{ background:#fdecec; color: var(--bad); }
+  .boxTitle{
+    font-weight: 900;
+    margin: 0 0 8px;
+    color:#111;
+  }
+  .kv{
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .kv b{ color:#111; }
+  textarea{
+    width:100%;
+    min-height: 110px;
+    resize: vertical;
+  }
+  .note{
+    font-size: 12px;
+    color:#333;
+    line-height: 1.35;
+  }
+  .statusRow{
+    display:flex;
+    gap:10px;
+    flex-wrap: wrap;
+    align-items:center;
+    margin-top: 10px;
+  }
+  .danger{
+    background: var(--bad);
+    color:#fff;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <h1>🧾 Admin – Заявки за кредит</h1>
+
+  <div class="card" style="margin-bottom:14px;">
+    <div class="note">
+      <b>Setup (само веднъж):</b><br>
+      1) Създай Supabase проект<br>
+      2) В Postgres създай таблица <b>applications</b> със следните колони (минимум):<br>
+      <code>
+      id uuid default gen_random_uuid() primary key,<br>
+      app_id text unique,<br>
+      status text,<br>
+      created_at timestamptz,<br>
+      applicant_name text,<br>
+      phone text,<br>
+      start_date date,<br>
+      amount numeric,<br>
+      months int,<br>
+      weeks int,<br>
+      apr numeric,<br>
+      gpr_est numeric,<br>
+      guarantee numeric,<br>
+      base numeric,<br>
+      weekly_payment numeric,<br>
+      total_payable numeric,<br>
+      net_income numeric,<br>
+      monthly_expenses numeric,<br>
+      employment text,<br>
+      purpose text,<br>
+      consents jsonb,<br>
+      meta jsonb,<br>
+      admin_notes text
+      </code><br><br>
+      3) Включи RLS според нуждите (за начало можеш да оставиш само админ достъп).<br>
+      4) Попълни <b>SUPABASE_URL</b> и <b>SUPABASE_ANON</b> по-долу.
+    </div>
+  </div>
+
+  <div class="topbar">
+    <input id="q" type="text" placeholder="Търси по име/телефон/APP-ID…" style="flex:1; min-width:220px;">
+    <select id="statusFilter">
+      <option value="">Всички статуси</option>
+      <option value="received">received</option>
+      <option value="precheck">precheck</option>
+      <option value="kyc">kyc</option>
+      <option value="underwriting">underwriting</option>
+      <option value="offer_sent">offer_sent</option>
+      <option value="signed">signed</option>
+      <option value="paid_out">paid_out</option>
+      <option value="active">active</option>
+      <option value="closed">closed</option>
+      <option value="overdue">overdue</option>
+      <option value="rejected">rejected</option>
+    </select>
+    <button class="btn" id="refresh">⟳ Обнови</button>
+    <button class="btn secondary" id="clearSel">Изчисти избор</button>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="boxTitle">Списък заявки</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>APP-ID</th>
+            <th>Клиент</th>
+            <th>Оферта</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="5" class="muted">Няма данни (или Supabase не е настроен).</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" id="detailsCard">
+      <div class="boxTitle">Детайли</div>
+      <div class="muted">Избери заявка отляво.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /***************
+   * CONFIG
+   ***************/
+  const SUPABASE_URL = "";     // пример: https://xxxx.supabase.co
+  const SUPABASE_ANON = "";    // Anon public key
+
+  function headers(){
+    return {
+      "apikey": SUPABASE_ANON,
+      "Authorization": `Bearer ${SUPABASE_ANON}`,
+      "Content-Type": "application/json"
+    };
+  }
+
+  const tbody = document.getElementById('tbody');
+  const qEl = document.getElementById('q');
+  const statusEl = document.getElementById('statusFilter');
+  const detailsCard = document.getElementById('detailsCard');
+
+  let selected = null;
+  let rows = [];
+
+  function pillForStatus(s){
+    const v = (s||"").toLowerCase();
+    if (["paid_out","active","closed","signed"].includes(v)) return `pill ok`;
+    if (["received","precheck","kyc","underwriting","offer_sent"].includes(v)) return `pill warn`;
+    if (["overdue","rejected"].includes(v)) return `pill bad`;
+    return `pill`;
+  }
+
+  function fmt(n){
+    const x = Number(n);
+    if (!isFinite(x)) return "—";
+    return x.toFixed(2) + " €";
+  }
+
+  async function fetchApplications(){
+    if (!SUPABASE_URL || !SUPABASE_ANON){
+      tbody.innerHTML = `<tr><td colspan="5" class="muted">Попълни SUPABASE_URL и SUPABASE_ANON в admin.html</td></tr>`;
+      return;
+    }
+
+    const url = `${SUPABASE_URL}/rest/v1/applications?select=*` +
+      `&order=created_at.desc&limit=200`;
+
+    const res = await fetch(url, { headers: headers() });
+    if (!res.ok){
+      const t = await res.text().catch(()=> "");
+      tbody.innerHTML = `<tr><td colspan="5" class="muted">Грешка при зареждане: ${t || res.statusText}</td></tr>`;
+      return;
+    }
+
+    rows = await res.json();
+    renderTable();
+  }
+
+  function matchesFilter(r){
+    const q = (qEl.value||"").trim().toLowerCase();
+    const sf = (statusEl.value||"").trim().toLowerCase();
+
+    if (sf && (r.status||"").toLowerCase() !== sf) return false;
+    if (!q) return true;
+
+    const hay = [
+      r.app_id, r.applicant_name, r.phone,
+      (r.purpose||""), (r.employment||"")
+    ].join(" ").toLowerCase();
+
+    return hay.includes(q);
+  }
+
+  function renderTable(){
+    const filtered = rows.filter(matchesFilter);
+    if (!filtered.length){
+      tbody.innerHTML = `<tr><td colspan="5" class="muted">Няма резултати.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(r=>{
+      const dt = r.created_at ? new Date(r.created_at).toLocaleString('bg-BG') : "—";
+      const statusClass = pillForStatus(r.status);
+      return `
+        <tr data-id="${r.id}">
+          <td>${dt}</td>
+          <td><b>${r.app_id || "—"}</b></td>
+          <td>${(r.applicant_name||"—")}<br><span class="muted">${(r.phone||"—")}</span></td>
+          <td>
+            <span class="muted">Сума:</span> ${fmt(r.amount)}<br>
+            <span class="muted">Вноска:</span> ${fmt(r.weekly_payment)}<br>
+            <span class="muted">Общо:</span> ${fmt(r.total_payable)}
+          </td>
+          <td><span class="${statusClass}">${r.status || "—"}</span></td>
+        </tr>`;
+    }).join("");
+
+    [...tbody.querySelectorAll('tr[data-id]')].forEach(tr=>{
+      tr.addEventListener('click', ()=>{
+        const id = tr.getAttribute('data-id');
+        selected = rows.find(x=>String(x.id)===String(id));
+        renderDetails();
+      });
+    });
+  }
+
+  function renderDetails(){
+    if (!selected){
+      detailsCard.innerHTML = `<div class="boxTitle">Детайли</div><div class="muted">Избери заявка отляво.</div>`;
+      return;
+    }
+
+    const r = selected;
+    const dt = r.created_at ? new Date(r.created_at).toLocaleString('bg-BG') : "—";
+    const statusClass = pillForStatus(r.status);
+
+    detailsCard.innerHTML = `
+      <div class="boxTitle">Детайли – ${r.app_id || "—"}</div>
+      <div class="kv">
+        <b>Дата:</b> ${dt}<br>
+        <b>Клиент:</b> ${r.applicant_name || "—"}<br>
+        <b>Телефон:</b> ${r.phone || "—"}<br>
+        <b>Начална дата:</b> ${r.start_date || "—"}<br><br>
+
+        <b>Оферта:</b><br>
+        • Сума: <b>${fmt(r.amount)}</b><br>
+        • Гаранция: <b>${fmt(r.guarantee)}</b> • База: <b>${fmt(r.base)}</b><br>
+        • Период: <b>${r.months || "—"}</b> м / <b>${r.weeks || "—"}</b> седм<br>
+        • APR: <b>${(r.apr ?? "—")}%</b> • ГПР (инд.): <b>${(r.gpr_est ?? "—")}%</b><br>
+        • Седм. вноска: <b>${fmt(r.weekly_payment)}</b><br>
+        • Общо: <b>${fmt(r.total_payable)}</b><br><br>
+
+        <b>Профил:</b><br>
+        • Доход: <b>${fmt(r.net_income)}</b> / Разходи: <b>${fmt(r.monthly_expenses)}</b><br>
+        • Заетост: <b>${r.employment || "—"}</b><br>
+        • Цел: <b>${r.purpose || "—"}</b><br><br>
+
+        <b>Статус:</b> <span class="${statusClass}">${r.status || "—"}</span>
+      </div>
+
+      <div class="statusRow">
+        <select id="newStatus">
+          ${["received","precheck","kyc","underwriting","offer_sent","signed","paid_out","active","closed","overdue","rejected"]
+            .map(s=>`<option value="${s}" ${String(r.status)===s?"selected":""}>${s}</option>`).join("")}
+        </select>
+        <button class="btn" id="saveStatus">💾 Запази статус</button>
+        <button class="btn secondary" id="copyId">📋 Копирай APP-ID</button>
+      </div>
+
+      <div style="margin-top:12px;">
+        <div class="boxTitle">Админ бележки</div>
+        <textarea id="notes" placeholder="Бележки, резултат от разговор, документи…">${r.admin_notes || ""}</textarea>
+        <div class="statusRow">
+          <button class="btn" id="saveNotes">💾 Запази бележки</button>
+          <button class="danger" id="markRejected">⛔ Маркирай rejected</button>
+        </div>
+        <div class="note">Съвет: поддържай статуси последователно – така процесът става “оперативен бизнес”.</div>
+      </div>
+    `;
+
+    document.getElementById('copyId').addEventListener('click', async ()=>{
+      try{
+        await navigator.clipboard.writeText(r.app_id || "");
+        alert("Копирано.");
+      }catch(e){
+        alert("Не успях да копирам. (Браузър ограничение)");
+      }
+    });
+
+    document.getElementById('saveStatus').addEventListener('click', async ()=>{
+      const ns = document.getElementById('newStatus').value;
+      await updateApplication(r.id, { status: ns });
+    });
+
+    document.getElementById('saveNotes').addEventListener('click', async ()=>{
+      const notes = document.getElementById('notes').value;
+      await updateApplication(r.id, { admin_notes: notes });
+    });
+
+    document.getElementById('markRejected').addEventListener('click', async ()=>{
+      if (!confirm("Сигурен ли си, че искаш да маркираш rejected?")) return;
+      const notes = document.getElementById('notes').value;
+      await updateApplication(r.id, { status: "rejected", admin_notes: notes });
+    });
+  }
+
+  async function updateApplication(id, patch){
+    if (!SUPABASE_URL || !SUPABASE_ANON){
+      alert("Попълни SUPABASE_URL и SUPABASE_ANON.");
+      return;
+    }
+    const url = `${SUPABASE_URL}/rest/v1/applications?id=eq.${encodeURIComponent(id)}`;
+    const res = await fetch(url, {
+      method: "PATCH",
+      headers: {...headers(), "Prefer":"return=representation"},
+      body: JSON.stringify(patch)
+    });
+    if (!res.ok){
+      const t = await res.text().catch(()=> "");
+      alert("Грешка при запис: " + (t || res.statusText));
+      return;
+    }
+    const updated = await res.json().catch(()=> []);
+    if (updated && updated[0]){
+      selected = updated[0];
+      // also refresh the list copy
+      rows = rows.map(x=> String(x.id)===String(selected.id) ? selected : x);
+      renderTable();
+      renderDetails();
+      alert("Запазено.");
+    } else {
+      alert("Запазено (без връщане на данни).");
+      await fetchApplications();
+    }
+  }
+
+  // Events
+  document.getElementById('refresh').addEventListener('click', fetchApplications);
+  document.getElementById('clearSel').addEventListener('click', ()=>{
+    selected = null;
+    renderDetails();
+  });
+  qEl.addEventListener('input', renderTable);
+  statusEl.addEventListener('change', renderTable);
+
+  // Init
+  fetchApplications();
+</script>
+
+</body>
+</html>
