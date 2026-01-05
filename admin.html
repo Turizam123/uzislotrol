@@ -139,41 +139,6 @@
 <div class="wrap">
   <h1>🧾 Admin – Заявки за кредит</h1>
 
-  <div class="card" style="margin-bottom:14px;">
-    <div class="note">
-      <b>Setup (само веднъж):</b><br>
-      1) Създай Supabase проект<br>
-      2) В Postgres създай таблица <b>applications</b> със следните колони (минимум):<br>
-      <code>
-      id uuid default gen_random_uuid() primary key,<br>
-      app_id text unique,<br>
-      status text,<br>
-      created_at timestamptz,<br>
-      applicant_name text,<br>
-      phone text,<br>
-      start_date date,<br>
-      amount numeric,<br>
-      months int,<br>
-      weeks int,<br>
-      apr numeric,<br>
-      gpr_est numeric,<br>
-      guarantee numeric,<br>
-      base numeric,<br>
-      weekly_payment numeric,<br>
-      total_payable numeric,<br>
-      net_income numeric,<br>
-      monthly_expenses numeric,<br>
-      employment text,<br>
-      purpose text,<br>
-      consents jsonb,<br>
-      meta jsonb,<br>
-      admin_notes text
-      </code><br><br>
-      3) Включи RLS според нуждите (за начало можеш да оставиш само админ достъп).<br>
-      4) Попълни <b>SUPABASE_URL</b> и <b>SUPABASE_ANON</b> по-долу.
-    </div>
-  </div>
-
   <div class="topbar">
     <input id="q" type="text" placeholder="Търси по име/телефон/APP-ID…" style="flex:1; min-width:220px;">
     <select id="statusFilter">
