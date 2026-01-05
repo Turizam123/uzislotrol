@@ -688,10 +688,6 @@
 
   // Wizard state
   let currentStep = 1;
-  let appId = localStorage.getItem('activeApplicationId') || genId();
-  localStorage.setItem('activeApplicationId', appId);
-  hAppId.value = appId;
-  cAppId.textContent = appId;
 
   function setStepper(step){
     const dots = [1,2,3,4].map(i=>document.getElementById('dot'+i));
