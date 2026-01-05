@@ -605,8 +605,11 @@
     const s = (p||"").trim().replace(/\s+/g,'');
     return /^(\+359|00359|0)\d{8,9}$/.test(s);
   }
-  function genId(){
-    return 'APP-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2,7).toUpperCase();
+ function makeAppId(){
+  return "APP-" + crypto.randomUUID()
+    .replaceAll("-", "")
+    .slice(0, 16)
+    .toUpperCase();
   }
   function affordabilityHint(weekly, netIncome){
     if (!netIncome || netIncome <= 0) return null;
