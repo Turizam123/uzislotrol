@@ -217,18 +217,29 @@
 
     // 2️⃣ създаваме одобрен кредит
     const insertRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/approved_loans`,
-      {
-        method: "POST",
-        headers: {...headers(), "Prefer":"return=minimal"},
-        body: JSON.stringify({
-          client_email: clientEmail,
-          loan_amount: app.amount,
-          interest_rate: app.apr ?? 0,
-          months: app.months ?? null,
-          monthly_payment: app.weekly_payment ?? null,
-          total_amount: app.total_payable ?? null,
-          status: "active"
+  `${SUPABASE_URL}/rest/v1/approved_loans`,
+  {
+    method: "POST",
+    headers: {
+      ...headers(),
+      "Prefer": "return=minimal"
+    },
+    body: JSON.stringify({
+      app_id: app.app_id,                    // 🔥 КРИТИЧНО
+      client_email: app.client_email,        // 🔥 КРИТИЧНО
+
+      loan_amount: app.amount,
+      interest_rate: app.apr ?? 0,
+
+      // ако нямаш месечна вноска – по-добре null
+      months: app.months ?? null,
+
+      // ако работиш със седмична вноска → ИЛИ я преименувай,
+      // ИЛИ си наясно, че я записваш като "monthly_payment"
+      monthly_payment: app.weekly_payment ?? null,
+
+      total_amount: app.total_payable ?? null,
+      status: "active"
         })
       }
     );
