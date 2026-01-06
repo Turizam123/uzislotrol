@@ -191,7 +191,7 @@
    ***************/
   const SUPABASE_URL = "https://ypmyawbogvwazlhgpftl.supabase.co";     // пример: https://xxxx.supabase.co
   const SUPABASE_ANON = "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc";    // Anon public key
-<script>
+
   async function createApprovedLoanFromApplication(app){
     // защита – ако няма email
     if (!app.client_email && !app.email) {
@@ -240,7 +240,6 @@
       console.log("✅ Създаден е запис в approved_loans");
     }
   }
-</script>
 
   function headers(){
     return {
