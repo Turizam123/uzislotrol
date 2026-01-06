@@ -372,6 +372,7 @@
             <span class="muted">Общо:</span> ${fmt(r.total_payable)}
           </td>
           <td><span class="${statusClass}">${r.status || "—"}</span></td>
+          <span class="${statusClass}">${r.status}</span>
         </tr>`;
     }).join("");
 
