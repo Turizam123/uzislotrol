@@ -3,196 +3,105 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Admin – Заявки за кредит</title>
-<link rel="icon" type="image/png" href="favicon.png">
+<title>Admin – Кредити</title>
 
 <style>
-  :root{
-    --bg1:#8e0e00;
-    --bg2:#c31432;
-    --accent:#c31432;
-    --card:#fff;
-    --muted:#666;
-    --shadow: 0 15px 40px rgba(0,0,0,.18);
-    --ok:#0f7a3a;
-    --warn:#a85b00;
-    --bad:#a10f28;
-    --chip:#f6f6f6;
-  }
-  body{
-    margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(135deg,var(--bg1),var(--bg2));
-  }
-  .wrap{
-    max-width: 1200px;
-    margin: 22px auto;
-    padding: 0 14px;
-  }
-  .card{
-    background: var(--card);
-    border-radius: 14px;
-    box-shadow: var(--shadow);
-    padding: 18px;
-  }
-  h1{
-    margin:0 0 10px;
-    color: #fff;
-    font-size: 22px;
-  }
-  .topbar{
-    display:flex;
-    gap:10px;
-    flex-wrap: wrap;
-    align-items:center;
-    margin: 10px 0 14px;
-  }
-  .stats{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    align-items:center;
-    margin: 0 0 14px;
-  }
-  .stat{
-    background: rgba(255,255,255,.14);
-    color:#fff;
-    border: 1px solid rgba(255,255,255,.18);
-    border-radius: 14px;
-    padding: 10px 12px;
-    display:flex;
-    gap:8px;
-    align-items:baseline;
-  }
-  .stat b{ font-size:16px; }
-  .stat span{ font-size:12px; opacity:.9; }
+:root{
+  --bg1:#8e0e00;--bg2:#c31432;--accent:#c31432;
+  --ok:#0f7a3a;--warn:#a85b00;--bad:#a10f28;
+  --card:#fff;--muted:#666;
+}
+body{
+  margin:0;font-family:Arial, Helvetica, sans-serif;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+}
+.wrap{max-width:1200px;margin:20px auto;padding:14px;}
+h1{color:#fff;margin:0 0 10px}
+.card{
+  background:var(--card);border-radius:14px;padding:16px;
+  box-shadow:0 15px 40px rgba(0,0,0,.18);
+}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.topbar{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0 14px;
+}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.stat{
+  background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.18);
+  border-radius:14px;padding:10px 12px;display:flex;gap:8px;align-items:baseline
+}
+.stat b{font-size:16px}
+.stat span{font-size:12px;opacity:.9}
+input,select,textarea,button{
+  font-size:14px;padding:10px;border-radius:10px;border:1px solid #ddd;box-sizing:border-box
+}
+button{border:none;cursor:pointer;font-weight:900}
+.btn{background:var(--accent);color:#fff}
+.btn.ok{background:var(--ok)}
+.btn.bad{background:var(--bad)}
+.btn.secondary{background:#eee;color:#111;border:1px solid #ddd}
+.btn:disabled{opacity:.6;cursor:not-allowed}
 
-  input, select, textarea, button{
-    font-size: 14px;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
-  }
-  button{
-    border:none;
-    cursor:pointer;
-    font-weight: 900;
-  }
-  .btn{
-    background: var(--accent);
-    color:#fff;
-  }
-  .btn:hover{ opacity: .92; }
-  .btn.secondary{
-    background: #f1f1f1;
-    color:#111;
-    border: 1px solid #ddd;
-  }
-  .btn.ok{ background: var(--ok); }
-  .btn.bad{ background: var(--bad); }
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #eee;vertical-align:top;text-align:left}
+th{font-weight:900;color:#111}
+tr:hover{background:#fafafa}
 
-  .grid{
-    display:grid;
-    grid-template-columns: 1.2fr .8fr;
-    gap: 14px;
-    align-items: start;
-  }
-  @media (max-width: 980px){
-    .grid{ grid-template-columns: 1fr; }
-  }
-  table{
-    width:100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  th, td{
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    text-align:left;
-    vertical-align: top;
-  }
-  th{ color:#111; font-weight: 900; }
-  tr:hover{ background:#fafafa; }
+tr.due-soon{background:#fff4e6!important}
+tr.due-today{background:#fdecec!important}
 
-  .muted{ color: var(--muted); }
+.pill{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:900;display:inline-block}
+.pill.ok{background:#e9f7ef;color:var(--ok)}
+.pill.warn{background:#fff4e6;color:var(--warn)}
+.pill.bad{background:#fdecec;color:var(--bad)}
 
-  .pill{
-    display:inline-block;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 900;
-    background:#f6f6f6;
-  }
-  .pill.ok{ background:#e9f7ef; color: var(--ok); }
-  .pill.warn{ background:#fff4e6; color: var(--warn); }
-  .pill.bad{ background:#fdecec; color: var(--bad); }
+.muted{color:var(--muted)}
+.kv{font-size:13px;line-height:1.6}
+.kv b{color:#111}
 
-  .boxTitle{
-    font-weight: 900;
-    margin: 0 0 8px;
-    color:#111;
-  }
-  .kv{
-    font-size: 13px;
-    line-height: 1.55;
-  }
-  .kv b{ color:#111; }
+.sectionTitle{font-weight:900;margin:14px 0 8px;color:#111}
+.statusRow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
 
-  textarea{
-    width:100%;
-    min-height: 110px;
-    resize: vertical;
-  }
-  .note{
-    font-size: 12px;
-    color:#333;
-    line-height: 1.35;
-  }
-  .statusRow{
-    display:flex;
-    gap:10px;
-    flex-wrap: wrap;
-    align-items:center;
-    margin-top: 10px;
-  }
-  .danger{
-    background: var(--bad);
-    color:#fff;
-  }
+.dueBox{margin-top:10px;padding:10px;border-radius:10px;font-size:13px}
+.dueBox.warn{background:#fff4e6;color:var(--warn)}
+.dueBox.bad{background:#fdecec;color:var(--bad)}
+.dueBox.ok{background:#e9f7ef;color:var(--ok)}
 
-  .riskChip{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    padding:4px 10px;
-    border-radius:999px;
-    font-weight:900;
-    font-size:12px;
-    background: var(--chip);
-    margin-left:8px;
-  }
-  .riskChip.low{ background:#e9f7ef; color:var(--ok); }
-  .riskChip.mid{ background:#fff4e6; color:var(--warn); }
-  .riskChip.high{ background:#fdecec; color:var(--bad); }
+.small{font-size:12px}
+.hr{height:1px;background:#eee;margin:12px 0}
+
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 10px;border-radius:999px;font-weight:900;font-size:12px;background:#f6f6f6
+}
+.badge.ok{background:#e9f7ef;color:var(--ok)}
+.badge.warn{background:#fff4e6;color:var(--warn)}
+.badge.bad{background:#fdecec;color:var(--bad)}
+
+.flex2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:900px){.flex2{grid-template-columns:1fr}}
 </style>
 </head>
-<body>
 
+<body>
 <div class="wrap">
-  <h1>🧾 Admin – Заявки за кредит</h1>
+  <h1>🧾 Admin – Кредити</h1>
+
+  <!-- 🔒 МИНИ “защита” (локална): PIN в кода -->
+  <!-- Смени ADMIN_PIN по-долу. Това НЕ е истинска сигурност като Auth/RLS, но пази от случайни хора на компютъра. -->
 
   <div class="stats" id="stats">
-    <div class="stat"><b id="stTotal">—</b><span>Общо заявки</span></div>
+    <div class="stat"><b id="stTotal">—</b><span>Общо</span></div>
     <div class="stat"><b id="stActive">—</b><span>Active</span></div>
-    <div class="stat"><b id="stRejected">—</b><span>Rejected</span></div>
-    <div class="stat"><b id="stRisky">—</b><span>Рискови</span></div>
+    <div class="stat"><b id="stOverdue">—</b><span>Overdue</span></div>
+    <div class="stat"><b id="stClosed">—</b><span>Closed</span></div>
+    <div class="stat"><b id="stDueSoon">—</b><span>Падеж ≤ 7 дни</span></div>
   </div>
 
   <div class="topbar">
-    <input id="q" type="text" placeholder="Търси по име/телефон/APP-ID…" style="flex:1; min-width:220px;">
-    <select id="statusFilter">
+    <input id="q" type="text" placeholder="Търси по APP-ID / име / телефон…" style="flex:1;min-width:220px">
+    <select id="statusFilter" style="min-width:180px">
       <option value="">Всички статуси</option>
       <option value="received">received</option>
       <option value="precheck">precheck</option>
@@ -202,408 +111,840 @@
       <option value="signed">signed</option>
       <option value="paid_out">paid_out</option>
       <option value="active">active</option>
-      <option value="closed">closed</option>
       <option value="overdue">overdue</option>
+      <option value="closed">closed</option>
       <option value="rejected">rejected</option>
     </select>
+
+    <select id="dueFilter" style="min-width:180px">
+      <option value="">Всички падежи</option>
+      <option value="dueSoon">Падеж ≤ 7 дни</option>
+      <option value="overdue">Просрочени</option>
+      <option value="noDue">Без падеж</option>
+    </select>
+
+    <select id="sortBy" style="min-width:160px">
+      <option value="created_desc">Сортиране: нови</option>
+      <option value="created_asc">Сортиране: стари</option>
+      <option value="due_asc">Сортиране: падеж (най-скоро)</option>
+      <option value="due_desc">Сортиране: падеж (най-късно)</option>
+      <option value="amount_desc">Сортиране: сума (↓)</option>
+      <option value="amount_asc">Сортиране: сума (↑)</option>
+    </select>
+
     <button class="btn" id="refresh">⟳ Обнови</button>
-    <button class="btn secondary" id="clearSel">Изчисти избор</button>
+    <button class="btn secondary" id="exportCsv">⬇ CSV</button>
   </div>
 
   <div class="grid">
     <div class="card">
-      <div class="boxTitle">Списък заявки</div>
+      <div class="sectionTitle" style="margin-top:0">Списък кредити</div>
       <table>
         <thead>
           <tr>
-            <th>Дата</th>
-            <th>APP-ID</th>
+            <th style="width:120px">Дата</th>
+            <th style="width:140px">APP-ID</th>
             <th>Клиент</th>
-            <th>Оферта</th>
-            <th>Статус</th>
+            <th style="width:200px">Оферта</th>
+            <th style="width:170px">Падеж</th>
+            <th style="width:140px">Статус</th>
           </tr>
         </thead>
         <tbody id="tbody">
-          <tr><td colspan="5" class="muted">Няма данни (или Supabase не е настроен).</td></tr>
+          <tr><td colspan="6" class="muted">Зареждане…</td></tr>
         </tbody>
       </table>
+      <div class="small muted" style="margin-top:8px">
+        Подсветка: 🟡 падеж ≤ 7 дни • 🔴 просрочен. Автоматично маркиране overdue/closed при refresh (виж JS).
+      </div>
     </div>
 
     <div class="card" id="detailsCard">
-      <div class="boxTitle">Детайли</div>
-      <div class="muted">Избери заявка отляво.</div>
+      <div class="sectionTitle" style="margin-top:0">Детайли</div>
+      <div class="muted">Избери кредит отляво.</div>
     </div>
   </div>
 </div>
 
 <script>
-  /***************
-   * CONFIG
-   ***************/
-  const SUPABASE_URL = "https://ypmyawbogvwazlhgpftl.supabase.co";
-  const SUPABASE_ANON = "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc";
+/**
+ * =========================
+ *  CONFIG
+ * =========================
+ */
+const SUPABASE_URL = "https://ypmyawbogvwazlhgpftl.supabase.co";
+const SUPABASE_ANON = "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc";
 
-  function headers(){
-    return {
-      "apikey": SUPABASE_ANON,
-      "Authorization": `Bearer ${SUPABASE_ANON}`,
-      "Content-Type": "application/json"
-    };
+/** Локална “защита” (не е реална сигурност като Auth/RLS) */
+const ADMIN_PIN = "1234"; // 👈 смени си го
+const PIN_KEY = "admin_pin_ok";
+
+/**
+ * =========================
+ *  REQUIRED DB FIELDS
+ * =========================
+ * Таблица: applications (или твоята реална таблица за кредити)
+ *  - paid_total numeric default 0
+ *  - last_payment_date date
+ *  - next_due_date date
+ *
+ * Таблица: loan_payments (история на плащанията) — препоръчително
+ *  - id uuid default gen_random_uuid() primary key
+ *  - application_id uuid not null references applications(id) on delete cascade
+ *  - app_id text
+ *  - amount numeric not null
+ *  - paid_at date not null
+ *  - created_by text
+ *  - created_at timestamptz default now()
+ *
+ * SQL (пусни в Supabase SQL editor):
+ *
+ * create table if not exists public.loan_payments (
+ *   id uuid primary key default gen_random_uuid(),
+ *   application_id uuid not null references public.applications(id) on delete cascade,
+ *   app_id text,
+ *   amount numeric not null,
+ *   paid_at date not null,
+ *   created_by text,
+ *   created_at timestamptz not null default now()
+ * );
+ *
+ * -- (по желание) индекси:
+ * create index if not exists loan_payments_application_id_idx on public.loan_payments(application_id);
+ * create index if not exists loan_payments_paid_at_idx on public.loan_payments(paid_at);
+ *
+ * ⚠️ За истинска сигурност: включи RLS и политики + Supabase Auth.
+ */
+
+/**
+ * =========================
+ *  HELPERS
+ * =========================
+ */
+const tbody = document.getElementById("tbody");
+const detailsCard = document.getElementById("detailsCard");
+const qEl = document.getElementById("q");
+const statusFilterEl = document.getElementById("statusFilter");
+const dueFilterEl = document.getElementById("dueFilter");
+const sortByEl = document.getElementById("sortBy");
+
+const stTotal = document.getElementById("stTotal");
+const stActive = document.getElementById("stActive");
+const stOverdue = document.getElementById("stOverdue");
+const stClosed = document.getElementById("stClosed");
+const stDueSoon = document.getElementById("stDueSoon");
+
+let rows = [];
+let selected = null;
+
+function headers(){
+  return {
+    apikey: SUPABASE_ANON,
+    Authorization: `Bearer ${SUPABASE_ANON}`,
+    "Content-Type": "application/json"
+  };
+}
+
+function fmt(n){
+  const x = Number(n);
+  if (!isFinite(x)) return "—";
+  return x.toFixed(2) + " €";
+}
+function fmtDate(d){
+  if (!d) return "—";
+  try { return new Date(d).toLocaleDateString("bg-BG"); } catch { return String(d); }
+}
+function pillForStatus(s){
+  const v = String(s||"").toLowerCase();
+  if (["paid_out","active","signed"].includes(v)) return "pill ok";
+  if (["closed"].includes(v)) return "pill ok";
+  if (["overdue","rejected"].includes(v)) return "pill bad";
+  return "pill warn";
+}
+function clampMoney(x){
+  const n = Number(x);
+  if (!isFinite(n)) return 0;
+  return Math.round(n * 100) / 100;
+}
+function todayISO(){
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+function dueState(nextDate){
+  if (!nextDate) return null;
+  const t = new Date();
+  t.setHours(0,0,0,0);
+  const due = new Date(nextDate);
+  due.setHours(0,0,0,0);
+  const diff = Math.ceil((due - t) / 86400000);
+  if (diff < 0) return "bad";       // просрочен
+  if (diff <= 7) return "warn";     // наближава
+  return "ok";
+}
+function remainingAmount(r){
+  const total = Number(r.total_payable ?? r.total_amount ?? r.amount ?? 0);
+  const paid = Number(r.paid_total ?? 0);
+  const rem = clampMoney(total - paid);
+  return rem < 0 ? 0 : rem;
+}
+function calcInstallment(r){
+  // ако имаш weekly_payment — приемаме седмична вноска
+  const weekly = Number(r.weekly_payment ?? 0);
+  if (isFinite(weekly) && weekly > 0) return weekly;
+  const monthly = Number(r.monthly_payment ?? 0);
+  if (isFinite(monthly) && monthly > 0) return monthly;
+  return 0;
+}
+function addDaysISO(isoDate, days){
+  const d = new Date(isoDate);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0,10);
+}
+
+/**
+ * =========================
+ *  MINI LOCAL PIN GATE
+ * =========================
+ */
+function ensurePin(){
+  const ok = localStorage.getItem(PIN_KEY) === "1";
+  if (ok) return true;
+
+  const pin = prompt("PIN за достъп:");
+  if (!pin) return false;
+  if (pin === ADMIN_PIN){
+    localStorage.setItem(PIN_KEY, "1");
+    return true;
   }
+  alert("Грешен PIN.");
+  return false;
+}
 
-  const tbody = document.getElementById('tbody');
-  const qEl = document.getElementById('q');
-  const statusEl = document.getElementById('statusFilter');
-  const detailsCard = document.getElementById('detailsCard');
-
-  const stTotal = document.getElementById('stTotal');
-  const stActive = document.getElementById('stActive');
-  const stRejected = document.getElementById('stRejected');
-  const stRisky = document.getElementById('stRisky');
-
-  let selected = null;
-  let rows = [];
-
-  function pillForStatus(s){
-    const v = (s||"").toLowerCase();
-    if (["paid_out","active","closed","signed"].includes(v)) return `pill ok`;
-    if (["received","precheck","kyc","underwriting","offer_sent"].includes(v)) return `pill warn`;
-    if (["overdue","rejected"].includes(v)) return `pill bad`;
-    return `pill`;
+/**
+ * =========================
+ *  DATA LOAD
+ * =========================
+ */
+async function fetchApplications(){
+  const url = `${SUPABASE_URL}/rest/v1/applications?select=*`;
+  const res = await fetch(url, { headers: headers() });
+  if (!res.ok){
+    const t = await res.text().catch(()=> "");
+    tbody.innerHTML = `<tr><td colspan="6" class="muted">Грешка при зареждане: ${t || res.statusText}</td></tr>`;
+    return;
   }
+  rows = await res.json();
+}
 
-  function fmt(n){
-    const x = Number(n);
-    if (!isFinite(x)) return "—";
-    return x.toFixed(2) + " €";
-  }
+/**
+ * =========================
+ *  AUTO STATUS MAINTENANCE
+ *  - overdue: ако next_due_date < today и status active
+ *  - closed: ако remaining <= 0 и status not rejected
+ * =========================
+ */
+async function autoMaintainStatuses(){
+  // ⚠️ това прави PATCH заявки; ако RLS/политики не позволяват, няма да се запише.
+  const patches = [];
 
-  // прост риск-скоринг (работи с твоите полета)
-  function riskFor(r){
-    const income = Number(r.net_income ?? r.income ?? 0);
-    const exp = Number(r.monthly_expenses ?? r.expenses ?? 0);
-    const weekly = Number(r.weekly_payment ?? 0);
-    const monthlyPayApprox = weekly ? weekly * 4 : Number(r.monthly_payment ?? 0);
-    const amount = Number(r.amount ?? 0);
+  const t = new Date(); t.setHours(0,0,0,0);
+  for (const r of rows){
+    const st = String(r.status||"").toLowerCase();
 
-    let points = 0;
-
-    if (income > 0 && exp > 0 && exp >= income) points += 3;
-    if (income > 0 && monthlyPayApprox > 0 && (monthlyPayApprox / income) > 0.35) points += 2;
-    if (amount > 3000) points += 1;
-    if ((r.employment||"").toLowerCase().includes("безработ")) points += 2;
-    if ((r.status||"").toLowerCase() === "overdue") points += 3;
-
-    if (points >= 4) return { level:"high", label:"ВИСОК РИСК" };
-    if (points >= 2) return { level:"mid", label:"СРЕДЕН РИСК" };
-    return { level:"low", label:"НИСЪК РИСК" };
-  }
-
-  function renderStats(){
-    const total = rows.length;
-    const active = rows.filter(r => String(r.status).toLowerCase() === "active").length;
-    const rejected = rows.filter(r => String(r.status).toLowerCase() === "rejected").length;
-    const risky = rows.filter(r => riskFor(r).level === "high").length;
-
-    stTotal.textContent = total;
-    stActive.textContent = active;
-    stRejected.textContent = rejected;
-    stRisky.textContent = risky;
-  }
-
-  async function fetchApplications(){
-    if (!SUPABASE_URL || !SUPABASE_ANON){
-      tbody.innerHTML = `<tr><td colspan="5" class="muted">Попълни SUPABASE_URL и SUPABASE_ANON в admin.html</td></tr>`;
-      return;
+    // closed ако изплатен
+    const rem = remainingAmount(r);
+    if (rem <= 0.01 && !["closed","rejected"].includes(st)){
+      patches.push({ id: r.id, patch: { status: "closed" }});
+      continue;
     }
 
-    const url = `${SUPABASE_URL}/rest/v1/applications?select=*` +
-      `&order=created_at.desc&limit=200`;
-
-    const res = await fetch(url, { headers: headers() });
-    if (!res.ok){
-      const t = await res.text().catch(()=> "");
-      tbody.innerHTML = `<tr><td colspan="5" class="muted">Грешка при зареждане: ${t || res.statusText}</td></tr>`;
-      return;
+    // overdue ако просрочен падеж
+    if (r.next_due_date){
+      const due = new Date(r.next_due_date); due.setHours(0,0,0,0);
+      if (due < t && ["active","paid_out","signed"].includes(st)){
+        patches.push({ id: r.id, patch: { status: "overdue" }});
+      }
     }
-
-    rows = await res.json();
-    renderStats();
-    renderTable();
   }
 
-  function matchesFilter(r){
-    const q = (qEl.value||"").trim().toLowerCase();
-    const sf = (statusEl.value||"").trim().toLowerCase();
-
-    if (sf && (r.status||"").toLowerCase() !== sf) return false;
-    if (!q) return true;
-
-    const hay = [
-      r.app_id, r.applicant_name, r.phone,
-      r.client_email, r.email,
-      (r.purpose||""), (r.employment||"")
-    ].join(" ").toLowerCase();
-
-    return hay.includes(q);
+  // изпълняваме последователно (по-лесно за debug)
+  for (const p of patches){
+    await patchApplication(p.id, p.patch, { silent: true });
   }
 
-  function renderTable(){
-    const filtered = rows.filter(matchesFilter);
-    if (!filtered.length){
-      tbody.innerHTML = `<tr><td colspan="5" class="muted">Няма резултати.</td></tr>`;
-      return;
+  // ако сме патчвали → презареждане, за да имаме актуални данни
+  if (patches.length){
+    await fetchApplications();
+  }
+}
+
+function computeStats(){
+  const total = rows.length;
+  const active = rows.filter(r => String(r.status||"").toLowerCase() === "active").length;
+  const overdue = rows.filter(r => String(r.status||"").toLowerCase() === "overdue").length;
+  const closed = rows.filter(r => String(r.status||"").toLowerCase() === "closed").length;
+  const dueSoon = rows.filter(r => dueState(r.next_due_date) === "warn").length;
+
+  stTotal.textContent = total;
+  stActive.textContent = active;
+  stOverdue.textContent = overdue;
+  stClosed.textContent = closed;
+  stDueSoon.textContent = dueSoon;
+}
+
+/**
+ * =========================
+ *  FILTER / SORT
+ * =========================
+ */
+function matchesFilter(r){
+  const q = (qEl.value||"").trim().toLowerCase();
+  const st = (statusFilterEl.value||"").trim().toLowerCase();
+  const df = (dueFilterEl.value||"").trim();
+
+  if (st && String(r.status||"").toLowerCase() !== st) return false;
+
+  const ds = dueState(r.next_due_date);
+  if (df === "dueSoon" && ds !== "warn") return false;
+  if (df === "overdue" && ds !== "bad") return false;
+  if (df === "noDue" && !!r.next_due_date) return false;
+
+  if (!q) return true;
+
+  const hay = [
+    r.app_id, r.applicant_name, r.phone,
+    r.client_email, r.email,
+    r.status
+  ].join(" ").toLowerCase();
+
+  return hay.includes(q);
+}
+
+function sortRows(list){
+  const mode = sortByEl.value;
+  const copy = [...list];
+
+  const toTime = (d) => {
+    if (!d) return null;
+    const x = new Date(d);
+    const t = x.getTime();
+    return isFinite(t) ? t : null;
+  };
+
+  if (mode === "created_desc"){
+    copy.sort((a,b)=> (toTime(b.created_at)||0) - (toTime(a.created_at)||0));
+  } else if (mode === "created_asc"){
+    copy.sort((a,b)=> (toTime(a.created_at)||0) - (toTime(b.created_at)||0));
+  } else if (mode === "due_asc"){
+    copy.sort((a,b)=>{
+      const ta = toTime(a.next_due_date); const tb = toTime(b.next_due_date);
+      if (ta == null && tb == null) return 0;
+      if (ta == null) return 1;
+      if (tb == null) return -1;
+      return ta - tb;
+    });
+  } else if (mode === "due_desc"){
+    copy.sort((a,b)=>{
+      const ta = toTime(a.next_due_date); const tb = toTime(b.next_due_date);
+      if (ta == null && tb == null) return 0;
+      if (ta == null) return 1;
+      if (tb == null) return -1;
+      return tb - ta;
+    });
+  } else if (mode === "amount_desc"){
+    copy.sort((a,b)=> Number(b.amount||0) - Number(a.amount||0));
+  } else if (mode === "amount_asc"){
+    copy.sort((a,b)=> Number(a.amount||0) - Number(b.amount||0));
+  }
+  return copy;
+}
+
+/**
+ * =========================
+ *  RENDER TABLE
+ * =========================
+ */
+function renderTable(){
+  const filtered = sortRows(rows.filter(matchesFilter));
+  if (!filtered.length){
+    tbody.innerHTML = `<tr><td colspan="6" class="muted">Няма резултати.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(r=>{
+    const ds = dueState(r.next_due_date);
+    const rowClass = ds === "bad" ? "due-today" : ds === "warn" ? "due-soon" : "";
+
+    const rem = remainingAmount(r);
+    const remBadge = rem <= 0.01
+      ? `<span class="badge ok">Изплатен</span>`
+      : `<span class="badge ${ds === "bad" ? "bad" : ds === "warn" ? "warn" : "ok"}">Остатък: ${fmt(rem)}</span>`;
+
+    return `
+      <tr class="${rowClass}" data-id="${r.id}">
+        <td>${r.created_at ? new Date(r.created_at).toLocaleDateString("bg-BG") : "—"}</td>
+        <td><b>${r.app_id || "—"}</b></td>
+        <td>${r.applicant_name || "—"}<br><span class="muted">${r.phone || ""}</span></td>
+        <td>
+          <div><span class="muted">Сума:</span> <b>${fmt(r.amount)}</b></div>
+          <div><span class="muted">Вноска:</span> ${fmt(r.weekly_payment)}</div>
+          <div><span class="muted">Общо:</span> ${fmt(r.total_payable)}</div>
+        </td>
+        <td>
+          <div><span class="muted">Следв. падеж:</span> <b>${r.next_due_date || "—"}</b></div>
+          <div class="small" style="margin-top:6px">${remBadge}</div>
+        </td>
+        <td>
+          <span class="${pillForStatus(r.status)}">${r.status || "—"}</span>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  [...tbody.querySelectorAll('tr[data-id]')].forEach(tr=>{
+    tr.addEventListener("click", ()=>{
+      const id = tr.getAttribute("data-id");
+      selected = rows.find(x => String(x.id) === String(id)) || null;
+      renderDetails();
+    });
+  });
+}
+
+/**
+ * =========================
+ *  DETAILS + PAYMENTS HISTORY + PLAN
+ * =========================
+ */
+function safeClientEmail(r){
+  return (r.client_email || r.email || "").trim();
+}
+
+async function fetchPaymentsForApplication(appId){
+  // ако таблицата loan_payments не съществува → ще върне 404/401 според политики
+  const url = `${SUPABASE_URL}/rest/v1/loan_payments?select=*&application_id=eq.${encodeURIComponent(appId)}&order=paid_at.desc&limit=200`;
+  const res = await fetch(url, { headers: headers() });
+  if (!res.ok){
+    // връщаме null за да покажем “няма таблица/няма достъп”
+    return null;
+  }
+  return await res.json().catch(()=>[]);
+}
+
+function buildPlanRows(r){
+  // “план” = прогноза от следващия падеж + стъпка (7 дни) и вноска (weekly_payment)
+  const inst = Number(calcInstallment(r));
+  const rem = remainingAmount(r);
+
+  const baseDue = r.next_due_date || todayISO();
+  const stepDays = 7; // при твоите полета е седмично
+
+  if (!isFinite(inst) || inst <= 0 || rem <= 0.01){
+    return { note: "Няма достатъчно данни за план (липсва вноска или кредитът е изплатен).", rows: [] };
+  }
+
+  const count = Math.ceil(rem / inst);
+  const plan = [];
+  let due = baseDue;
+
+  let left = rem;
+  for (let i=1; i<=Math.min(count, 52); i++){ // ограничение (до 52 реда)
+    const pay = clampMoney(Math.min(inst, left));
+    plan.push({ n: i, due, amount: pay });
+    left = clampMoney(left - pay);
+    due = addDaysISO(due, stepDays);
+    if (left <= 0.01) break;
+  }
+
+  const note = count > 52 ? "Планът е ограничен до 52 вноски (покажи повече при нужда)." : "";
+  return { note, rows: plan };
+}
+
+async function renderDetails(){
+  if (!selected){
+    detailsCard.innerHTML = `
+      <div class="sectionTitle" style="margin-top:0">Детайли</div>
+      <div class="muted">Избери кредит отляво.</div>
+    `;
+    return;
+  }
+
+  const r = selected;
+  const ds = dueState(r.next_due_date);
+  const rem = remainingAmount(r);
+  const total = Number(r.total_payable ?? r.total_amount ?? r.amount ?? 0);
+  const paid = Number(r.paid_total ?? 0);
+
+  const dueBoxClass = ds === "bad" ? "bad" : ds === "warn" ? "warn" : "ok";
+  const dueText = !r.next_due_date
+    ? `<div class="dueBox warn">ℹ️ Няма зададен падеж. (next_due_date)</div>`
+    : ds === "bad"
+      ? `<div class="dueBox bad">🔴 Просрочен падеж: <b>${r.next_due_date}</b></div>`
+      : ds === "warn"
+        ? `<div class="dueBox warn">🟡 Наближава падеж: <b>${r.next_due_date}</b></div>`
+        : `<div class="dueBox ok">✅ Следващ падеж: <b>${r.next_due_date}</b></div>`;
+
+  // history
+  const payments = await fetchPaymentsForApplication(r.id);
+  const paymentsHtml = payments === null
+    ? `<div class="muted small">Таблицата <b>loan_payments</b> липсва или няма достъп (RLS). Историята не може да се покаже.</div>`
+    : (payments.length
+        ? `
+          <table style="margin-top:8px">
+            <thead><tr><th style="width:110px">Дата</th><th style="width:120px">Сума</th><th>Оператор</th><th style="width:80px"></th></tr></thead>
+            <tbody>
+              ${payments.map(p=>`
+                <tr>
+                  <td>${p.paid_at || "—"}</td>
+                  <td><b>${fmt(p.amount)}</b></td>
+                  <td>${p.created_by || "—"}</td>
+                  <td><button class="btn secondary" data-delpay="${p.id}" style="padding:8px 10px">Изтрий</button></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `
+        : `<div class="muted small">Няма записани плащания.</div>`
+      );
+
+  // plan
+  const plan = buildPlanRows(r);
+  const planHtml = plan.rows.length
+    ? `
+      ${plan.note ? `<div class="muted small">${plan.note}</div>` : ""}
+      <table style="margin-top:8px">
+        <thead><tr><th style="width:60px">#</th><th style="width:140px">Падеж</th><th>Очаквана вноска</th></tr></thead>
+        <tbody>
+          ${plan.rows.map(x=>`
+            <tr>
+              <td>${x.n}</td>
+              <td>${x.due}</td>
+              <td><b>${fmt(x.amount)}</b></td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `
+    : `<div class="muted small">${plan.note}</div>`;
+
+  const operator = (localStorage.getItem("operator_name") || "").trim();
+
+  detailsCard.innerHTML = `
+    <div class="sectionTitle" style="margin-top:0">Детайли – ${r.app_id || "—"}</div>
+
+    <div class="kv">
+      <b>Клиент:</b> ${r.applicant_name || "—"}<br>
+      <b>Телефон:</b> ${r.phone || "—"}<br>
+      <b>Email:</b> ${safeClientEmail(r) || "—"}<br>
+      <b>Статус:</b> <span class="${pillForStatus(r.status)}">${r.status || "—"}</span><br>
+      <b>Дата:</b> ${r.created_at ? new Date(r.created_at).toLocaleString("bg-BG") : "—"}
+    </div>
+
+    ${dueText}
+
+    <div class="hr"></div>
+
+    <div class="sectionTitle">Финанси</div>
+    <div class="kv">
+      <b>Общо дължимо:</b> ${fmt(total)}<br>
+      <b>Платено общо:</b> ${fmt(paid)}<br>
+      <b>Остатък:</b> <b>${fmt(rem)}</b>
+      ${rem <= 0.01 ? ` <span class="badge ok">Изплатен</span>` : ``}
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="sectionTitle">Оператор / журнал</div>
+    <div class="flex2">
+      <input id="operatorName" placeholder="Твоето име (оператор)" value="${operator.replaceAll('"','&quot;')}">
+      <button class="btn secondary" id="saveOperator">💾 Запази оператор</button>
+    </div>
+    <div class="muted small" style="margin-top:6px">
+      Това име се записва към всяко плащане като <b>created_by</b> (audit-lite).
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="sectionTitle">💳 Ново плащане</div>
+    <div class="flex2">
+      <input id="payAmount" type="number" step="0.01" placeholder="Платена сума (€)">
+      <input id="payDate" type="date" value="${todayISO()}">
+    </div>
+
+    <div class="flex2" style="margin-top:8px">
+      <select id="payCadence">
+        <option value="7">Седмичен цикъл (+7 дни)</option>
+        <option value="30">Месечен цикъл (+30 дни)</option>
+        <option value="14">На 2 седмици (+14 дни)</option>
+      </select>
+      <button class="btn ok" id="savePayment">➕ Запиши плащане</button>
+    </div>
+
+    <div class="muted small" style="margin-top:6px">
+      Валидация: не позволява плащане над остатъка. Автоматично:
+      задава <b>next_due_date</b>, <b>last_payment_date</b> и ако остатъкът стане 0 → <b>closed</b>.
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="sectionTitle">История плащания</div>
+    ${paymentsHtml}
+
+    <div class="hr"></div>
+
+    <div class="sectionTitle">Прогнозен погасителен план</div>
+    ${planHtml}
+
+    <div class="hr"></div>
+
+    <div class="sectionTitle">Действия</div>
+    <div class="statusRow">
+      <select id="newStatus" style="min-width:180px">
+        ${["received","precheck","kyc","underwriting","offer_sent","signed","paid_out","active","overdue","closed","rejected"]
+          .map(s=>`<option value="${s}" ${String(r.status)===s?"selected":""}>${s}</option>`).join("")}
+      </select>
+      <button class="btn" id="saveStatus">💾 Запази статус</button>
+      <button class="btn secondary" id="copyId">📋 Копирай APP-ID</button>
+    </div>
+  `;
+
+  // handlers
+  document.getElementById("saveOperator").addEventListener("click", ()=>{
+    const name = (document.getElementById("operatorName").value || "").trim();
+    localStorage.setItem("operator_name", name);
+    alert("Операторът е запазен локално.");
+  });
+
+  document.getElementById("copyId").addEventListener("click", async ()=>{
+    try{
+      await navigator.clipboard.writeText(r.app_id || "");
+      alert("Копирано.");
+    }catch{
+      alert("Не успях да копирам (браузър ограничение).");
     }
+  });
 
-    tbody.innerHTML = filtered.map(r=>{
-      const dt = r.created_at ? new Date(r.created_at).toLocaleString('bg-BG') : "—";
-      const statusClass = pillForStatus(r.status);
-      const risk = riskFor(r);
-      return `
-        <tr data-id="${r.id}">
-          <td>${dt}</td>
-          <td><b>${r.app_id || "—"}</b></td>
-          <td>${(r.applicant_name||"—")}<br><span class="muted">${(r.phone||"—")}</span></td>
-          <td>
-            <span class="muted">Сума:</span> ${fmt(r.amount)}<br>
-            <span class="muted">Вноска:</span> ${fmt(r.weekly_payment)}<br>
-            <span class="muted">Общо:</span> ${fmt(r.total_payable)}
-          </td>
-          <td>
-            <span class="${statusClass}">${r.status || "—"}</span>
-            <span class="riskChip ${risk.level}">${risk.label}</span>
-          </td>
-        </tr>`;
-    }).join("");
+  document.getElementById("saveStatus").addEventListener("click", async ()=>{
+    const ns = document.getElementById("newStatus").value;
+    await patchApplication(r.id, { status: ns });
+    await hardRefreshAndReselect(r.id);
+  });
 
-    [...tbody.querySelectorAll('tr[data-id]')].forEach(tr=>{
-      tr.addEventListener('click', ()=>{
-        const id = tr.getAttribute('data-id');
-        selected = rows.find(x=>String(x.id)===String(id));
-        renderDetails();
+  document.getElementById("savePayment").addEventListener("click", async ()=>{
+    await addPaymentFlow(r);
+  });
+
+  // delete payment (ако има таблица и достъп)
+  if (payments && payments.length){
+    [...detailsCard.querySelectorAll("[data-delpay]")].forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const pid = btn.getAttribute("data-delpay");
+        if (!confirm("Да изтрия плащането? Това ще коригира ли paid_total? (В момента НЕ коригираме автоматично paid_total при delete.)")) return;
+        await deletePayment(pid);
+        await hardRefreshAndReselect(r.id);
       });
     });
   }
+}
 
-  function safeClientEmail(r){
-    return (r.client_email || r.email || "").trim();
-  }
+async function hardRefreshAndReselect(appRowId){
+  await fetchApplications();
+  await autoMaintainStatuses();
+  computeStats();
+  renderTable();
+  selected = rows.find(x=>String(x.id)===String(appRowId)) || null;
+  await renderDetails();
+}
 
-  async function ensureApprovedLoanForApplication(r){
-    const appId = (r.app_id || "").trim();
-    const clientEmail = safeClientEmail(r);
-
-    if (!appId){
-      alert("Липсва APP-ID в заявката. Няма как да направя кредит.");
-      return;
-    }
-    if (!clientEmail){
-      alert("Липсва client_email/email в заявката. Добави поле client_email в applications.");
-      return;
-    }
-
-    // 1) проверка да няма вече запис
-    const checkUrl = `${SUPABASE_URL}/rest/v1/approved_loans?select=id&app_id=eq.${encodeURIComponent(appId)}&limit=1`;
-    const checkRes = await fetch(checkUrl, { headers: headers() });
-
-    if (checkRes.ok){
-      const ex = await checkRes.json().catch(()=>[]);
-      if (ex && ex.length){
-        // вече има
-        return;
-      }
-    }
-
-    // 2) insert
-    const insUrl = `${SUPABASE_URL}/rest/v1/approved_loans`;
-    const payload = {
-      app_id: appId,
-      client_email: clientEmail,
-      loan_amount: r.amount ?? null,
-      interest_rate: r.apr ?? 0,
-      months: r.months ?? null,
-      monthly_payment: r.weekly_payment ?? null,
-      total_amount: r.total_payable ?? null,
-      status: "active"
-    };
-
-    const insRes = await fetch(insUrl, {
-      method: "POST",
-      headers: { ...headers(), "Prefer":"return=minimal" },
-      body: JSON.stringify(payload)
-    });
-
-    if (!insRes.ok){
-      const t = await insRes.text().catch(()=> "");
-      alert("❌ Не успях да създам approved_loans запис:\n" + (t || insRes.statusText));
-      return;
-    }
-  }
-
-  function renderDetails(){
-    if (!selected){
-      detailsCard.innerHTML = `<div class="boxTitle">Детайли</div><div class="muted">Избери заявка отляво.</div>`;
-      return;
-    }
-
-    const r = selected;
-    const dt = r.created_at ? new Date(r.created_at).toLocaleString('bg-BG') : "—";
-    const statusClass = pillForStatus(r.status);
-    const risk = riskFor(r);
-
-    detailsCard.innerHTML = `
-      <div class="boxTitle">Детайли – ${r.app_id || "—"}</div>
-
-      <div class="kv">
-        <b>Дата:</b> ${dt}<br>
-        <b>Клиент:</b> ${r.applicant_name || "—"}<br>
-        <b>Телефон:</b> ${r.phone || "—"}<br>
-        <b>Email:</b> ${safeClientEmail(r) || "—"}<br>
-        <b>Начална дата:</b> ${r.start_date || "—"}<br><br>
-
-        <b>Оферта:</b><br>
-        • Сума: <b>${fmt(r.amount)}</b><br>
-        • Гаранция: <b>${fmt(r.guarantee)}</b> • База: <b>${fmt(r.base)}</b><br>
-        • Период: <b>${r.months || "—"}</b> м / <b>${r.weeks || "—"}</b> седм<br>
-        • APR: <b>${(r.apr ?? "—")}%</b> • ГПР (инд.): <b>${(r.gpr_est ?? "—")}%</b><br>
-        • Седм. вноска: <b>${fmt(r.weekly_payment)}</b><br>
-        • Общо: <b>${fmt(r.total_payable)}</b><br><br>
-
-        <b>Профил:</b><br>
-        • Доход: <b>${fmt(r.net_income)}</b> / Разходи: <b>${fmt(r.monthly_expenses)}</b><br>
-        • Заетост: <b>${r.employment || "—"}</b><br>
-        • Цел: <b>${r.purpose || "—"}</b><br><br>
-
-        <b>Статус:</b> <span class="${statusClass}">${r.status || "—"}</span>
-        <span class="riskChip ${risk.level}">${risk.label}</span>
-      </div>
-
-      <div class="statusRow">
-        <select id="newStatus">
-          ${["received","precheck","kyc","underwriting","offer_sent","signed","paid_out","active","closed","overdue","rejected"]
-            .map(s=>`<option value="${s}" ${String(r.status)===s?"selected":""}>${s}</option>`).join("")}
-        </select>
-        <button class="btn" id="saveStatus">💾 Запази статус</button>
-        <button class="btn ok" id="approveBtn">✅ Одобри (active)</button>
-        <button class="btn bad" id="rejectBtn">⛔ Откажи (rejected)</button>
-        <button class="btn secondary" id="copyId">📋 Копирай APP-ID</button>
-      </div>
-
-      <div style="margin-top:12px;">
-        <div class="boxTitle">Админ бележки</div>
-        <textarea id="notes" placeholder="Бележки, резултат от разговор, документи…">${r.admin_notes || ""}</textarea>
-        <div class="statusRow">
-          <button class="btn" id="saveNotes">💾 Запази бележки</button>
-          <button class="danger" id="markRejected">⛔ Маркирай rejected</button>
-        </div>
-        <div class="note">Важно: ако Update policy за applications не е разрешена – статусът няма да се записва.</div>
-      </div>
-    `;
-
-    document.getElementById('copyId').addEventListener('click', async ()=>{
-      try{
-        await navigator.clipboard.writeText(r.app_id || "");
-        alert("Копирано.");
-      }catch(e){
-        alert("Не успях да копирам. (Браузър ограничение)");
-      }
-    });
-
-    document.getElementById('saveStatus').addEventListener('click', async ()=>{
-      const ns = document.getElementById('newStatus').value;
-      await updateApplication(r.id, { status: ns });
-    });
-
-    document.getElementById('approveBtn').addEventListener('click', async ()=>{
-      await updateApplication(r.id, { status: "active" });
-    });
-
-    document.getElementById('rejectBtn').addEventListener('click', async ()=>{
-      const notes = document.getElementById('notes').value;
-      await updateApplication(r.id, { status: "rejected", admin_notes: notes });
-    });
-
-    document.getElementById('saveNotes').addEventListener('click', async ()=>{
-      const notes = document.getElementById('notes').value;
-      await updateApplication(r.id, { admin_notes: notes });
-    });
-
-    document.getElementById('markRejected').addEventListener('click', async ()=>{
-      if (!confirm("Сигурен ли си, че искаш да маркираш rejected?")) return;
-      const notes = document.getElementById('notes').value;
-      await updateApplication(r.id, { status: "rejected", admin_notes: notes });
-    });
-  }
-
-  async function updateApplication(id, patch){
-    if (!SUPABASE_URL || !SUPABASE_ANON){
-      alert("Попълни SUPABASE_URL и SUPABASE_ANON.");
-      return;
-    }
-
-    const url = `${SUPABASE_URL}/rest/v1/applications?id=eq.${encodeURIComponent(id)}`;
-
-    const res = await fetch(url, {
-      method: "PATCH",
-      headers: { ...headers(), "Prefer":"return=representation" },
-      body: JSON.stringify(patch)
-    });
-
-    if (!res.ok){
-      const t = await res.text().catch(()=> "");
-      alert("Грешка при запис: " + (t || res.statusText));
-      return;
-    }
-
-    // Ако PostgREST върне 204/празно, това НЕ значи че не е записано.
-    // Просто ще презаредим списъка.
-    const updated = await res.json().catch(()=> []);
-
-    if (updated && updated[0]){
-      selected = updated[0];
-
-      // ако статусът е станал active → правим запис в approved_loans
-      if ((patch.status || "").toLowerCase() === "active") {
-        await ensureApprovedLoanForApplication(selected);
-      }
-
-      rows = rows.map(x=> String(x.id)===String(selected.id) ? selected : x);
-      renderStats();
-      renderTable();
-      renderDetails();
-      alert("Запазено.");
-    } else {
-      // няма върнати данни, но update може да е успешен → re-fetch
-      await fetchApplications();
-
-      // ако трябва да направим кредит при active:
-      if ((patch.status || "").toLowerCase() === "active") {
-        // след fetchApplications намираме реда пак
-        const again = rows.find(x => String(x.id) === String(id));
-        if (again) {
-          selected = again;
-          await ensureApprovedLoanForApplication(again);
-        }
-      }
-
-      selected = rows.find(x => String(x.id) === String(id)) || null;
-      renderDetails();
-      alert("Запазено (без връщане на данни) – списъкът е обновен.");
-    }
-  }
-
-  // Events
-  document.getElementById('refresh').addEventListener('click', fetchApplications);
-  document.getElementById('clearSel').addEventListener('click', ()=>{
-    selected = null;
-    renderDetails();
+/**
+ * =========================
+ *  PATCH application
+ * =========================
+ */
+async function patchApplication(id, patch, opts={silent:false}){
+  const url = `${SUPABASE_URL}/rest/v1/applications?id=eq.${encodeURIComponent(id)}`;
+  const res = await fetch(url, {
+    method: "PATCH",
+    headers: { ...headers(), "Prefer":"return=representation" },
+    body: JSON.stringify(patch)
   });
-  qEl.addEventListener('input', renderTable);
-  statusEl.addEventListener('change', renderTable);
+  if (!res.ok){
+    const t = await res.text().catch(()=> "");
+    if (!opts.silent) alert("Грешка при запис: " + (t || res.statusText));
+    return null;
+  }
+  const updated = await res.json().catch(()=>[]);
+  if (updated && updated[0]) return updated[0];
+  return null;
+}
 
-  // Init
-  fetchApplications();
+/**
+ * =========================
+ *  PAYMENTS: INSERT + VALIDATION + AUTO STATUS
+ * =========================
+ */
+async function insertPaymentRow({ application_id, app_id, amount, paid_at, created_by }){
+  const url = `${SUPABASE_URL}/rest/v1/loan_payments`;
+  const res = await fetch(url, {
+    method:"POST",
+    headers: { ...headers(), "Prefer":"return=representation" },
+    body: JSON.stringify({ application_id, app_id, amount, paid_at, created_by })
+  });
+  if (!res.ok){
+    const t = await res.text().catch(()=> "");
+    alert("❌ Не успях да запиша в loan_payments (таблица липсва или няма RLS достъп):\n" + (t || res.statusText));
+    return null;
+  }
+  const j = await res.json().catch(()=>[]);
+  return j && j[0] ? j[0] : null;
+}
+
+async function deletePayment(paymentId){
+  const url = `${SUPABASE_URL}/rest/v1/loan_payments?id=eq.${encodeURIComponent(paymentId)}`;
+  const res = await fetch(url, { method:"DELETE", headers: headers() });
+  if (!res.ok){
+    const t = await res.text().catch(()=> "");
+    alert("Грешка при изтриване: " + (t || res.statusText));
+    return false;
+  }
+  alert("Изтрито. (Забележка: paid_total НЕ се преизчислява автоматично.)");
+  return true;
+}
+
+async function addPaymentFlow(r){
+  const amount = clampMoney(document.getElementById("payAmount").value);
+  const date = document.getElementById("payDate").value;
+  const cadenceDays = Number(document.getElementById("payCadence").value || 7);
+
+  if (!amount || amount <= 0){
+    alert("Въведи валидна платена сума.");
+    return;
+  }
+  if (!date){
+    alert("Избери дата на плащане.");
+    return;
+  }
+  // guard future date
+  if (new Date(date) > new Date(todayISO())){
+    if (!confirm("Датата е в бъдеще. Да продължа?")) return;
+  }
+
+  const rem = remainingAmount(r);
+  if (rem <= 0.01){
+    alert("Този кредит изглежда изплатен (остатък 0).");
+    return;
+  }
+  if (amount > rem + 0.01){
+    alert(`Плащането (${fmt(amount)}) е по-голямо от остатъка (${fmt(rem)}).`);
+    return;
+  }
+
+  // audit
+  const operator = (localStorage.getItem("operator_name") || "").trim() || "admin";
+
+  // 1) запис в история (ако таблицата съществува и има достъп)
+  await insertPaymentRow({
+    application_id: r.id,
+    app_id: r.app_id || null,
+    amount,
+    paid_at: date,
+    created_by: operator
+  });
+
+  // 2) обновяване на applications агрегати
+  const newPaid = clampMoney(Number(r.paid_total || 0) + amount);
+  const nextDue = addDaysISO(date, isFinite(cadenceDays) ? cadenceDays : 7);
+
+  // ако се изплати напълно → closed
+  const newRem = clampMoney((Number(r.total_payable ?? r.total_amount ?? r.amount ?? 0) - newPaid));
+  const shouldClose = newRem <= 0.01;
+
+  const patch = {
+    paid_total: newPaid,
+    last_payment_date: date,
+    next_due_date: shouldClose ? null : nextDue, // ако е изплатен, можем да махнем следв. падеж
+    status: shouldClose ? "closed" : (String(r.status||"").toLowerCase()==="overdue" ? "active" : r.status) // ако е платил просрочие, връщаме active (по желание)
+  };
+
+  const u = await patchApplication(r.id, patch);
+  if (!u) return;
+
+  alert("✅ Плащането е записано.");
+  await hardRefreshAndReselect(r.id);
+}
+
+/**
+ * =========================
+ *  CSV EXPORT
+ * =========================
+ */
+function exportToCsv(){
+  const filtered = sortRows(rows.filter(matchesFilter));
+  const cols = [
+    "id","app_id","applicant_name","phone","amount","weekly_payment","total_payable",
+    "paid_total","next_due_date","last_payment_date","status","created_at"
+  ];
+  const esc = (v) => {
+    const s = (v === null || v === undefined) ? "" : String(v);
+    const q = s.includes('"') || s.includes(",") || s.includes("\n");
+    const ss = s.replaceAll('"','""');
+    return q ? `"${ss}"` : ss;
+  };
+
+  const lines = [
+    cols.join(","),
+    ...filtered.map(r => cols.map(c=>esc(r[c])).join(","))
+  ];
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `credits_${todayISO()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * =========================
+ *  INIT + EVENTS
+ * =========================
+ */
+async function init(){
+  if (!ensurePin()) return;
+
+  await fetchApplications();
+  await autoMaintainStatuses();
+  computeStats();
+  renderTable();
+  await renderDetails();
+}
+
+document.getElementById("refresh").addEventListener("click", async ()=>{
+  if (!ensurePin()) return;
+  tbody.innerHTML = `<tr><td colspan="6" class="muted">Зареждане…</td></tr>`;
+  await fetchApplications();
+  await autoMaintainStatuses();
+  computeStats();
+  renderTable();
+
+  if (selected){
+    selected = rows.find(x=>String(x.id)===String(selected.id)) || null;
+    await renderDetails();
+  }
+});
+
+document.getElementById("exportCsv").addEventListener("click", ()=>{
+  if (!ensurePin()) return;
+  exportToCsv();
+});
+
+qEl.addEventListener("input", renderTable);
+statusFilterEl.addEventListener("change", renderTable);
+dueFilterEl.addEventListener("change", renderTable);
+sortByEl.addEventListener("change", renderTable);
+
+init();
 </script>
-
 </body>
 </html>
