@@ -2,257 +2,170 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
-<title>Моята каса</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>Моята каса</title>
 
 <style>
 :root{
   --main:#8e0e00;
-  --accent:#ff6a00;
   --bg:#f5f6fa;
+  --card:#fff;
+  --muted:#666;
+  --shadow:0 12px 30px rgba(0,0,0,.12);
 }
 body{
   margin:0;
-  font-family:Arial,sans-serif;
+  font-family:Arial, Helvetica, sans-serif;
   background:var(--bg);
 }
-.container{
-  max-width:1000px;
-  margin:auto;
-  padding:20px;
+.wrap{
+  max-width:900px;
+  margin:20px auto;
+  padding:0 14px;
 }
-h1{color:var(--main)}
-.box{
-  background:#fff;
-  padding:20px;
-  margin-bottom:20px;
+h1{
+  color:var(--main);
+  margin-bottom:10px;
+}
+.card{
+  background:var(--card);
   border-radius:14px;
-  box-shadow:0 6px 20px rgba(0,0,0,.08);
+  box-shadow:var(--shadow);
+  padding:18px;
+  margin-bottom:14px;
 }
+.title{
+  font-weight:900;
+  margin-bottom:8px;
+}
+.kv{
+  font-size:14px;
+  line-height:1.6;
+}
+.kv b{color:#000}
 .progress{
-  height:22px;
+  height:18px;
   background:#eee;
-  border-radius:20px;
+  border-radius:999px;
   overflow:hidden;
+  margin-top:6px;
 }
 .progress div{
   height:100%;
-  background:linear-gradient(90deg,var(--main),var(--accent));
+  background:linear-gradient(90deg,#8e0e00,#c31432);
 }
+.muted{color:var(--muted)}
 table{
   width:100%;
   border-collapse:collapse;
+  font-size:14px;
 }
 th,td{
-  padding:10px;
-  border-bottom:1px solid #ddd;
-  text-align:center;
+  padding:8px;
+  border-bottom:1px solid #eee;
+  text-align:left;
 }
-.score{
-  font-size:32px;
-  font-weight:bold;
-}
-.good{color:green}
-.mid{color:orange}
-.bad{color:red}
-input,button{
-  padding:10px;
-  width:100%;
-  margin-bottom:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
-}
-button{
-  background:var(--main);
-  color:#fff;
-  border:none;
-  cursor:pointer;
-}
-button:hover{opacity:.9}
-canvas{
-  width:100%;
-  height:220px;
-}
-small{color:#666}
+th{font-weight:900}
 </style>
 </head>
 
 <body>
-<div class="container">
-
+<div class="wrap">
 <h1>💳 Моята каса</h1>
 
-<div id="loanBox" class="box"></div>
-
-<div class="box">
-<h3>📊 Кредитен рейтинг</h3>
-<p id="score" class="score"></p>
-<small id="riskText"></small>
-</div>
-
-<div class="box">
-<h3>📈 Прогрес на изплащане</h3>
-<div class="progress"><div id="progressBar"></div></div>
-<p id="progressText"></p>
-</div>
-
-<div class="box">
-<h3>📅 История на плащанията</h3>
-<table>
-<thead>
-<tr><th>Дата</th><th>Сума</th></tr>
-</thead>
-<tbody id="payments"></tbody>
-</table>
-</div>
-
-<div class="box">
-<h3>📉 Визуален график</h3>
-<canvas id="chart"></canvas>
-</div>
-
-<div class="box">
-<h3>🔄 Рефинансиране (без нова заявка)</h3>
-<input id="newAmount" type="number" placeholder="Нов размер на кредита">
-<input id="newMonths" type="number" placeholder="Нов срок (месеци)">
-<input id="newRate" type="number" placeholder="Годишна лихва (%)">
-<p id="calcResult"></p>
-<button onclick="sendRefinance()">Изпрати искане</button>
-<p id="refMsg"></p>
-</div>
-
+<div id="content" class="muted">Зареждане…</div>
 </div>
 
 <script>
-const supabase = supabase.createClient(
-  "https://cmiylzpmpwqbacjoqtkx.supabase.co",
-  "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc"
-);
+/******** CONFIG ********/
+const SUPABASE_URL = "https://ypmyawbogvwazlhgpftl.supabase.co";
+const SUPABASE_ANON = "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc";
 
-const email = new URLSearchParams(window.location.search).get("email");
-let loanId,totalAmount=0,paidAmount=0;
+function headers(){
+  return {
+    apikey: SUPABASE_ANON,
+    Authorization: `Bearer ${SUPABASE_ANON}`,
+    "Content-Type": "application/json"
+  };
+}
 
-async function loadLoan(){
-  const { data: loan } = await supabase
-    .from("approved_loans")
-    .select("*")
-    .eq("client_email", email)
-    .single();
+const appId = new URLSearchParams(window.location.search).get("app_id");
+const content = document.getElementById("content");
 
-  if(!loan){
-    loanBox.innerHTML="Няма активен кредит.";
+if (!appId){
+  content.innerHTML = "❌ Липсва APP-ID.";
+  throw new Error("Missing app_id");
+}
+
+function fmt(n){
+  const x = Number(n);
+  if (!isFinite(x)) return "—";
+  return x.toFixed(2) + " €";
+}
+
+async function loadData(){
+  /* 1️⃣ Заявка */
+  const appRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/applications?app_id=eq.${encodeURIComponent(appId)}&limit=1`,
+    { headers: headers() }
+  );
+  const appData = await appRes.json();
+  if (!appData[0]){
+    content.innerHTML = "❌ Няма намерена заявка.";
     return;
   }
+  const app = appData[0];
 
-  loanId = loan.id;
-  totalAmount = loan.total_amount;
+  /* 2️⃣ Одобрен кредит */
+  const loanRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/approved_loans?app_id=eq.${encodeURIComponent(appId)}&status=eq.active&limit=1`,
+    { headers: headers() }
+  );
+  const loanData = await loanRes.json();
+  const loan = loanData[0];
 
-  loanBox.innerHTML = `
-    <p><strong>Кредит:</strong> ${loan.loan_amount} лв.</p>
-    <p><strong>Лихва:</strong> ${loan.interest_rate}%</p>
-    <p><strong>Срок:</strong> ${loan.months} месеца</p>
-    <p><strong>Месечна вноска:</strong> ${loan.monthly_payment} лв.</p>
-    <p><strong>Общо за връщане:</strong> ${loan.total_amount} лв.</p>
+  let paid = 0;
+  let percent = 0;
+  if (loan){
+    percent = Math.min((paid / loan.total_amount) * 100, 100);
+  }
+
+  content.innerHTML = `
+    <div class="card">
+      <div class="title">📄 Данни по заявката</div>
+      <div class="kv">
+        <b>APP-ID:</b> ${app.app_id}<br>
+        <b>Име:</b> ${app.applicant_name}<br>
+        <b>Телефон:</b> ${app.phone}<br>
+        <b>Цел:</b> ${app.purpose || "—"}<br>
+        <b>Заетост:</b> ${app.employment || "—"}<br>
+        <b>Доход:</b> ${fmt(app.net_income)}<br>
+        <b>Разходи:</b> ${fmt(app.monthly_expenses)}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">💳 Данни по кредита</div>
+      ${loan ? `
+      <div class="kv">
+        <b>Сума:</b> ${fmt(loan.loan_amount)}<br>
+        <b>Лихва:</b> ${loan.interest_rate}%<br>
+        <b>Срок:</b> ${loan.months} месеца<br>
+        <b>Вноска:</b> ${fmt(loan.monthly_payment)}<br>
+        <b>Общо за връщане:</b> ${fmt(loan.total_amount)}<br>
+        <b>Статус:</b> ${loan.status}
+      </div>
+
+      <div class="progress">
+        <div style="width:${percent}%"></div>
+      </div>
+      <div class="muted">Изплатено: ${percent.toFixed(1)}%</div>
+      ` : `<span class="muted">Кредитът още не е активиран.</span>`}
+    </div>
   `;
-
-  loadPayments();
 }
 
-async function loadPayments(){
-  const { data } = await supabase
-    .from("loan_payments")
-    .select("*")
-    .eq("loan_id", loanId)
-    .order("payment_date");
-
-  paidAmount = 0;
-  payments.innerHTML = "";
-
-  data.forEach(p=>{
-    paidAmount += p.payment_amount;
-    payments.innerHTML += `
-      <tr>
-        <td>${p.payment_date}</td>
-        <td>${p.payment_amount} лв.</td>
-      </tr>`;
-  });
-
-  updateProgress();
-  calculateScore(data.length);
-  drawChart();
-}
-
-function updateProgress(){
-  const percent = Math.min((paidAmount/totalAmount)*100,100);
-  progressBar.style.width = percent+"%";
-  progressText.innerText =
-    `Платено: ${paidAmount.toFixed(2)} лв. | Остава: ${(totalAmount-paidAmount).toFixed(2)} лв.`;
-}
-
-function calculateScore(paymentsCount){
-  let score = 0;
-  score += Math.min((paidAmount/totalAmount)*30,30);
-  score += paymentsCount>0 ? 40 : 20;
-  if(paymentsCount < 3) score -= 10;
-
-  score = Math.max(Math.min(score,100),0);
-
-  scoreEl = document.getElementById("score");
-  scoreEl.innerText = score + " / 100";
-
-  let risk="Нисък риск";
-  scoreEl.className="score good";
-
-  if(score<80){scoreEl.className="score mid"; risk="Среден риск";}
-  if(score<60){scoreEl.className="score bad"; risk="Висок риск";}
-
-  riskText.innerText = risk;
-}
-
-function calcMonthly(){
-  const P = +newAmount.value;
-  const r = (+newRate.value/100)/12;
-  const n = +newMonths.value;
-  if(!P||!r||!n) return;
-
-  const m = P * (r/(1-Math.pow(1+r,-n)));
-  calcResult.innerText = "Нова месечна вноска: "+m.toFixed(2)+" лв.";
-}
-newAmount.oninput=newMonths.oninput=newRate.oninput=calcMonthly;
-
-async function sendRefinance(){
-  await supabase.from("loan_refinance_requests").insert({
-    loan_id:loanId,
-    new_amount:newAmount.value,
-    new_months:newMonths.value,
-    new_rate:newRate.value,
-    status:"pending"
-  });
-  refMsg.innerText="Искането за рефинансиране е изпратено.";
-}
-
-function drawChart(){
-  const c=document.getElementById("chart");
-  const ctx=c.getContext("2d");
-  c.width=c.offsetWidth;
-  c.height=220;
-  ctx.clearRect(0,0,c.width,c.height);
-
-  const barWidth=c.width*0.8;
-  const startX=c.width*0.1;
-
-  ctx.fillStyle="#ddd";
-  ctx.fillRect(startX,90,barWidth,40);
-
-  ctx.fillStyle="#8e0e00";
-  ctx.fillRect(startX,90,(paidAmount/totalAmount)*barWidth,40);
-
-  ctx.fillStyle="#000";
-  ctx.fillText("Изплатено",startX,80);
-}
-
-loadLoan();
+loadData();
 </script>
 </body>
 </html>
