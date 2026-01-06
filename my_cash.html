@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<title>Моята каса</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --main:#8e0e00;
+  --accent:#ff6a00;
+  --bg:#f5f6fa;
+}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+}
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
+}
+h1{color:var(--main)}
+.box{
+  background:#fff;
+  padding:20px;
+  margin-bottom:20px;
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.08);
+}
+.progress{
+  height:22px;
+  background:#eee;
+  border-radius:20px;
+  overflow:hidden;
+}
+.progress div{
+  height:100%;
+  background:linear-gradient(90deg,var(--main),var(--accent));
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+th,td{
+  padding:10px;
+  border-bottom:1px solid #ddd;
+  text-align:center;
+}
+.score{
+  font-size:32px;
+  font-weight:bold;
+}
+.good{color:green}
+.mid{color:orange}
+.bad{color:red}
+input,button{
+  padding:10px;
+  width:100%;
+  margin-bottom:10px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+button{
+  background:var(--main);
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+button:hover{opacity:.9}
+canvas{
+  width:100%;
+  height:220px;
+}
+small{color:#666}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>💳 Моята каса</h1>
+
+<div id="loanBox" class="box"></div>
+
+<div class="box">
+<h3>📊 Кредитен рейтинг</h3>
+<p id="score" class="score"></p>
+<small id="riskText"></small>
+</div>
+
+<div class="box">
+<h3>📈 Прогрес на изплащане</h3>
+<div class="progress"><div id="progressBar"></div></div>
+<p id="progressText"></p>
+</div>
+
+<div class="box">
+<h3>📅 История на плащанията</h3>
+<table>
+<thead>
+<tr><th>Дата</th><th>Сума</th></tr>
+</thead>
+<tbody id="payments"></tbody>
+</table>
+</div>
+
+<div class="box">
+<h3>📉 Визуален график</h3>
+<canvas id="chart"></canvas>
+</div>
+
+<div class="box">
+<h3>🔄 Рефинансиране (без нова заявка)</h3>
+<input id="newAmount" type="number" placeholder="Нов размер на кредита">
+<input id="newMonths" type="number" placeholder="Нов срок (месеци)">
+<input id="newRate" type="number" placeholder="Годишна лихва (%)">
+<p id="calcResult"></p>
+<button onclick="sendRefinance()">Изпрати искане</button>
+<p id="refMsg"></p>
+</div>
+
+</div>
+
+<script>
+const supabase = supabase.createClient(
+  "https://cmiylzpmpwqbacjoqtkx.supabase.co",
+  "ANON_PUBLIC_KEY"
+);
+
+const email = new URLSearchParams(window.location.search).get("email");
+let loanId,totalAmount=0,paidAmount=0;
+
+async function loadLoan(){
+  const { data: loan } = await supabase
+    .from("approved_loans")
+    .select("*")
+    .eq("client_email", email)
+    .single();
+
+  if(!loan){
+    loanBox.innerHTML="Няма активен кредит.";
+    return;
+  }
+
+  loanId = loan.id;
+  totalAmount = loan.total_amount;
+
+  loanBox.innerHTML = `
+    <p><strong>Кредит:</strong> ${loan.loan_amount} лв.</p>
+    <p><strong>Лихва:</strong> ${loan.interest_rate}%</p>
+    <p><strong>Срок:</strong> ${loan.months} месеца</p>
+    <p><strong>Месечна вноска:</strong> ${loan.monthly_payment} лв.</p>
+    <p><strong>Общо за връщане:</strong> ${loan.total_amount} лв.</p>
+  `;
+
+  loadPayments();
+}
+
+async function loadPayments(){
+  const { data } = await supabase
+    .from("loan_payments")
+    .select("*")
+    .eq("loan_id", loanId)
+    .order("payment_date");
+
+  paidAmount = 0;
+  payments.innerHTML = "";
+
+  data.forEach(p=>{
+    paidAmount += p.payment_amount;
+    payments.innerHTML += `
+      <tr>
+        <td>${p.payment_date}</td>
+        <td>${p.payment_amount} лв.</td>
+      </tr>`;
+  });
+
+  updateProgress();
+  calculateScore(data.length);
+  drawChart();
+}
+
+function updateProgress(){
+  const percent = Math.min((paidAmount/totalAmount)*100,100);
+  progressBar.style.width = percent+"%";
+  progressText.innerText =
+    `Платено: ${paidAmount.toFixed(2)} лв. | Остава: ${(totalAmount-paidAmount).toFixed(2)} лв.`;
+}
+
+function calculateScore(paymentsCount){
+  let score = 0;
+  score += Math.min((paidAmount/totalAmount)*30,30);
+  score += paymentsCount>0 ? 40 : 20;
+  if(paymentsCount < 3) score -= 10;
+
+  score = Math.max(Math.min(score,100),0);
+
+  scoreEl = document.getElementById("score");
+  scoreEl.innerText = score + " / 100";
+
+  let risk="Нисък риск";
+  scoreEl.className="score good";
+
+  if(score<80){scoreEl.className="score mid"; risk="Среден риск";}
+  if(score<60){scoreEl.className="score bad"; risk="Висок риск";}
+
+  riskText.innerText = risk;
+}
+
+function calcMonthly(){
+  const P = +newAmount.value;
+  const r = (+newRate.value/100)/12;
+  const n = +newMonths.value;
+  if(!P||!r||!n) return;
+
+  const m = P * (r/(1-Math.pow(1+r,-n)));
+  calcResult.innerText = "Нова месечна вноска: "+m.toFixed(2)+" лв.";
+}
+newAmount.oninput=newMonths.oninput=newRate.oninput=calcMonthly;
+
+async function sendRefinance(){
+  await supabase.from("loan_refinance_requests").insert({
+    loan_id:loanId,
+    new_amount:newAmount.value,
+    new_months:newMonths.value,
+    new_rate:newRate.value,
+    status:"pending"
+  });
+  refMsg.innerText="Искането за рефинансиране е изпратено.";
+}
+
+function drawChart(){
+  const c=document.getElementById("chart");
+  const ctx=c.getContext("2d");
+  c.width=c.offsetWidth;
+  c.height=220;
+  ctx.clearRect(0,0,c.width,c.height);
+
+  const barWidth=c.width*0.8;
+  const startX=c.width*0.1;
+
+  ctx.fillStyle="#ddd";
+  ctx.fillRect(startX,90,barWidth,40);
+
+  ctx.fillStyle="#8e0e00";
+  ctx.fillRect(startX,90,(paidAmount/totalAmount)*barWidth,40);
+
+  ctx.fillStyle="#000";
+  ctx.fillText("Изплатено",startX,80);
+}
+
+loadLoan();
+</script>
+</body>
+</html>
