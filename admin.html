@@ -502,7 +502,7 @@ if (patch.status === "active") {
       months: r.months,
       monthly_payment: r.weekly_payment,
       total_amount: r.total_payable,
-      status: "active";
+      status: "active"
   }
 
   rows = rows.map(x=> String(x.id)===String(selected.id) ? selected : x);
