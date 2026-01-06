@@ -340,6 +340,7 @@
       <!-- FormSubmit setup -->
       <input type="hidden" name="_subject" value="Заявка за БЪРЗ КРЕДИТ (V2 с оферта)">
       <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_next" value="index.html">
 
       <!-- Tracking / audit -->
       <input type="hidden" name="Номер на заявка" id="hAppId">
@@ -960,28 +961,83 @@
   if (expensesEl) expensesEl.addEventListener('input', recalc);
 
   // Submit handler (do BOTH: optional DB + email fallback)
-  document.getElementById('sendBtn').addEventListener('click', async () => {
+  form.addEventListener('submit', async (e)=>{
+    const appId = makeAppId();
+hAppId.value = appId;
+cAppId.textContent = appId;
+    // Let browser check required checkboxes in step 4
+    // But we still validate step 4 essentials:
+    recalc();
+    syncProfileHidden();
 
-  const approve = document.getElementById('approveOffer').checked;
-  if (!approve) {
-    alert("Моля, одобрете офертата.");
-    return;
-  }
+    const approve = document.getElementById('approveOffer').checked;
+    hApprove.value = approve ? "ДА - Клиентът одобрява офертата" : "НЕ";
+    if (!approve){
+      e.preventDefault();
+      alert("Моля, маркирайте 'Одобрение на офертата', за да изпратите заявката.");
+      return;
+    }
 
-  const appId = makeAppId();
-  hAppId.value = appId;
-  cAppId.textContent = appId;
+    // Prepare payload for DB
+    const payload = {
+      app_id: appId,
+      status: "received",
+      created_at: new Date().toISOString(),
+      applicant_name: nameEl.value.trim(),
+      phone: (phoneEl.value||"").trim(),
+      start_date: startDateEl.value,
+      amount: +amountEl.value,
+      months: +monthsEl.value,
+      weeks: weeksFromMonths(+monthsEl.value),
+      apr: +aprEl.value,
+      gpr_est: parseFloat((document.getElementById('cGPR').textContent || "0").replace('%','')) || 0,
+      guarantee: (+amountEl.value) * 0.25,
+      base: (+amountEl.value) * 1.25,
+      weekly_payment: parseFloat((document.getElementById('cWeekly').textContent || "0").replace('€','')) || 0,
+      total_payable: parseFloat((document.getElementById('cTotal').textContent || "0").replace('€','')) || 0,
+      net_income: +(netIncomeEl.value||0),
+      monthly_expenses: +(expensesEl.value||0),
+      employment: employmentEl.value,
+      purpose: purposeEl.value,
+      consents: {
+        gdpr: document.getElementById('gdpr').checked,
+        personal_data_check: document.getElementById('personalDataCheck').checked,
+        terms: document.getElementById('termsCheck').checked,
+        approve_offer: approve,
+        terms_url: hTermsURL.value
+      },
+      meta: {
+        referrer: hReferrer.value,
+        user_agent: hUA.value,
+        timezone: hTZ.value
+      }
+    };
 
-  recalc();
-  syncProfileHidden();
+    // Save snapshot locally (support)
+    try{
+      localStorage.setItem('lastLoanApplication', JSON.stringify(payload));
+    } catch(err){}
 
-  popup.style.display = 'block';
+    // Try DB
+    let dbResult = { ok:false, skipped:true };
+    try{
+      dbResult = await postToSupabase(payload);
+    } catch(err){
+      dbResult = { ok:false, error: String(err) };
+    }
 
-  fetch("https://formsubmit.co/uzunov.angel@abv.bg", {
-    method: "POST",
-    body: new FormData(document.getElementById('loanForm')),
-    headers: { "Accept": "application/json" }
-  });
+    // Show popup (does NOT block submit; it’s just feedback)
+    popupText.innerHTML =
+      `Номер на заявка: <b>${appId}</b><br>` +
+      (dbResult.ok ? `<span class="hintOk">✅ Записано в системата.</span><br>` :
+        (dbResult.skipped ? `<span class="hintWarn">ℹ Системният запис не е активиран (Supabase не е настроен).</span><br>` :
+          `<span class="hintBad">⚠ Възникна проблем при системния запис.</span><br>`)) +
+      `<br>Ако всичко е наред, заявката ще бъде изпратена и по имейл.`;
+    popup.style.display = 'block';
+
+    // Let FormSubmit proceed (email)
+    // (If you later want DB-only: uncomment next lines and implement your own API endpoint)
+    // e.preventDefault();
   });
 
   // Init
