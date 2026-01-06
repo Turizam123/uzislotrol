@@ -192,66 +192,6 @@
   const SUPABASE_URL = "https://ypmyawbogvwazlhgpftl.supabase.co";     // пример: https://xxxx.supabase.co
   const SUPABASE_ANON = "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc";    // Anon public key
 
-  async function createApprovedLoanFromApplication(app){
-    // защита – ако няма email
-    if (!app.client_email && !app.email) {
-      console.warn("Няма client_email – не може да се създаде кредит");
-      return;
-    }
-
-    const clientEmail = app.client_email || app.email;
-
-    // 1️⃣ проверка дали вече има активен кредит за тази заявка
-    const checkUrl =
-      `${SUPABASE_URL}/rest/v1/approved_loans?` +
-      `client_email=eq.${encodeURIComponent(clientEmail)}` +
-      `&status=eq.active&limit=1`;
-
-    const checkRes = await fetch(checkUrl, { headers: headers() });
-    const existing = checkRes.ok ? await checkRes.json() : [];
-
-    if (existing.length > 0) {
-      console.warn("Вече има активен кредит за този клиент");
-      return;
-    }
-
-    // 2️⃣ създаваме одобрен кредит
-    const insertRes = await fetch(
-  `${SUPABASE_URL}/rest/v1/approved_loans`,
-  {
-    method: "POST",
-    headers: {
-      ...headers(),
-      "Prefer": "return=minimal"
-    },
-    body: JSON.stringify({
-      app_id: app.app_id,                    // 🔥 КРИТИЧНО
-      client_email: app.client_email,        // 🔥 КРИТИЧНО
-
-      loan_amount: app.amount,
-      interest_rate: app.apr ?? 0,
-
-      // ако нямаш месечна вноска – по-добре null
-      months: app.months ?? null,
-
-      // ако работиш със седмична вноска → ИЛИ я преименувай,
-      // ИЛИ си наясно, че я записваш като "monthly_payment"
-      monthly_payment: app.weekly_payment ?? null,
-
-      total_amount: app.total_payable ?? null,
-      status: "active"
-        })
-      }
-    );
-
-    if (!insertRes.ok){
-      const t = await insertRes.text().catch(()=> "");
-      alert("⚠️ Кредитът е активиран, но НЕ успях да създам запис в approved_loans:\n" + t);
-    } else {
-      console.log("✅ Създаден е запис в approved_loans");
-    }
-  }
-
   function headers(){
     return {
       "apikey": SUPABASE_ANON,
@@ -282,58 +222,24 @@
     return x.toFixed(2) + " €";
   }
 
-  async function fetchApplications()renderTable();
-  const tbody = document.getElementById("tbody");
+  async function fetchApplications(){
+    if (!SUPABASE_URL || !SUPABASE_ANON){
+      tbody.innerHTML = `<tr><td colspan="5" class="muted">Попълни SUPABASE_URL и SUPABASE_ANON в admin.html</td></tr>`;
+      return;
+    }
 
-  if (!SUPABASE_URL || !SUPABASE_ANON) {
-    tbody.innerHTML =
-      `<tr><td colspan="5" class="muted">
-        Попълни SUPABASE_URL и SUPABASE_ANON в admin.html
-      </td></tr>`;
-    return;
-  }
+    const url = `${SUPABASE_URL}/rest/v1/applications?select=*` +
+      `&order=created_at.desc&limit=200`;
 
-  const url =
-    `${SUPABASE_URL}/rest/v1/applications` +
-    `?select=id,app_id,applicant_name,phone,amount,status,created_at` +
-    `&order=created_at.desc`;
+    const res = await fetch(url, { headers: headers() });
+    if (!res.ok){
+      const t = await res.text().catch(()=> "");
+      tbody.innerHTML = `<tr><td colspan="5" class="muted">Грешка при зареждане: ${t || res.statusText}</td></tr>`;
+      return;
+    }
 
-  const res = await fetch(url, { headers: headers() });
-
-  if (!res.ok) {
-    const t = await res.text();
-    tbody.innerHTML =
-      `<tr><td colspan="5" class="muted">
-        Грешка при зареждане: ${t}
-      </td></tr>`;
-    return;
-  }
-
-  rows = await res.json();
-
-  if (!rows.length) {
-    tbody.innerHTML =
-      `<tr><td colspan="5" class="muted">Няма заявки</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = rows.map(r => `
-    <tr data-id="${r.id}">
-      <td>${new Date(r.created_at).toLocaleString("bg-BG")}</td>
-      <td><b>${r.app_id || "-"}</b></td>
-      <td>${r.applicant_name}<br><small>${r.phone}</small></td>
-      <td>${r.amount} €</td>
-      <td><span class="pill ${r.status}">${r.status}</span></td>
-    </tr>
-  `).join("");
-
-  document
-    .querySelectorAll("#tbody tr")
-    .forEach(tr =>
-      tr.addEventListener("click", () =>
-        selectApplication(tr.dataset.id)
-      )
-    );
+    rows = await res.json();
+    renderTable();
   }
 
   function matchesFilter(r){
@@ -372,7 +278,6 @@
             <span class="muted">Общо:</span> ${fmt(r.total_payable)}
           </td>
           <td><span class="${statusClass}">${r.status || "—"}</span></td>
-          <span class="${statusClass}">${r.status}</span>
         </tr>`;
     }).join("");
 
@@ -483,33 +388,12 @@
     }
     const updated = await res.json().catch(()=> []);
     if (updated && updated[0]){
-  selected = updated[0];
-
-  // 🔔 ако статусът е станал "active" → създаваме одобрен кредит
-if (patch.status === "active") {
-  const r = updated[0];
-
-  await fetch(`${SUPABASE_URL}/rest/v1/approved_loans`, {
-    method: "POST",
-    headers: {
-      ...headers(),
-      "Prefer": "resolution=merge-duplicates"
-    },
-    body: JSON.stringify({
-      app_id: r.app_id,
-      client_email: r.client_email,
-      loan_amount: r.amount,
-      interest_rate: r.apr,
-      months: r.months,
-      monthly_payment: r.weekly_payment,
-      total_amount: r.total_payable,
-      status: "active"
-  }
-
-  rows = rows.map(x=> String(x.id)===String(selected.id) ? selected : x);
-  renderTable();
-  renderDetails();
-  alert("Запазено.");
+      selected = updated[0];
+      // also refresh the list copy
+      rows = rows.map(x=> String(x.id)===String(selected.id) ? selected : x);
+      renderTable();
+      renderDetails();
+      alert("Запазено.");
     } else {
       alert("Запазено (без връщане на данни).");
       await fetchApplications();
