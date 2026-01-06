@@ -191,6 +191,56 @@
    ***************/
   const SUPABASE_URL = "https://ypmyawbogvwazlhgpftl.supabase.co";     // пример: https://xxxx.supabase.co
   const SUPABASE_ANON = "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc";    // Anon public key
+<script>
+  async function createApprovedLoanFromApplication(app){
+    // защита – ако няма email
+    if (!app.client_email && !app.email) {
+      console.warn("Няма client_email – не може да се създаде кредит");
+      return;
+    }
+
+    const clientEmail = app.client_email || app.email;
+
+    // 1️⃣ проверка дали вече има активен кредит за тази заявка
+    const checkUrl =
+      `${SUPABASE_URL}/rest/v1/approved_loans?` +
+      `client_email=eq.${encodeURIComponent(clientEmail)}` +
+      `&status=eq.active&limit=1`;
+
+    const checkRes = await fetch(checkUrl, { headers: headers() });
+    const existing = checkRes.ok ? await checkRes.json() : [];
+
+    if (existing.length > 0) {
+      console.warn("Вече има активен кредит за този клиент");
+      return;
+    }
+
+    // 2️⃣ създаваме одобрен кредит
+    const insertRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/approved_loans`,
+      {
+        method: "POST",
+        headers: {...headers(), "Prefer":"return=minimal"},
+        body: JSON.stringify({
+          client_email: clientEmail,
+          loan_amount: app.amount,
+          interest_rate: app.apr ?? 0,
+          months: app.months ?? null,
+          monthly_payment: app.weekly_payment ?? null,
+          total_amount: app.total_payable ?? null,
+          status: "active"
+        })
+      }
+    );
+
+    if (!insertRes.ok){
+      const t = await insertRes.text().catch(()=> "");
+      alert("⚠️ Кредитът е активиран, но НЕ успях да създам запис в approved_loans:\n" + t);
+    } else {
+      console.log("✅ Създаден е запис в approved_loans");
+    }
+  }
+</script>
 
   function headers(){
     return {
