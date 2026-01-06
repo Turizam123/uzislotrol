@@ -961,7 +961,8 @@
   if (expensesEl) expensesEl.addEventListener('input', recalc);
 
   // Submit handler (do BOTH: optional DB + email fallback)
-  form.addEventListener('submit', async (e)=>{
+  form.addEventListener('submit', async (e) => {
+  e.preventDefault(); // ⛔ СПИРА автоматичния submit
     const appId = makeAppId();
 hAppId.value = appId;
 cAppId.textContent = appId;
@@ -1035,9 +1036,9 @@ cAppId.textContent = appId;
       `<br>Ако всичко е наред, заявката ще бъде изпратена и по имейл.`;
     popup.style.display = 'block';
 
-    // Let FormSubmit proceed (email)
-    // (If you later want DB-only: uncomment next lines and implement your own API endpoint)
-    // e.preventDefault();
+  setTimeout(() => {
+    form.submit();
+  }, 1500);
   });
 
   // Init
