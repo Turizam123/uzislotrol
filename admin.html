@@ -4,7 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Admin – Заявки за кредит</title>
-  <link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" href="favicon.png">
+
 <style>
   :root{
     --bg1:#8e0e00;
@@ -16,6 +17,7 @@
     --ok:#0f7a3a;
     --warn:#a85b00;
     --bad:#a10f28;
+    --chip:#f6f6f6;
   }
   body{
     margin:0;
@@ -45,6 +47,26 @@
     align-items:center;
     margin: 10px 0 14px;
   }
+  .stats{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    margin: 0 0 14px;
+  }
+  .stat{
+    background: rgba(255,255,255,.14);
+    color:#fff;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 14px;
+    padding: 10px 12px;
+    display:flex;
+    gap:8px;
+    align-items:baseline;
+  }
+  .stat b{ font-size:16px; }
+  .stat span{ font-size:12px; opacity:.9; }
+
   input, select, textarea, button{
     font-size: 14px;
     padding: 10px;
@@ -67,6 +89,9 @@
     color:#111;
     border: 1px solid #ddd;
   }
+  .btn.ok{ background: var(--ok); }
+  .btn.bad{ background: var(--bad); }
+
   .grid{
     display:grid;
     grid-template-columns: 1.2fr .8fr;
@@ -89,7 +114,9 @@
   }
   th{ color:#111; font-weight: 900; }
   tr:hover{ background:#fafafa; }
+
   .muted{ color: var(--muted); }
+
   .pill{
     display:inline-block;
     padding: 4px 10px;
@@ -101,6 +128,7 @@
   .pill.ok{ background:#e9f7ef; color: var(--ok); }
   .pill.warn{ background:#fff4e6; color: var(--warn); }
   .pill.bad{ background:#fdecec; color: var(--bad); }
+
   .boxTitle{
     font-weight: 900;
     margin: 0 0 8px;
@@ -108,9 +136,10 @@
   }
   .kv{
     font-size: 13px;
-    line-height: 1.5;
+    line-height: 1.55;
   }
   .kv b{ color:#111; }
+
   textarea{
     width:100%;
     min-height: 110px;
@@ -132,12 +161,34 @@
     background: var(--bad);
     color:#fff;
   }
+
+  .riskChip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 10px;
+    border-radius:999px;
+    font-weight:900;
+    font-size:12px;
+    background: var(--chip);
+    margin-left:8px;
+  }
+  .riskChip.low{ background:#e9f7ef; color:var(--ok); }
+  .riskChip.mid{ background:#fff4e6; color:var(--warn); }
+  .riskChip.high{ background:#fdecec; color:var(--bad); }
 </style>
 </head>
 <body>
 
 <div class="wrap">
   <h1>🧾 Admin – Заявки за кредит</h1>
+
+  <div class="stats" id="stats">
+    <div class="stat"><b id="stTotal">—</b><span>Общо заявки</span></div>
+    <div class="stat"><b id="stActive">—</b><span>Active</span></div>
+    <div class="stat"><b id="stRejected">—</b><span>Rejected</span></div>
+    <div class="stat"><b id="stRisky">—</b><span>Рискови</span></div>
+  </div>
 
   <div class="topbar">
     <input id="q" type="text" placeholder="Търси по име/телефон/APP-ID…" style="flex:1; min-width:220px;">
@@ -189,8 +240,8 @@
   /***************
    * CONFIG
    ***************/
-  const SUPABASE_URL = "https://ypmyawbogvwazlhgpftl.supabase.co";     // пример: https://xxxx.supabase.co
-  const SUPABASE_ANON = "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc";    // Anon public key
+  const SUPABASE_URL = "https://ypmyawbogvwazlhgpftl.supabase.co";
+  const SUPABASE_ANON = "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc";
 
   function headers(){
     return {
@@ -204,6 +255,11 @@
   const qEl = document.getElementById('q');
   const statusEl = document.getElementById('statusFilter');
   const detailsCard = document.getElementById('detailsCard');
+
+  const stTotal = document.getElementById('stTotal');
+  const stActive = document.getElementById('stActive');
+  const stRejected = document.getElementById('stRejected');
+  const stRisky = document.getElementById('stRisky');
 
   let selected = null;
   let rows = [];
@@ -220,6 +276,39 @@
     const x = Number(n);
     if (!isFinite(x)) return "—";
     return x.toFixed(2) + " €";
+  }
+
+  // прост риск-скоринг (работи с твоите полета)
+  function riskFor(r){
+    const income = Number(r.net_income ?? r.income ?? 0);
+    const exp = Number(r.monthly_expenses ?? r.expenses ?? 0);
+    const weekly = Number(r.weekly_payment ?? 0);
+    const monthlyPayApprox = weekly ? weekly * 4 : Number(r.monthly_payment ?? 0);
+    const amount = Number(r.amount ?? 0);
+
+    let points = 0;
+
+    if (income > 0 && exp > 0 && exp >= income) points += 3;
+    if (income > 0 && monthlyPayApprox > 0 && (monthlyPayApprox / income) > 0.35) points += 2;
+    if (amount > 3000) points += 1;
+    if ((r.employment||"").toLowerCase().includes("безработ")) points += 2;
+    if ((r.status||"").toLowerCase() === "overdue") points += 3;
+
+    if (points >= 4) return { level:"high", label:"ВИСОК РИСК" };
+    if (points >= 2) return { level:"mid", label:"СРЕДЕН РИСК" };
+    return { level:"low", label:"НИСЪК РИСК" };
+  }
+
+  function renderStats(){
+    const total = rows.length;
+    const active = rows.filter(r => String(r.status).toLowerCase() === "active").length;
+    const rejected = rows.filter(r => String(r.status).toLowerCase() === "rejected").length;
+    const risky = rows.filter(r => riskFor(r).level === "high").length;
+
+    stTotal.textContent = total;
+    stActive.textContent = active;
+    stRejected.textContent = rejected;
+    stRisky.textContent = risky;
   }
 
   async function fetchApplications(){
@@ -239,6 +328,7 @@
     }
 
     rows = await res.json();
+    renderStats();
     renderTable();
   }
 
@@ -251,6 +341,7 @@
 
     const hay = [
       r.app_id, r.applicant_name, r.phone,
+      r.client_email, r.email,
       (r.purpose||""), (r.employment||"")
     ].join(" ").toLowerCase();
 
@@ -267,6 +358,7 @@
     tbody.innerHTML = filtered.map(r=>{
       const dt = r.created_at ? new Date(r.created_at).toLocaleString('bg-BG') : "—";
       const statusClass = pillForStatus(r.status);
+      const risk = riskFor(r);
       return `
         <tr data-id="${r.id}">
           <td>${dt}</td>
@@ -277,7 +369,10 @@
             <span class="muted">Вноска:</span> ${fmt(r.weekly_payment)}<br>
             <span class="muted">Общо:</span> ${fmt(r.total_payable)}
           </td>
-          <td><span class="${statusClass}">${r.status || "—"}</span></td>
+          <td>
+            <span class="${statusClass}">${r.status || "—"}</span>
+            <span class="riskChip ${risk.level}">${risk.label}</span>
+          </td>
         </tr>`;
     }).join("");
 
@@ -290,6 +385,61 @@
     });
   }
 
+  function safeClientEmail(r){
+    return (r.client_email || r.email || "").trim();
+  }
+
+  async function ensureApprovedLoanForApplication(r){
+    const appId = (r.app_id || "").trim();
+    const clientEmail = safeClientEmail(r);
+
+    if (!appId){
+      alert("Липсва APP-ID в заявката. Няма как да направя кредит.");
+      return;
+    }
+    if (!clientEmail){
+      alert("Липсва client_email/email в заявката. Добави поле client_email в applications.");
+      return;
+    }
+
+    // 1) проверка да няма вече запис
+    const checkUrl = `${SUPABASE_URL}/rest/v1/approved_loans?select=id&app_id=eq.${encodeURIComponent(appId)}&limit=1`;
+    const checkRes = await fetch(checkUrl, { headers: headers() });
+
+    if (checkRes.ok){
+      const ex = await checkRes.json().catch(()=>[]);
+      if (ex && ex.length){
+        // вече има
+        return;
+      }
+    }
+
+    // 2) insert
+    const insUrl = `${SUPABASE_URL}/rest/v1/approved_loans`;
+    const payload = {
+      app_id: appId,
+      client_email: clientEmail,
+      loan_amount: r.amount ?? null,
+      interest_rate: r.apr ?? 0,
+      months: r.months ?? null,
+      monthly_payment: r.weekly_payment ?? null,
+      total_amount: r.total_payable ?? null,
+      status: "active"
+    };
+
+    const insRes = await fetch(insUrl, {
+      method: "POST",
+      headers: { ...headers(), "Prefer":"return=minimal" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!insRes.ok){
+      const t = await insRes.text().catch(()=> "");
+      alert("❌ Не успях да създам approved_loans запис:\n" + (t || insRes.statusText));
+      return;
+    }
+  }
+
   function renderDetails(){
     if (!selected){
       detailsCard.innerHTML = `<div class="boxTitle">Детайли</div><div class="muted">Избери заявка отляво.</div>`;
@@ -299,13 +449,16 @@
     const r = selected;
     const dt = r.created_at ? new Date(r.created_at).toLocaleString('bg-BG') : "—";
     const statusClass = pillForStatus(r.status);
+    const risk = riskFor(r);
 
     detailsCard.innerHTML = `
       <div class="boxTitle">Детайли – ${r.app_id || "—"}</div>
+
       <div class="kv">
         <b>Дата:</b> ${dt}<br>
         <b>Клиент:</b> ${r.applicant_name || "—"}<br>
         <b>Телефон:</b> ${r.phone || "—"}<br>
+        <b>Email:</b> ${safeClientEmail(r) || "—"}<br>
         <b>Начална дата:</b> ${r.start_date || "—"}<br><br>
 
         <b>Оферта:</b><br>
@@ -322,6 +475,7 @@
         • Цел: <b>${r.purpose || "—"}</b><br><br>
 
         <b>Статус:</b> <span class="${statusClass}">${r.status || "—"}</span>
+        <span class="riskChip ${risk.level}">${risk.label}</span>
       </div>
 
       <div class="statusRow">
@@ -330,6 +484,8 @@
             .map(s=>`<option value="${s}" ${String(r.status)===s?"selected":""}>${s}</option>`).join("")}
         </select>
         <button class="btn" id="saveStatus">💾 Запази статус</button>
+        <button class="btn ok" id="approveBtn">✅ Одобри (active)</button>
+        <button class="btn bad" id="rejectBtn">⛔ Откажи (rejected)</button>
         <button class="btn secondary" id="copyId">📋 Копирай APP-ID</button>
       </div>
 
@@ -340,7 +496,7 @@
           <button class="btn" id="saveNotes">💾 Запази бележки</button>
           <button class="danger" id="markRejected">⛔ Маркирай rejected</button>
         </div>
-        <div class="note">Съвет: поддържай статуси последователно – така процесът става “оперативен бизнес”.</div>
+        <div class="note">Важно: ако Update policy за applications не е разрешена – статусът няма да се записва.</div>
       </div>
     `;
 
@@ -356,6 +512,15 @@
     document.getElementById('saveStatus').addEventListener('click', async ()=>{
       const ns = document.getElementById('newStatus').value;
       await updateApplication(r.id, { status: ns });
+    });
+
+    document.getElementById('approveBtn').addEventListener('click', async ()=>{
+      await updateApplication(r.id, { status: "active" });
+    });
+
+    document.getElementById('rejectBtn').addEventListener('click', async ()=>{
+      const notes = document.getElementById('notes').value;
+      await updateApplication(r.id, { status: "rejected", admin_notes: notes });
     });
 
     document.getElementById('saveNotes').addEventListener('click', async ()=>{
@@ -375,73 +540,55 @@
       alert("Попълни SUPABASE_URL и SUPABASE_ANON.");
       return;
     }
+
     const url = `${SUPABASE_URL}/rest/v1/applications?id=eq.${encodeURIComponent(id)}`;
+
     const res = await fetch(url, {
       method: "PATCH",
-      headers: {...headers(), "Prefer":"return=representation"},
+      headers: { ...headers(), "Prefer":"return=representation" },
       body: JSON.stringify(patch)
     });
+
     if (!res.ok){
       const t = await res.text().catch(()=> "");
       alert("Грешка при запис: " + (t || res.statusText));
       return;
     }
-    const updated = await res.json().catch(() => []);
 
-if (updated && updated[0]) {
-  const r = updated[0];
+    // Ако PostgREST върне 204/празно, това НЕ значи че не е записано.
+    // Просто ще презаредим списъка.
+    const updated = await res.json().catch(()=> []);
 
-  // ✅ ако статусът е станал active → създаваме кредит
-  if (patch.status === "active") {
+    if (updated && updated[0]){
+      selected = updated[0];
 
-    // 🔒 защита от дубликати
-    const check = await fetch(
-      `${SUPABASE_URL}/rest/v1/approved_loans?app_id=eq.${r.app_id}`,
-      { headers: headers() }
-    );
-    const exists = check.ok ? await check.json() : [];
-
-    if (exists.length === 0) {
-      const loanRes = await fetch(
-        `${SUPABASE_URL}/rest/v1/approved_loans`,
-        {
-          method: "POST",
-          headers: {
-            ...headers(),
-            "Prefer": "return=minimal"
-          },
-          body: JSON.stringify({
-            app_id: r.app_id,
-            client_email: r.client_email,
-            loan_amount: r.amount,
-            interest_rate: r.apr ?? 0,
-            months: r.months ?? null,
-            monthly_payment: r.weekly_payment ?? null,
-            total_amount: r.total_payable ?? null,
-            status: "active"
-          })
-        }
-      );
-
-      if (!loanRes.ok) {
-        const t = await loanRes.text();
-        alert("❌ Кредитът НЕ е записан в approved_loans:\n" + t);
-        return;
+      // ако статусът е станал active → правим запис в approved_loans
+      if ((patch.status || "").toLowerCase() === "active") {
+        await ensureApprovedLoanForApplication(selected);
       }
 
-      console.log("✅ Кредитът е записан в approved_loans");
-    }
-  }
-
-  selected = r;
-  rows = rows.map(x => String(x.id) === String(r.id) ? r : x);
-  renderTable();
-  renderDetails();
-  alert("Запазено.");
-}
+      rows = rows.map(x=> String(x.id)===String(selected.id) ? selected : x);
+      renderStats();
+      renderTable();
+      renderDetails();
+      alert("Запазено.");
     } else {
-      alert("Запазено (без връщане на данни).");
+      // няма върнати данни, но update може да е успешен → re-fetch
       await fetchApplications();
+
+      // ако трябва да направим кредит при active:
+      if ((patch.status || "").toLowerCase() === "active") {
+        // след fetchApplications намираме реда пак
+        const again = rows.find(x => String(x.id) === String(id));
+        if (again) {
+          selected = again;
+          await ensureApprovedLoanForApplication(again);
+        }
+      }
+
+      selected = rows.find(x => String(x.id) === String(id)) || null;
+      renderDetails();
+      alert("Запазено (без връщане на данни) – списъкът е обновен.");
     }
   }
 
