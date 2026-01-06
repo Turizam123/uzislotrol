@@ -450,9 +450,25 @@
     if (updated && updated[0]){
   selected = updated[0];
 
-  // 🔥 НОВО: ако статусът е active → създай кредит
-  if (patch.status === "active") {
-    await createApprovedLoanFromApplication(selected);
+  // 🔔 ако статусът е станал "active" → създаваме одобрен кредит
+if (patch.status === "active") {
+  const r = updated[0];
+
+  await fetch(`${SUPABASE_URL}/rest/v1/approved_loans`, {
+    method: "POST",
+    headers: {
+      ...headers(),
+      "Prefer": "resolution=merge-duplicates"
+    },
+    body: JSON.stringify({
+      app_id: r.app_id,
+      client_email: r.email,
+      loan_amount: r.amount,
+      interest_rate: r.apr,
+      months: r.months,
+      monthly_payment: r.weekly_payment,
+      total_amount: r.total_payable,
+      status: "active";
   }
 
   rows = rows.map(x=> String(x.id)===String(selected.id) ? selected : x);
