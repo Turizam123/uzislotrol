@@ -55,17 +55,28 @@ h1{
   background:linear-gradient(90deg,#8e0e00,#c31432);
 }
 .muted{color:var(--muted)}
-.error{
-  color:#a10f28;
-  font-weight:900;
+input,button{
+  padding:10px;
+  font-size:15px;
+  border-radius:10px;
+  border:1px solid #ddd;
 }
+button{
+  background:#8e0e00;
+  color:#fff;
+  font-weight:900;
+  border:none;
+  cursor:pointer;
+}
+button:hover{opacity:.9}
 </style>
 </head>
 
 <body>
 <div class="wrap">
-  <h1>💳 Моята каса</h1>
-  <div id="content" class="muted">Зареждане…</div>
+<h1>💳 Моята каса</h1>
+
+<div id="content"></div>
 </div>
 
 <script>
@@ -82,92 +93,120 @@ function headers(){
 }
 
 const content = document.getElementById("content");
-const appId = new URLSearchParams(location.search).get("app_id");
+let appId = new URLSearchParams(window.location.search).get("app_id");
 
-if (!appId){
-  content.innerHTML = `<div class="error">❌ Невалиден достъп. Липсва APP-ID.</div>`;
-  throw new Error("Missing app_id");
+/* ---------- LOGIN FORM ---------- */
+function renderLogin(){
+  content.innerHTML = `
+    <div class="card">
+      <div class="title">🔐 Вход с APP-ID</div>
+      <input id="appInput" placeholder="APP-MK1GHCIZ-VN225" style="width:100%;margin-bottom:10px">
+      <button id="loginBtn">Влез</button>
+      <div class="muted" style="margin-top:8px">
+        Въведи APP-ID, който си получил при кандидатстване.
+      </div>
+    </div>
+  `;
+
+  document.getElementById("loginBtn").onclick = () => {
+    const val = document.getElementById("appInput").value.trim();
+    if (!val){
+      alert("Моля, въведи APP-ID");
+      return;
+    }
+    appId = val;
+    history.replaceState({}, "", `?app_id=${encodeURIComponent(val)}`);
+    loadData();
+  };
 }
 
+/* ---------- FORMAT ---------- */
 function fmt(n){
   const x = Number(n);
   if (!isFinite(x)) return "—";
   return x.toFixed(2) + " €";
 }
 
+/* ---------- LOAD DATA ---------- */
 async function loadData(){
-  try{
-    /* 1️⃣ APPLICATION */
-    const appRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/applications?select=*&app_id=eq.${encodeURIComponent(appId)}&limit=1`,
-      { headers: headers() }
-    );
+  content.innerHTML = `<div class="muted">Зареждане…</div>`;
 
-    const appData = await appRes.json().catch(()=>[]);
-    if (!appData.length){
-      content.innerHTML = `<div class="error">❌ Няма заявка с този APP-ID.</div>`;
-      return;
-    }
-
-    const app = appData[0];
-
-    /* 2️⃣ APPROVED LOAN (може да няма) */
-    const loanRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/approved_loans?select=*&app_id=eq.${encodeURIComponent(appId)}&limit=1`,
-      { headers: headers() }
-    );
-
-    const loanData = await loanRes.json().catch(()=>[]);
-    const loan = loanData[0] || null;
-
-    let percent = 0;
-    if (loan && loan.total_amount){
-      percent = 0; // ще го разшириш по-късно с плащания
-    }
-
-    content.innerHTML = `
-      <div class="card">
-        <div class="title">📄 Данни по заявката</div>
-        <div class="kv">
-          <b>APP-ID:</b> ${app.app_id}<br>
-          <b>Име:</b> ${app.applicant_name || "—"}<br>
-          <b>Телефон:</b> ${app.phone || "—"}<br>
-          <b>Цел:</b> ${app.purpose || "—"}<br>
-          <b>Заетост:</b> ${app.employment || "—"}<br>
-          <b>Доход:</b> ${fmt(app.net_income)}<br>
-          <b>Разходи:</b> ${fmt(app.monthly_expenses)}
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="title">💳 Данни по кредита</div>
-
-        ${loan ? `
-          <div class="kv">
-            <b>Сума:</b> ${fmt(loan.loan_amount)}<br>
-            <b>Лихва:</b> ${loan.interest_rate}%<br>
-            <b>Срок:</b> ${loan.months || "—"} месеца<br>
-            <b>Вноска:</b> ${fmt(loan.monthly_payment)}<br>
-            <b>Общо за връщане:</b> ${fmt(loan.total_amount)}<br>
-            <b>Статус:</b> ${loan.status}
-          </div>
-
-          <div class="progress">
-            <div style="width:${percent}%"></div>
-          </div>
-          <div class="muted">Изплатено: ${percent.toFixed(1)}%</div>
-        ` : `
-          <div class="muted">Кредитът все още не е активиран.</div>
-        `}
-      </div>
-    `;
-  }catch(err){
-    console.error(err);
-    content.innerHTML = `<div class="error">❌ Грешка при зареждане.</div>`;
+  /* 1️⃣ Application */
+  const appRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/applications?app_id=eq.${encodeURIComponent(appId)}&limit=1`,
+    { headers: headers() }
+  );
+  const appData = await appRes.json();
+  if (!appData[0]){
+    content.innerHTML = "❌ Невалиден APP-ID.";
+    return;
   }
+  const app = appData[0];
+
+  /* 2️⃣ Loan */
+  const loanRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/approved_loans?app_id=eq.${encodeURIComponent(appId)}&limit=1`,
+    { headers: headers() }
+  );
+  const loanData = await loanRes.json();
+  const loan = loanData[0];
+
+  /* 3️⃣ Payments */
+  let paid = 0;
+  if (loan){
+    const payRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/loan_payments?app_id=eq.${encodeURIComponent(appId)}`,
+      { headers: headers() }
+    );
+    const pays = await payRes.json().catch(()=>[]);
+    paid = pays.reduce((s,p)=>s + Number(p.amount||0),0);
+  }
+
+  const percent = loan ? Math.min((paid / loan.total_amount) * 100, 100) : 0;
+
+  content.innerHTML = `
+    <div class="card">
+      <div class="title">📄 Данни по заявката</div>
+      <div class="kv">
+        <b>APP-ID:</b> ${app.app_id}<br>
+        <b>Име:</b> ${app.applicant_name}<br>
+        <b>Телефон:</b> ${app.phone}<br>
+        <b>Цел:</b> ${app.purpose || "—"}<br>
+        <b>Заетост:</b> ${app.employment || "—"}<br>
+        <b>Доход:</b> ${fmt(app.net_income)}<br>
+        <b>Разходи:</b> ${fmt(app.monthly_expenses)}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">💳 Данни по кредита</div>
+      ${loan ? `
+        <div class="kv">
+          <b>Сума:</b> ${fmt(loan.loan_amount)}<br>
+          <b>Лихва:</b> ${loan.interest_rate}%<br>
+          <b>Срок:</b> ${loan.months} месеца<br>
+          <b>Вноска:</b> ${fmt(loan.monthly_payment)}<br>
+          <b>Общо:</b> ${fmt(loan.total_amount)}<br>
+          <b>Върнато:</b> ${fmt(paid)}<br>
+          <b>Остатък:</b> ${fmt(loan.total_amount - paid)}<br>
+          <b>Статус:</b> ${loan.status}
+        </div>
+
+        <div class="progress">
+          <div style="width:${percent}%"></div>
+        </div>
+        <div class="muted">Изплатено: ${percent.toFixed(1)}%</div>
+      ` : `<span class="muted">Кредитът още не е активиран.</span>`}
+    </div>
+  `;
 }
 
-loadData();
+/* ---------- INIT ---------- */
+if (!appId){
+  renderLogin();
+} else {
+  loadData();
+}
 </script>
 </body>
 </html>
