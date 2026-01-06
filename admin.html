@@ -309,7 +309,7 @@
     return;
   }
 
-  const rows = await res.json();
+  rows = await res.json();
 
   if (!rows.length) {
     tbody.innerHTML =
