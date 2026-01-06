@@ -283,23 +283,57 @@
   }
 
   async function fetchApplications(){
-    if (!SUPABASE_URL || !SUPABASE_ANON){
-      tbody.innerHTML = `<tr><td colspan="5" class="muted">Попълни SUPABASE_URL и SUPABASE_ANON в admin.html</td></tr>`;
-      return;
-    }
+  const tbody = document.getElementById("tbody");
 
-    const url = `${SUPABASE_URL}/rest/v1/approved_loans*`+
-      `&order=created_at.desc&limit=200`;
+  if (!SUPABASE_URL || !SUPABASE_ANON) {
+    tbody.innerHTML =
+      `<tr><td colspan="5" class="muted">
+        Попълни SUPABASE_URL и SUPABASE_ANON в admin.html
+      </td></tr>`;
+    return;
+  }
 
-    const res = await fetch(url, { headers: headers() });
-    if (!res.ok){
-      const t = await res.text().catch(()=> "");
-      tbody.innerHTML = `<tr><td colspan="5" class="muted">Грешка при зареждане: ${t || res.statusText}</td></tr>`;
-      return;
-    }
+  const url =
+    `${SUPABASE_URL}/rest/v1/applications` +
+    `?select=id,app_id,applicant_name,phone,amount,status,created_at` +
+    `&order=created_at.desc`;
 
-    rows = await res.json();
-    renderTable();
+  const res = await fetch(url, { headers: headers() });
+
+  if (!res.ok) {
+    const t = await res.text();
+    tbody.innerHTML =
+      `<tr><td colspan="5" class="muted">
+        Грешка при зареждане: ${t}
+      </td></tr>`;
+    return;
+  }
+
+  const rows = await res.json();
+
+  if (!rows.length) {
+    tbody.innerHTML =
+      `<tr><td colspan="5" class="muted">Няма заявки</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map(r => `
+    <tr data-id="${r.id}">
+      <td>${new Date(r.created_at).toLocaleString("bg-BG")}</td>
+      <td><b>${r.app_id || "-"}</b></td>
+      <td>${r.applicant_name}<br><small>${r.phone}</small></td>
+      <td>${r.amount} €</td>
+      <td><span class="pill ${r.status}">${r.status}</span></td>
+    </tr>
+  `).join("");
+
+  document
+    .querySelectorAll("#tbody tr")
+    .forEach(tr =>
+      tr.addEventListener("click", () =>
+        selectApplication(tr.dataset.id)
+      )
+    );
   }
 
   function matchesFilter(r){
