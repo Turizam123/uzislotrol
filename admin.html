@@ -438,12 +438,17 @@
     }
     const updated = await res.json().catch(()=> []);
     if (updated && updated[0]){
-      selected = updated[0];
-      // also refresh the list copy
-      rows = rows.map(x=> String(x.id)===String(selected.id) ? selected : x);
-      renderTable();
-      renderDetails();
-      alert("Запазено.");
+  selected = updated[0];
+
+  // 🔥 НОВО: ако статусът е active → създай кредит
+  if (patch.status === "active") {
+    await createApprovedLoanFromApplication(selected);
+  }
+
+  rows = rows.map(x=> String(x.id)===String(selected.id) ? selected : x);
+  renderTable();
+  renderDetails();
+  alert("Запазено.");
     } else {
       alert("Запазено (без връщане на данни).");
       await fetchApplications();
