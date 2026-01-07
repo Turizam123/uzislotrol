@@ -4,66 +4,112 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Моята каса</title>
-  <link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" href="favicon.png">
 
 <style>
 :root{
   --main:#8e0e00;
-  --bg:#f5f6fa;
-  --card:#fff;
-  --muted:#666;
-  --shadow:0 12px 30px rgba(0,0,0,.12);
+  --bg:#f3f4f6;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --ok:#0f7a3a;
+  --shadow:0 14px 32px rgba(0,0,0,.12);
 }
+
 body{
   margin:0;
   font-family:Arial, Helvetica, sans-serif;
   background:var(--bg);
 }
+
 .wrap{
   max-width:900px;
-  margin:20px auto;
-  padding:0 14px;
+  margin:24px auto;
+  padding:0 14px 24px;
 }
+
 h1{
   color:var(--main);
-  margin-bottom:10px;
-}
-.card{
-  background:var(--card);
-  border-radius:14px;
-  box-shadow:var(--shadow);
-  padding:18px;
   margin-bottom:14px;
 }
+
+/* HERO */
+.hero{
+  background:linear-gradient(135deg,#ffffff,#f0f4f8);
+  border-radius:18px;
+  padding:22px;
+  box-shadow:var(--shadow);
+  margin-bottom:18px;
+}
+
+.hero h2{
+  margin:0 0 6px;
+}
+
+.hero .status{
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 14px;
+  border-radius:999px;
+  background:#e6f4ea;
+  color:var(--ok);
+  font-weight:900;
+  font-size:13px;
+}
+
+/* CARDS */
+.card{
+  background:var(--card);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:18px;
+  margin-bottom:16px;
+}
+
+.card.soft{
+  background:#fafafa;
+}
+
+.card.accent{
+  border-left:6px solid var(--main);
+}
+
 .title{
   font-weight:900;
   margin-bottom:8px;
 }
+
 .kv{
   font-size:14px;
-  line-height:1.6;
+  line-height:1.7;
 }
-.kv b{color:#000}
+.kv b{color:#111}
+
+.muted{color:var(--muted)}
+
+/* PROGRESS */
 .progress{
-  height:18px;
-  background:#eee;
+  height:22px;
+  background:#e5e7eb;
   border-radius:999px;
   overflow:hidden;
-  margin-top:6px;
+  margin-top:10px;
 }
 .progress div{
   height:100%;
-  background:linear-gradient(90deg,#8e0e00,#c31432);
+  background:linear-gradient(90deg,#16a34a,#22c55e);
+  transition:width .6s ease;
 }
-.muted{color:var(--muted)}
+
+/* LOGIN */
 input,button{
-  padding:10px;
+  padding:12px;
   font-size:15px;
-  border-radius:10px;
-  border:1px solid #ddd;
+  border-radius:12px;
+  border:1px solid #d1d5db;
 }
 button{
-  background:#8e0e00;
+  background:var(--main);
   color:#fff;
   font-weight:900;
   border:none;
@@ -76,7 +122,6 @@ button:hover{opacity:.9}
 <body>
 <div class="wrap">
 <h1>💳 Моята каса</h1>
-
 <div id="content"></div>
 </div>
 
@@ -96,27 +141,23 @@ function headers(){
 const content = document.getElementById("content");
 let appId = new URLSearchParams(window.location.search).get("app_id");
 
-/* ---------- LOGIN FORM ---------- */
+/* ---------- LOGIN ---------- */
 function renderLogin(){
   content.innerHTML = `
-    <div class="card">
-      <div class="title">🔐 Вход с APP-ID</div>
-      <input id="appInput" placeholder="APP-MK1GHCIZ-VN225" style="width:100%;margin-bottom:10px">
+    <div class="card accent">
+      <div class="title">🔐 Вход в моята каса</div>
+      <input id="appInput" placeholder="APP-XXXXXX" style="width:100%;margin-bottom:10px">
       <button id="loginBtn">Влез</button>
-      <div class="muted" style="margin-top:8px">
-        Въведи APP-ID, който си получил при кандидатстване.
+      <div class="muted" style="margin-top:10px">
+        Използвай APP-ID, който си получил при кандидатстване.
       </div>
     </div>
   `;
-
   document.getElementById("loginBtn").onclick = () => {
-    const val = document.getElementById("appInput").value.trim();
-    if (!val){
-      alert("Моля, въведи APP-ID");
-      return;
-    }
-    appId = val;
-    history.replaceState({}, "", `?app_id=${encodeURIComponent(val)}`);
+    const v = document.getElementById("appInput").value.trim();
+    if(!v){ alert("Въведи APP-ID"); return; }
+    history.replaceState({}, "", `?app_id=${encodeURIComponent(v)}`);
+    appId = v;
     loadData();
   };
 }
@@ -124,90 +165,82 @@ function renderLogin(){
 /* ---------- FORMAT ---------- */
 function fmt(n){
   const x = Number(n);
-  if (!isFinite(x)) return "—";
-  return x.toFixed(2) + " €";
+  return isFinite(x) ? x.toFixed(2)+" €" : "—";
 }
 
 /* ---------- LOAD DATA ---------- */
 async function loadData(){
   content.innerHTML = `<div class="muted">Зареждане…</div>`;
 
-  /* 1️⃣ Application */
   const appRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/applications?app_id=eq.${encodeURIComponent(appId)}&limit=1`,
+    `${SUPABASE_URL}/rest/v1/applications?app_id=eq.${appId}&limit=1`,
     { headers: headers() }
   );
   const appData = await appRes.json();
-  if (!appData[0]){
+  if(!appData[0]){
     content.innerHTML = "❌ Невалиден APP-ID.";
     return;
   }
   const app = appData[0];
 
-  /* 2️⃣ Loan */
   const loanRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/approved_loans?app_id=eq.${encodeURIComponent(appId)}&limit=1`,
+    `${SUPABASE_URL}/rest/v1/approved_loans?app_id=eq.${appId}&limit=1`,
     { headers: headers() }
   );
   const loanData = await loanRes.json();
   const loan = loanData[0];
 
-  /* 3️⃣ Payments */
   let paid = 0;
-  if (loan){
+  if(loan){
     const payRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/loan_payments?app_id=eq.${encodeURIComponent(appId)}`,
+      `${SUPABASE_URL}/rest/v1/loan_payments?app_id=eq.${appId}`,
       { headers: headers() }
     );
     const pays = await payRes.json().catch(()=>[]);
-    paid = pays.reduce((s,p)=>s + Number(p.amount||0),0);
+    paid = pays.reduce((s,p)=>s+Number(p.amount||0),0);
   }
 
-  const percent = loan ? Math.min((paid / loan.total_amount) * 100, 100) : 0;
+  const percent = loan ? Math.min((paid/loan.total_amount)*100,100) : 0;
 
   content.innerHTML = `
-    <div class="card">
-      <div class="title">📄 Данни по заявката</div>
+    <div class="hero">
+      <h2>👋 Здравей, ${app.applicant_name.split(" ")[0]}</h2>
+      <div class="muted">Тук виждаш актуалното състояние на твоя кредит.</div>
+      ${loan ? `<div class="status">✔ Кредитът е активен</div>` : ``}
+    </div>
+
+    <div class="card soft">
+      <div class="title">📄 Твоята заявка</div>
       <div class="kv">
         <b>APP-ID:</b> ${app.app_id}<br>
-        <b>Име:</b> ${app.applicant_name}<br>
         <b>Телефон:</b> ${app.phone}<br>
-        <b>Цел:</b> ${app.purpose || "—"}<br>
-        <b>Заетост:</b> ${app.employment || "—"}<br>
         <b>Доход:</b> ${fmt(app.net_income)}<br>
         <b>Разходи:</b> ${fmt(app.monthly_expenses)}
       </div>
     </div>
 
-    <div class="card">
-      <div class="title">💳 Данни по кредита</div>
+    <div class="card accent">
+      <div class="title">💳 Твоят кредит</div>
       ${loan ? `
         <div class="kv">
           <b>Сума:</b> ${fmt(loan.loan_amount)}<br>
-          <b>Лихва:</b> ${loan.interest_rate}%<br>
-          <b>Срок:</b> ${loan.months} месеца<br>
           <b>Вноска:</b> ${fmt(loan.monthly_payment)}<br>
           <b>Общо:</b> ${fmt(loan.total_amount)}<br>
           <b>Върнато:</b> ${fmt(paid)}<br>
-          <b>Остатък:</b> ${fmt(loan.total_amount - paid)}<br>
-          <b>Статус:</b> ${loan.status}
+          <b>Остатък:</b> ${fmt(loan.total_amount-paid)}
         </div>
-
         <div class="progress">
           <div style="width:${percent}%"></div>
         </div>
         <div class="muted">Изплатено: ${percent.toFixed(1)}%</div>
-      ` : `<span class="muted">Кредитът още не е активиран.</span>`}
+      ` : `<div class="muted">Кредитът още не е активиран.</div>`}
     </div>
   `;
 }
 
 /* ---------- INIT ---------- */
-if (!appId){
-  renderLogin();
-} else {
-  loadData();
-}
+if(!appId) renderLogin();
+else loadData();
 </script>
 </body>
 </html>
