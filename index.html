@@ -907,6 +907,20 @@
         alert("Моля, изберете начална дата.");
         return false;
       }
+      const egn = egnEl.value.trim();
+
+if (!isValidEGN(egn)){
+  egnEl.classList.add('egn-error');
+  alert("Моля, въведете валидно ЕГН.");
+  return false;
+}
+
+if (!is18Plus(egn)){
+  egnEl.classList.add('egn-error');
+  alert("Кандидатът трябва да е навършил 18 години.");
+  return false;
+}
+
       if (!nameEl.value.trim()){
         alert("Моля, въведете три имена.");
         return false;
