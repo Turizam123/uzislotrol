@@ -232,11 +232,6 @@
     margin-top: 10px;
     line-height: 1.35;
   }
-  
-  input.egn-error{
-  border: 2px solid #a10f28 !important;
-  background: #fff3f3;
-  }
 
   /* Checkout */
   .checkout{
@@ -462,17 +457,8 @@
           <label>Три имена</label>
           <input type="text" name="Име" id="fullName" required>
 
-           <label>ЕГН</label>
-<input type="password"
-       name="ЕГН"
-       id="egn"
-       inputmode="numeric"
-       maxlength="10"
-       placeholder="**********"
-       required> 
-
           <label>Телефон</label>
-          <input type="tel" name="Телефон" id="phone" placeholder="+359XXXXXXXXX" required>
+          <input type="tel" name="Телефон" id="phone" placeholder="08XXXXXXXX или +359XXXXXXXXX" required>
 
           <div class="assistant" id="contactAssistant"></div>
 
@@ -907,20 +893,6 @@
         alert("Моля, изберете начална дата.");
         return false;
       }
-      const egn = egnEl.value.trim();
-
-if (!isValidEGN(egn)){
-  egnEl.classList.add('egn-error');
-  alert("Моля, въведете валидно ЕГН.");
-  return false;
-}
-
-if (!is18Plus(egn)){
-  egnEl.classList.add('egn-error');
-  alert("Кандидатът трябва да е навършил 18 години.");
-  return false;
-}
-
       if (!nameEl.value.trim()){
         alert("Моля, въведете три имена.");
         return false;
@@ -1005,81 +977,6 @@ cAppId.textContent = appId;
       alert("Моля, маркирайте 'Одобрение на офертата', за да изпратите заявката.");
       return;
     }
-
-    /***************
- * ЕГН VALIDATION + 18+
- ***************/
-const egnEl = document.getElementById('egn');
-
-function isValidEGN(egn){
-  if (!/^\d{10}$/.test(egn)) return false;
-
-  let year = parseInt(egn.slice(0,2),10);
-  let month = parseInt(egn.slice(2,4),10);
-  let day = parseInt(egn.slice(4,6),10);
-
-  if (month >= 1 && month <= 12){
-    year += 1900;
-  } else if (month >= 21 && month <= 32){
-    year += 1800;
-    month -= 20;
-  } else if (month >= 41 && month <= 52){
-    year += 2000;
-    month -= 40;
-  } else {
-    return false;
-  }
-
-  const date = new Date(year, month - 1, day);
-  if (
-    date.getFullYear() !== year ||
-    date.getMonth() !== month - 1 ||
-    date.getDate() !== day
-  ) return false;
-
-  const weights = [2,4,8,5,10,9,7,3,6];
-  let sum = 0;
-  for (let i = 0; i < 9; i++){
-    sum += parseInt(egn[i]) * weights[i];
-  }
-  let checksum = sum % 11;
-  if (checksum === 10) checksum = 0;
-
-  return checksum === parseInt(egn[9]);
-}
-
-function is18Plus(egn){
-  let year = parseInt(egn.slice(0,2),10);
-  let month = parseInt(egn.slice(2,4),10);
-  let day = parseInt(egn.slice(4,6),10);
-
-  if (month >= 1 && month <= 12){
-    year += 1900;
-  } else if (month >= 21 && month <= 32){
-    year += 1800;
-    month -= 20;
-  } else if (month >= 41 && month <= 52){
-    year += 2000;
-    month -= 40;
-  }
-
-  const birthDate = new Date(year, month - 1, day);
-  const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const m = today.getMonth() - birthDate.getMonth();
-
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  return age >= 18;
-}
-
-// Live validation
-egnEl.addEventListener('input', () => {
-  egnEl.classList.remove('egn-error');
-  contactAssistant.innerHTML = '';
-});
-
 
     // Prepare payload for DB
     const payload = {
