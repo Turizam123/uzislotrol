@@ -10,54 +10,44 @@
 :root{
   --main:#8e0e00;
   --bg:#f3f4f6;
-  --card:#ffffff;
+  --card:#fff;
   --muted:#6b7280;
   --ok:#0f7a3a;
+  --warn:#a85b00;
+  --bad:#b91c1c;
   --shadow:0 14px 32px rgba(0,0,0,.12);
 }
-
 body{
   margin:0;
   font-family:Arial, Helvetica, sans-serif;
   background:var(--bg);
 }
-
 .wrap{
   max-width:900px;
   margin:24px auto;
   padding:0 14px 24px;
 }
-
-h1{
-  color:var(--main);
-  margin-bottom:14px;
-}
-
-/* HERO */
+h1{color:var(--main); margin:0 0 14px;}
 .hero{
-  background:linear-gradient(135deg,#ffffff,#f0f4f8);
+  background:#fff;
   border-radius:18px;
   padding:22px;
   box-shadow:var(--shadow);
   margin-bottom:18px;
 }
-
-.hero h2{
-  margin:0 0 6px;
-}
-
-.hero .status{
+.hero h2{margin:0 0 6px;}
+.badge-ok,.badge-bad,.badge-warn{
   display:inline-block;
   margin-top:10px;
   padding:6px 14px;
   border-radius:999px;
-  background:#e6f4ea;
-  color:var(--ok);
   font-weight:900;
   font-size:13px;
 }
+.badge-ok{ background:#e6f4ea; color:var(--ok); }
+.badge-warn{ background:#fff4e5; color:var(--warn); }
+.badge-bad{ background:#fdecea; color:var(--bad); }
 
-/* CARDS */
 .card{
   background:var(--card);
   border-radius:16px;
@@ -65,29 +55,29 @@ h1{
   padding:18px;
   margin-bottom:16px;
 }
-
-.card.soft{
-  background:#fafafa;
-}
-
-.card.accent{
-  border-left:6px solid var(--main);
-}
-
-.title{
-  font-weight:900;
-  margin-bottom:8px;
-}
-
-.kv{
-  font-size:14px;
-  line-height:1.7;
-}
+.card.accent{border-left:6px solid var(--main)}
+.card.bad{border-left:6px solid var(--bad)}
+.card.warn{border-left:6px solid var(--warn)}
+.title{font-weight:900;margin-bottom:10px}
+.kv{font-size:14px;line-height:1.7}
 .kv b{color:#111}
-
 .muted{color:var(--muted)}
+hr{border:none;border-top:1px solid #eee;margin:12px 0;}
 
-/* PROGRESS */
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+th,td{
+  padding:10px;
+  border-bottom:1px solid #eee;
+  text-align:left;
+}
+.status-ok{color:var(--ok);font-weight:900}
+.status-warn{color:var(--warn);font-weight:900}
+.status-bad{color:var(--bad);font-weight:900}
+
 .progress{
   height:22px;
   background:#e5e7eb;
@@ -95,13 +85,12 @@ h1{
   overflow:hidden;
   margin-top:10px;
 }
-.progress div{
+.progress > div{
   height:100%;
   background:linear-gradient(90deg,#16a34a,#22c55e);
   transition:width .6s ease;
 }
 
-/* LOGIN */
 input,button{
   padding:12px;
   font-size:15px;
@@ -115,20 +104,42 @@ button{
   border:none;
   cursor:pointer;
 }
-button:hover{opacity:.9}
+button:hover{opacity:.92}
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.row > *{ flex:1; }
+.small{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.4;
+}
+.code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  padding:10px;
+  border-radius:12px;
+  overflow:auto;
+  font-size:12px;
+  white-space:pre-wrap;
+}
 </style>
 </head>
 
 <body>
 <div class="wrap">
-<h1>💳 Моята каса</h1>
-<div id="content"></div>
+  <h1>💳 Моята каса</h1>
+  <div id="content"></div>
 </div>
 
 <script>
 /******** CONFIG ********/
 const SUPABASE_URL = "https://ypmyawbogvwazlhgpftl.supabase.co";
-const SUPABASE_ANON = "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc";
+const SUPABASE_ANON = "sb_publishable_HFvM418V1k-PU39ZCv5nEg_9ISQYOjc"; // както при теб
 
 function headers(){
   return {
@@ -139,108 +150,330 @@ function headers(){
 }
 
 const content = document.getElementById("content");
-let appId = new URLSearchParams(window.location.search).get("app_id");
+let appId = new URLSearchParams(location.search).get("app_id") || "";
 
-/* ---------- LOGIN ---------- */
+/* ---------- UI: LOGIN ---------- */
 function renderLogin(){
   content.innerHTML = `
     <div class="card accent">
-      <div class="title">🔐 Вход в моята каса</div>
-      <input id="appInput" placeholder="APP-XXXXXX" style="width:100%;margin-bottom:10px">
-      <button id="loginBtn">Влез</button>
-      <div class="muted" style="margin-top:10px">
-        Използвай APP-ID, който си получил при кандидатстване.
+      <div class="title">🔐 Вход с APP-ID</div>
+      <div class="row" style="margin-top:10px">
+        <input id="appInput" placeholder="APP-XXXXXX" value="${appId ? appId : ""}">
+        <button id="loginBtn">Влез</button>
+      </div>
+      <div class="small" style="margin-top:10px">
+        Въведи APP-ID, който си получил при кандидатстване. <br>
+        Ако имаш линк, може да е във вид: <span class="code">...?app_id=APP-XXXX</span>
       </div>
     </div>
   `;
-  document.getElementById("loginBtn").onclick = () => {
-    const v = document.getElementById("appInput").value.trim();
-    if(!v){ alert("Въведи APP-ID"); return; }
-    history.replaceState({}, "", `?app_id=${encodeURIComponent(v)}`);
-    appId = v;
+  document.getElementById("loginBtn").onclick = ()=>{
+    const val = (document.getElementById("appInput").value || "").trim();
+    if(!val){ alert("Моля, въведи APP-ID."); return; }
+    appId = val;
+    history.replaceState({}, "", `?app_id=${encodeURIComponent(val)}`);
     loadData();
   };
 }
 
-/* ---------- FORMAT ---------- */
+/* ---------- HELPERS ---------- */
 function fmt(n){
   const x = Number(n);
-  return isFinite(x) ? x.toFixed(2)+" €" : "—";
+  return isFinite(x) ? x.toFixed(2) + " €" : "—";
+}
+function fmtDate(d){
+  if(!d) return "—";
+  const dt = new Date(d);
+  return isNaN(dt) ? "—" : dt.toLocaleDateString("bg-BG");
+}
+function startOfDay(d){
+  const x = new Date(d);
+  x.setHours(0,0,0,0);
+  return x;
 }
 
-/* ---------- LOAD DATA ---------- */
-async function loadData(){
-  content.innerHTML = `<div class="muted">Зареждане…</div>`;
+async function safeFetchJson(url){
+  try{
+    const res = await fetch(url, { headers: headers() });
+    const text = await res.text();
+    let data = null;
+    try{ data = text ? JSON.parse(text) : null; } catch(e){ data = null; }
+    return { ok: res.ok, status: res.status, statusText: res.statusText, data, raw: text };
+  }catch(err){
+    return { ok:false, status: 0, statusText: "NETWORK_ERROR", data:null, raw: String(err) };
+  }
+}
 
-  const appRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/applications?app_id=eq.${appId}&limit=1`,
-    { headers: headers() }
-  );
-  const appData = await appRes.json();
-  if(!appData[0]){
-    content.innerHTML = "❌ Невалиден APP-ID.";
+function renderDebugCard(title, payload){
+  return `
+    <div class="card warn">
+      <div class="title">🛠️ Debug (за да го оправим веднага)</div>
+      <div class="kv">
+        <b>${title}</b><br>
+        <span class="muted">HTTP:</span> <b>${payload.status} ${payload.statusText}</b>
+      </div>
+      <div class="code" style="margin-top:10px">${escapeHtml(payload.raw || "")}</div>
+      <div class="small" style="margin-top:10px">
+        Най-често: <b>401/403</b> = ключът не е валиден за REST или RLS блокира заявките.
+      </div>
+    </div>
+  `;
+}
+
+function escapeHtml(s){
+  return String(s)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* ---------- MAIN LOAD ---------- */
+async function loadData(){
+  if(!appId){
+    renderLogin();
     return;
   }
-  const app = appData[0];
 
-  const loanRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/approved_loans?app_id=eq.${appId}&limit=1`,
-    { headers: headers() }
-  );
-  const loanData = await loanRes.json();
-  const loan = loanData[0];
+  content.innerHTML = `<div class="card"><div class="muted">Зареждане…</div></div>`;
 
-  let paid = 0;
+  const appUrl = `${SUPABASE_URL}/rest/v1/applications?app_id=eq.${encodeURIComponent(appId)}&limit=1`;
+  const appRes = await safeFetchJson(appUrl);
+
+  if(!appRes.ok){
+    content.innerHTML = renderDebugCard("Заявката към таблица applications не мина.", appRes);
+    return;
+  }
+  const appArr = Array.isArray(appRes.data) ? appRes.data : [];
+  if(!appArr[0]){
+    content.innerHTML = `
+      <div class="card bad">
+        <div class="title">❌ Невалиден APP-ID</div>
+        <div class="muted">Няма запис в applications за този APP-ID.</div>
+        <hr>
+        <button onclick="(${renderLogin.toString()})()">Въведи друг APP-ID</button>
+      </div>
+    `;
+    return;
+  }
+  const app = appArr[0];
+
+  const loanUrl = `${SUPABASE_URL}/rest/v1/approved_loans?app_id=eq.${encodeURIComponent(appId)}&limit=1`;
+  const loanRes = await safeFetchJson(loanUrl);
+
+  if(!loanRes.ok){
+    content.innerHTML =
+      renderDebugCard("Заявката към таблица approved_loans не мина.", loanRes);
+    return;
+  }
+  const loanArr = Array.isArray(loanRes.data) ? loanRes.data : [];
+  const loan = loanArr[0] || null;
+
+  // Погасителен план: loan_payments (ако има кредит)
+  let payments = [];
   if(loan){
-    const payRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/loan_payments?app_id=eq.${appId}`,
-      { headers: headers() }
-    );
-    const pays = await payRes.json().catch(()=>[]);
-    paid = pays.reduce((s,p)=>s+Number(p.amount||0),0);
+    const payUrl = `${SUPABASE_URL}/rest/v1/loan_payments?app_id=eq.${encodeURIComponent(appId)}&order=due_date.asc`;
+    const payRes = await safeFetchJson(payUrl);
+
+    if(!payRes.ok){
+      // Показваме кредитните данни, но казваме, че планът не може да се зареди + debug
+      payments = [];
+      var paymentsDebug = renderDebugCard("Заявката към loan_payments не мина (планът/вноските).", payRes);
+    }else{
+      payments = Array.isArray(payRes.data) ? payRes.data : [];
+      var paymentsDebug = "";
+    }
+  } else {
+    var paymentsDebug = "";
   }
 
-  const percent = loan ? Math.min((paid/loan.total_amount)*100,100) : 0;
+  // Изчисляваме платено (ако има payments с amount и paid)
+  let paid = 0;
+  if(payments.length){
+    paid = payments.reduce((s,p)=>{
+      const a = Number(p.amount || 0);
+      return s + (isFinite(a) ? a : 0);
+    },0);
+  }
+
+  // Следваща и просрочена (само ако имаме due_date и paid)
+  const today = startOfDay(new Date());
+  let nextPayment = null;
+  let overduePayment = null;
+
+  for(const p of payments){
+    const hasDue = !!p.due_date;
+    const isPaid = !!p.paid; // очаквано поле
+    if(!hasDue) continue;
+
+    const due = startOfDay(new Date(p.due_date));
+    if(isNaN(due)) continue;
+
+    if(!isPaid && due < today){
+      overduePayment = overduePayment || p; // първата просрочена
+    }
+    if(!isPaid && due >= today && !nextPayment){
+      nextPayment = p; // първата предстояща
+    }
+  }
+
+  // Прогрес (ако имаме loan.total_amount)
+  let percent = 0;
+  if(loan && Number(loan.total_amount) > 0){
+    percent = Math.min((paid / Number(loan.total_amount)) * 100, 100);
+    if(!isFinite(percent)) percent = 0;
+  }
+
+  const firstName = (app.applicant_name || "Потребител").split(" ")[0];
 
   content.innerHTML = `
     <div class="hero">
-      <h2>👋 Здравей, ${app.applicant_name.split(" ")[0]}</h2>
-      <div class="muted">Тук виждаш актуалното състояние на твоя кредит.</div>
-      ${loan ? `<div class="status">✔ Кредитът е активен</div>` : ``}
+      <h2>👋 Здравей, ${escapeHtml(firstName)}</h2>
+      <div class="muted">Тук виждаш твоето текущо състояние и погасителен план.</div>
+      ${overduePayment ? `<div class="badge-bad">⚠ Имате просрочена вноска</div>` : `<div class="badge-ok">✔ Няма просрочия</div>`}
     </div>
 
-    <div class="card soft">
-      <div class="title">📄 Твоята заявка</div>
+    <div class="card">
+      <div class="title">📄 Данни по заявката</div>
       <div class="kv">
-        <b>APP-ID:</b> ${app.app_id}<br>
-        <b>Телефон:</b> ${app.phone}<br>
+        <b>APP-ID:</b> ${escapeHtml(app.app_id || "")}<br>
+        <b>Име:</b> ${escapeHtml(app.applicant_name || "—")}<br>
+        <b>Телефон:</b> ${escapeHtml(app.phone || "—")}<br>
+        <b>Цел:</b> ${escapeHtml(app.purpose || "—")}<br>
+        <b>Заетост:</b> ${escapeHtml(app.employment || "—")}<br>
         <b>Доход:</b> ${fmt(app.net_income)}<br>
         <b>Разходи:</b> ${fmt(app.monthly_expenses)}
       </div>
     </div>
 
     <div class="card accent">
-      <div class="title">💳 Твоят кредит</div>
+      <div class="title">💳 Данни по кредита</div>
       ${loan ? `
         <div class="kv">
           <b>Сума:</b> ${fmt(loan.loan_amount)}<br>
+          <b>Лихва:</b> ${escapeHtml(String(loan.interest_rate ?? "—"))}%<br>
+          <b>Срок:</b> ${escapeHtml(String(loan.months ?? "—"))} месеца<br>
           <b>Вноска:</b> ${fmt(loan.monthly_payment)}<br>
           <b>Общо:</b> ${fmt(loan.total_amount)}<br>
           <b>Върнато:</b> ${fmt(paid)}<br>
-          <b>Остатък:</b> ${fmt(loan.total_amount-paid)}
+          <b>Остатък:</b> ${fmt((Number(loan.total_amount||0) - Number(paid||0)))}<br>
+          <b>Статус:</b> ${escapeHtml(loan.status || "—")}
         </div>
+
         <div class="progress">
-          <div style="width:${percent}%"></div>
+          <div style="width:${percent.toFixed(1)}%"></div>
         </div>
         <div class="muted">Изплатено: ${percent.toFixed(1)}%</div>
       ` : `<div class="muted">Кредитът още не е активиран.</div>`}
     </div>
+
+    ${loan ? `
+      ${overduePayment ? `
+        <div class="card bad">
+          <div class="title">❌ Падежирала (просрочена) вноска</div>
+          <div class="kv">
+            <b>Падеж:</b> ${fmtDate(overduePayment.due_date)}<br>
+            <b>Сума:</b> ${fmt(overduePayment.amount)}
+          </div>
+          <div class="small" style="margin-top:10px">
+            Ако това е грешка, свържи се с оператор за уточнение.
+          </div>
+        </div>
+      ` : ``}
+
+      ${nextPayment ? `
+        <div class="card ${overduePayment ? "bad" : "accent"}">
+          <div class="title">📆 Следваща вноска</div>
+          <div class="kv">
+            <b>Дата:</b> ${fmtDate(nextPayment.due_date)}<br>
+            <b>Сума:</b> ${fmt(nextPayment.amount)}
+          </div>
+        </div>
+      ` : `
+        <div class="card warn">
+          <div class="title">📆 Следваща вноска</div>
+          <div class="muted">
+            Няма открита следваща вноска в плана. (Възможно е планът да не е въведен в loan_payments.)
+          </div>
+        </div>
+      `}
+
+      <div class="card">
+        <div class="title">📋 Погасителен план</div>
+        ${payments.length ? `
+          <table>
+            <tr><th>Дата</th><th>Сума</th><th>Статус</th></tr>
+            ${payments.map(p=>{
+              const due = p.due_date ? startOfDay(new Date(p.due_date)) : null;
+              const isPaid = !!p.paid;
+              let statusText = "⏳ Очаква";
+              let cls = "status-warn";
+
+              if(isPaid){
+                statusText = "✔ Платена";
+                cls = "status-ok";
+              }else if(due && !isNaN(due) && due < today){
+                statusText = "❌ Просрочена";
+                cls = "status-bad";
+              }else if(due && !isNaN(due) && due >= today){
+                statusText = "📆 Предстояща";
+                cls = "status-warn";
+              }else{
+                statusText = "—";
+                cls = "muted";
+              }
+
+              return `
+                <tr>
+                  <td>${fmtDate(p.due_date)}</td>
+                  <td>${fmt(p.amount)}</td>
+                  <td class="${cls}">${statusText}</td>
+                </tr>
+              `;
+            }).join("")}
+          </table>
+          <div class="small" style="margin-top:10px">
+            * Статусите се изчисляват по полета <b>due_date</b> и <b>paid</b> от таблица <b>loan_payments</b>.
+          </div>
+        ` : `
+          <div class="muted">
+            Няма зареден погасителен план (loan_payments е празна или недостъпна).
+          </div>
+        `}
+      </div>
+
+      ${paymentsDebug || ""}
+    ` : ``}
+
+    <div class="card soft">
+      <div class="title">🔁 Смени APP-ID</div>
+      <div class="row">
+        <input id="changeInput" placeholder="APP-XXXXXX" value="${escapeHtml(appId)}">
+        <button id="changeBtn">Покажи</button>
+      </div>
+      <div class="small" style="margin-top:10px">Полезно, ако проверяваш друг профил.</div>
+    </div>
   `;
+
+  const changeBtn = document.getElementById("changeBtn");
+  if(changeBtn){
+    changeBtn.onclick = ()=>{
+      const v = (document.getElementById("changeInput").value || "").trim();
+      if(!v){ alert("Въведи APP-ID."); return; }
+      history.replaceState({}, "", `?app_id=${encodeURIComponent(v)}`);
+      appId = v;
+      loadData();
+    };
+  }
 }
 
-/* ---------- INIT ---------- */
-if(!appId) renderLogin();
-else loadData();
+/* INIT */
+if(!appId){
+  renderLogin();
+}else{
+  loadData();
+}
 </script>
 </body>
 </html>
