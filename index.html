@@ -836,6 +836,18 @@
     if (apr >= 80 || (weeks <= 8 && amount >= 1000)) risk = "Повишен";
     if (apr >= 120 || (weeks <= 4 && amount >= 1500)) risk = "Висок";
     kpiRisk.textContent = `Риск: ${risk}`;
+    const checkoutEl = document.querySelector('.checkout');
+checkoutEl.classList.remove('safe','warn','risky');
+
+if (risk === "Нисък"){
+  checkoutEl.classList.add('safe');
+}
+else if (risk === "Повишен"){
+  checkoutEl.classList.add('warn');
+}
+else{
+  checkoutEl.classList.add('risky');
+}
 
     assistantBox.innerHTML =
       `<b>🤝 Личен помощник</b><br>` +
