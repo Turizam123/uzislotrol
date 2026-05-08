@@ -35,6 +35,7 @@
       background:
         linear-gradient(90deg, rgba(255,247,232,0.96) 0%, rgba(255,247,232,0.90) 43%, rgba(255,247,232,0.36) 67%, rgba(255,247,232,0.08) 100%),
         url("ChatGPT Image 8.05.2026 г., 18_31_08.png") top right / auto 760px no-repeat,
+        url("ChatGPT Image 8.05.2026 г., 18_31_21.png") center center / cover fixed no-repeat,
         linear-gradient(180deg, #fff9ed 0%, #f3dfbf 100%);
       overflow-x: hidden;
     }
@@ -824,7 +825,7 @@
     function renderStats() {
       songsCount.textContent = songs.length;
       votesCount.textContent = votes.length;
-      voteStatus.textContent = `${getMultiVotes().length}/5`;
+      voteStatus.textContent = `${getMultiVotes().length}/5 избрани`;
     }
 
     function getVoteCounts() {
@@ -844,10 +845,14 @@
       }
 
       songsList.innerHTML = filtered.map((song, index) => {
-        const votedSongs = JSON.parse(localStorage.getItem('folk_multi_votes') || '[]');
+        const votedSongs = getMultiVotes();
         const alreadyVoted = votedSongs.length >= 5;
         const isSelected = votedSongs.includes(song.id);
-        const buttonText = isSelected ? "✓ Вашият глас" : alreadyVoted ? "Вече гласувахте" : "♡ Гласувай";
+        const buttonText = isSelected
+          ? "✓ Избрана"
+          : alreadyVoted
+            ? "Лимит 5/5"
+            : "♡ Гласувай";
 
         return `
           <article class="song-card ${isSelected ? "voted" : ""}">
@@ -858,7 +863,7 @@
                 <div class="song-title">${escapeHtml(song.title)}</div>
                 <div class="song-artist">${escapeHtml(song.artist || "Ангел Узунов / AI")}</div>
               </div>
-              <button onclick="vote('${song.id}')" ${alreadyVoted ? "disabled" : ""}>${buttonText}</button>
+              <button onclick="vote('${song.id}')" ${(alreadyVoted && !isSelected) ? "disabled" : ""}>${buttonText}</button>
             </div>
           </article>
         `;
