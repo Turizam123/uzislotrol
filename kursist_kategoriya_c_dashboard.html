@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Гласувай за авторските песни</title>
+  <link rel="icon" type="image/png" href="UZI_watermark_150x150.png">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -418,8 +419,33 @@
     }
 
     .leader-panel {
-      margin-top: 126px;
+      margin-top: 20px;
       position: relative;
+    }
+
+    .floating-artist {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 4;
+      animation: floatArtist 4s ease-in-out infinite;
+    }
+
+    .floating-artist img {
+      width: 100%;
+      max-width: 360px;
+      border-radius: 26px;
+      object-fit: cover;
+      border: 5px solid rgba(255,255,255,.55);
+      box-shadow: 0 24px 50px rgba(0,0,0,.28);
+    }
+
+    @keyframes floatArtist {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+      100% { transform: translateY(0px); }
     }
 
     .leader-title-board {
@@ -682,6 +708,9 @@
       </section>
 
       <aside class="leader-panel" id="resultsPanel">
+        <div class="floating-artist">
+          <img src="ChatGPT Image 8.05.2026 г., 18_31_08.png" alt="Ангел Узунов">
+        </div>
         <div class="leader-title-board">
           <h2>Класация</h2>
           <div>Топ 10</div>
@@ -731,6 +760,8 @@
     }
 
     function getVotedSongId() { return localStorage.getItem(VOTED_KEY); }
+    function getMultiVotes(){ return JSON.parse(localStorage.getItem('folk_multi_votes') || '[]'); }
+    function setMultiVotes(arr){ localStorage.setItem('folk_multi_votes', JSON.stringify(arr)); }
     function setVotedSongId(songId) { localStorage.setItem(VOTED_KEY, songId); }
 
     function showStatus(message, type = "normal") {
@@ -771,7 +802,7 @@
     function renderStats() {
       songsCount.textContent = songs.length;
       votesCount.textContent = votes.length;
-      voteStatus.textContent = getVotedSongId() ? "Гласувал" : "Не";
+      voteStatus.textContent = `${getMultiVotes().length}/5`;
     }
 
     function getVoteCounts() {
@@ -791,8 +822,9 @@
       }
 
       songsList.innerHTML = filtered.map((song, index) => {
-        const alreadyVoted = Boolean(votedSongId);
-        const isSelected = votedSongId === song.id;
+        const votedSongs = JSON.parse(localStorage.getItem('folk_multi_votes') || '[]');
+        const alreadyVoted = votedSongs.length >= 5;
+        const isSelected = votedSongs.includes(song.id);
         const buttonText = isSelected ? "✓ Вашият глас" : alreadyVoted ? "Вече гласувахте" : "♡ Гласувай";
 
         return `
@@ -841,8 +873,15 @@
     }
 
     async function vote(songId) {
-      if (getVotedSongId()) {
-        showStatus("Вече сте гласували от това устройство.");
+      const votedSongs = getMultiVotes();
+
+      if (votedSongs.includes(songId)) {
+        showStatus("Вече сте гласували за тази песен.");
+        return;
+      }
+
+      if (votedSongs.length >= 5) {
+        showStatus("Можете да изберете максимум 5 песни.");
         return;
       }
 
@@ -853,6 +892,8 @@
         return;
       }
 
+      votedSongs.push(songId);
+      setMultiVotes(votedSongs);
       setVotedSongId(songId);
       showStatus("Гласът е отчетен успешно. Благодарим!");
       await loadData();
