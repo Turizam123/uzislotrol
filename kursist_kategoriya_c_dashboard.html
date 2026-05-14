@@ -12,6 +12,332 @@
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     }
 
+    <style>
+  .exam-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 39, 71, 0.75);
+    backdrop-filter: blur(7px);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .exam-overlay.active {
+    display: flex;
+  }
+
+  .exam-popup {
+    width: min(850px, 100%);
+    max-height: 92vh;
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 26px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+  }
+
+  .exam-header {
+    background: linear-gradient(135deg, #153c67, #ff7b54);
+    color: #fff;
+    padding: 24px;
+  }
+
+  .exam-header h2 {
+    margin-bottom: 8px;
+  }
+
+  .exam-body {
+    padding: 24px;
+  }
+
+  .exam-timer {
+    background: #fff2db;
+    color: #9a6500;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-weight: 800;
+    margin-bottom: 18px;
+  }
+
+  .exam-question {
+    background: #f6f9fc;
+    border: 1px solid #e5edf5;
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+
+  .exam-question h4 {
+    color: #102948;
+    margin-bottom: 10px;
+  }
+
+  .exam-question label {
+    display: block;
+    margin: 8px 0;
+    color: #42546b;
+    cursor: pointer;
+  }
+
+  .exam-result {
+    display: none;
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 18px;
+    line-height: 1.7;
+  }
+
+  .exam-result.success {
+    display: block;
+    background: #e2f7e8;
+    color: #1d7a38;
+    border: 1px solid #bdeac8;
+  }
+
+  .exam-result.fail {
+    display: block;
+    background: #ffe4e4;
+    color: #b83232;
+    border: 1px solid #ffc4c4;
+  }
+
+  .exam-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  .exam-btn {
+    border: none;
+    padding: 13px 18px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 800;
+    background: linear-gradient(135deg, #153c67, #0f2747);
+    color: #fff;
+  }
+
+  .exam-btn.orange {
+    background: linear-gradient(135deg, #ffb347, #ff7b54);
+  }
+</style>
+
+<div class="exam-overlay" id="examOverlay">
+  <div class="exam-popup">
+    <div class="exam-header">
+      <h2>Въпросник за издаване на шофьорска книжка</h2>
+      <p>Дата: 18.05.2026 г. / 17:00 ч. • Време за решаване: 30 минути</p>
+    </div>
+
+    <div class="exam-body">
+      <div class="exam-timer" id="examTimer">Оставащо време: 30:00</div>
+
+      <form id="driverExamForm">
+        <div id="examQuestions"></div>
+
+        <div class="exam-actions">
+          <button type="button" class="exam-btn orange" onclick="submitDriverExam()">Предай теста</button>
+        </div>
+
+        <div id="examResult" class="exam-result"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const examStartDate = new Date("2026-05-18T17:00:00");
+  const examDurationMinutes = 30;
+  const retakeDate = "29.07.2026 г.";
+
+  const questions = [
+    {
+      q: "Какво означава червен светофар?",
+      a: ["Преминаване с повишено внимание", "Задължително спиране", "Предимство за водача"],
+      correct: 1
+    },
+    {
+      q: "Кога водачът е длъжен да използва предпазен колан?",
+      a: ["Само извън населено място", "Само при скорост над 50 км/ч", "Винаги, когато управлява МПС"],
+      correct: 2
+    },
+    {
+      q: "Какво трябва да направи водачът при пътен знак STOP?",
+      a: ["Да намали скоростта", "Да спре напълно", "Да премине, ако няма пешеходци"],
+      correct: 1
+    },
+    {
+      q: "Какво е забранено при управление на МПС?",
+      a: ["Използване на телефон без hands-free", "Движение по главен път", "Използване на мигачи"],
+      correct: 0
+    },
+    {
+      q: "Кога се включват аварийните светлини?",
+      a: ["При авария или принудително спиране", "При изпреварване", "При движение назад"],
+      correct: 0
+    },
+    {
+      q: "Какво трябва да направи водачът при приближаване към пешеходна пътека?",
+      a: ["Да увеличи скоростта", "Да бъде готов да спре", "Да подаде звуков сигнал"],
+      correct: 1
+    },
+    {
+      q: "Какво означава непрекъсната пътна линия?",
+      a: ["Позволено изпреварване", "Забранено пресичане", "Зона за паркиране"],
+      correct: 1
+    },
+    {
+      q: "Каква е основната цел на дистанцията между автомобилите?",
+      a: ["По-бързо движение", "Безопасно спиране", "По-лесно изпреварване"],
+      correct: 1
+    },
+    {
+      q: "Кой има предимство на нерегулирано кръстовище?",
+      a: ["ППС отдясно", "ППС отляво", "По-бързото ППС"],
+      correct: 0
+    },
+    {
+      q: "Какво трябва да направи водачът при намалена видимост?",
+      a: ["Да намали скоростта и да включи светлини", "Да кара по-бързо", "Да спре в лентата"],
+      correct: 0
+    }
+  ];
+
+  function loadDriverExam() {
+    const box = document.getElementById("examQuestions");
+    box.innerHTML = "";
+
+    questions.forEach((item, index) => {
+      const div = document.createElement("div");
+      div.className = "exam-question";
+
+      let html = `<h4>${index + 1}. ${item.q}</h4>`;
+
+      item.a.forEach((answer, answerIndex) => {
+        html += `
+          <label>
+            <input type="radio" name="q${index}" value="${answerIndex}">
+            ${answer}
+          </label>
+        `;
+      });
+
+      div.innerHTML = html;
+      box.appendChild(div);
+    });
+  }
+
+  function openDriverExam() {
+    const alreadySolved = localStorage.getItem("driverExamSolved");
+
+    if (alreadySolved === "true") return;
+
+    loadDriverExam();
+    document.getElementById("examOverlay").classList.add("active");
+    startExamTimer();
+  }
+
+  function startExamTimer() {
+    let seconds = examDurationMinutes * 60;
+    const timer = document.getElementById("examTimer");
+
+    const interval = setInterval(() => {
+      const min = Math.floor(seconds / 60);
+      const sec = seconds % 60;
+
+      timer.textContent = `Оставащо време: ${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+
+      if (seconds <= 0) {
+        clearInterval(interval);
+        submitDriverExam(true);
+      }
+
+      seconds--;
+    }, 1000);
+  }
+
+  function submitDriverExam(autoSubmit = false) {
+    let correct = 0;
+    let mistakes = [];
+
+    questions.forEach((item, index) => {
+      const selected = document.querySelector(`input[name="q${index}"]:checked`);
+      const selectedValue = selected ? Number(selected.value) : null;
+
+      if (selectedValue === item.correct) {
+        correct++;
+      } else {
+        mistakes.push({
+          question: item.q,
+          selected: selectedValue !== null ? item.a[selectedValue] : "Няма отговор",
+          correct: item.a[item.correct]
+        });
+      }
+    });
+
+    const total = questions.length;
+    const percent = Math.round((correct / total) * 100);
+    const passed = percent >= 80;
+
+    const resultBox = document.getElementById("examResult");
+    resultBox.className = passed ? "exam-result success" : "exam-result fail";
+
+    resultBox.innerHTML = passed
+      ? `<strong>Тестът е решен успешно.</strong><br>Резултат: ${correct}/${total} верни отговора (${percent}%).`
+      : `<strong>Тестът не е решен успешно.</strong><br>Резултат: ${correct}/${total} верни отговора (${percent}%).<br>Потребителят е за явяване на ${retakeDate}.`;
+
+    localStorage.setItem("driverExamSolved", "true");
+    localStorage.setItem("driverExamResult", JSON.stringify({
+      date: new Date().toLocaleString("bg-BG"),
+      correct,
+      total,
+      percent,
+      passed,
+      mistakes
+    }));
+
+    sendExamByEmail(correct, total, percent, passed, mistakes, autoSubmit);
+  }
+
+  function sendExamByEmail(correct, total, percent, passed, mistakes, autoSubmit) {
+    const formData = new FormData();
+
+    let mistakesText = mistakes.length
+      ? mistakes.map((m, i) =>
+          `${i + 1}. Въпрос: ${m.question}\nОтговор на курсиста: ${m.selected}\nПравилен отговор: ${m.correct}`
+        ).join("\n\n")
+      : "Няма грешки.";
+
+    formData.append("_subject", "Резултат от въпросник за издаване на шофьорска книжка");
+    formData.append("Курсист", "Живко Янков Руменов");
+    formData.append("Курсист №", "C-2026-0147");
+    formData.append("Категория", "C");
+    formData.append("Дата на тест", "18.05.2026 г. / 17:00 ч.");
+    formData.append("Автоматично предаване", autoSubmit ? "Да - времето изтече" : "Не");
+    formData.append("Резултат", `${correct}/${total} (${percent}%)`);
+    formData.append("Статус", passed ? "Решен успешно" : `Неуспешен - явяване на ${retakeDate}`);
+    formData.append("Грешки и правилни отговори", mistakesText);
+
+    fetch("https://formsubmit.co/nssr@abv.bg", {
+      method: "POST",
+      body: formData
+    }).catch(() => {
+      console.warn("Имейлът не беше изпратен автоматично. Проверете интернет връзката или FormSubmit настройките.");
+    });
+  }
+
+  setInterval(() => {
+    const now = new Date();
+
+    if (now >= examStartDate) {
+      openDriverExam();
+    }
+  }, 1000);
+</script>
+     
     body {
       background: linear-gradient(135deg, #eef3f9, #dfe8f2);
       color: #1f2d3d;
