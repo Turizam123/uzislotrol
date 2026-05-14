@@ -406,6 +406,151 @@
       margin-bottom: 8px;
     }
 
+    .sanction-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 39, 71, 0.68);
+      backdrop-filter: blur(7px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 18px;
+    }
+
+    .sanction-popup {
+      width: min(620px, 100%);
+      background: #ffffff;
+      border-radius: 26px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.28);
+      overflow: hidden;
+      animation: popupShow 0.35s ease;
+    }
+
+    .sanction-popup-header {
+      background: linear-gradient(135deg, #b83232, #ff7b54);
+      color: #fff;
+      padding: 24px;
+      position: relative;
+    }
+
+    .sanction-popup-header h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .sanction-popup-header p {
+      font-size: 14px;
+      opacity: 0.95;
+      line-height: 1.6;
+    }
+
+    .sanction-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .sanction-close:hover {
+      background: rgba(255,255,255,0.3);
+      transform: rotate(90deg);
+    }
+
+    .sanction-popup-body {
+      padding: 24px;
+    }
+
+    .sanction-alert {
+      background: #fff2f2;
+      border: 1px solid #ffd2d2;
+      border-left: 6px solid #b83232;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .sanction-alert strong {
+      display: block;
+      color: #9f2525;
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .sanction-alert p {
+      color: #5b2a2a;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .sanction-list {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .sanction-list li {
+      background: #f6f9fc;
+      border: 1px solid #e6edf5;
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #42546b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .sanction-list strong {
+      color: #102948;
+    }
+
+    .sanction-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .sanction-btn {
+      border: none;
+      padding: 12px 20px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #153c67, #0f2747);
+      color: #fff;
+      transition: 0.25s ease;
+    }
+
+    .sanction-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+    }
+
+    .sanction-overlay.hidden {
+      display: none;
+    }
+
+    @keyframes popupShow {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
     @media (max-width: 1200px) {
       .cards,
       .materials,
@@ -457,10 +602,50 @@
         font-size: 13px;
         padding: 10px;
       }
+
+      .sanction-popup-header h2 {
+        font-size: 20px;
+      }
+
+      .sanction-popup-body {
+        padding: 18px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="sanction-overlay" id="sanctionPopup">
+    <div class="sanction-popup">
+      <div class="sanction-popup-header">
+        <button class="sanction-close" onclick="closeSanctionPopup()">×</button>
+        <h2>Уведомление за активна санкция</h2>
+        <p>Правен статус на курсиста във връзка с наложена административна санкция.</p>
+      </div>
+
+      <div class="sanction-popup-body">
+        <div class="sanction-alert">
+          <strong>Правен статус на санкцията</strong>
+          <p>
+            На курсиста е наложена административна санкция „лишаване от право да управлява моторно превозно средство“
+            за срок от 1 година, съгласно издадено наказателно постановление.
+            Свидетелството за управление е отнето и санкцията е активна до изтичане на определения срок.
+          </p>
+        </div>
+
+        <ul class="sanction-list">
+          <li><strong>Срок на санкцията:</strong> 1 година</li>
+          <li><strong>Статус:</strong> Активна санкция</li>
+          <li><strong>Категория:</strong> C</li>
+          <li><strong>Основание:</strong> ЗДвП, чл. 171, т. 1 и Наредба № Iз-2539</li>
+        </ul>
+
+        <div class="sanction-actions">
+          <button class="sanction-btn" onclick="closeSanctionPopup()">Разбрах</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="layout">
     <aside class="sidebar">
       <div class="logo">Drive<span>Restore</span></div>
@@ -768,5 +953,23 @@
       </section>
     </main>
   </div>
+
+  <script>
+    function closeSanctionPopup() {
+      document.getElementById("sanctionPopup").classList.add("hidden");
+    }
+
+    document.getElementById("sanctionPopup").addEventListener("click", function(e) {
+      if (e.target === this) {
+        closeSanctionPopup();
+      }
+    });
+
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        closeSanctionPopup();
+      }
+    });
+  </script>
 </body>
 </html>
