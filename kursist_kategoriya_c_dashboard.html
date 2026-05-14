@@ -1,604 +1,1457 @@
-# Готов HTML код с popup санкция, онлайн тест и обратно броене
+# Цял работещ HTML код
 
 ```html
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>DriveRestore - Онлайн курс</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Моят курс - Категория C</title>
 
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-body{
-  background:linear-gradient(135deg,#eef3f9,#dfe8f2);
-  color:#1f2d3d;
-}
+    body {
+      background: linear-gradient(135deg, #eef3f9, #dfe8f2);
+      color: #1f2d3d;
+    }
 
-.layout{
-  display:flex;
-  min-height:100vh;
-}
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
 
-.sidebar{
-  width:270px;
-  background:linear-gradient(180deg,#0f2747,#163760);
-  color:#fff;
-  padding:24px 18px;
-}
+    .sidebar {
+      width: 270px;
+      background: linear-gradient(180deg, #0f2747, #163760);
+      color: #fff;
+      padding: 24px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.12);
+      overflow-y: auto;
+    }
 
-.logo{
-  font-size:26px;
-  font-weight:800;
-  text-align:center;
-  margin-bottom:10px;
-}
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
 
-.logo span{
-  color:#ffb347;
-}
+    .logo span {
+      color: #ffb347;
+    }
 
-.sidebar-subtitle{
-  text-align:center;
-  font-size:13px;
-  opacity:.85;
-  margin-bottom:28px;
-}
+    .sidebar-subtitle {
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.85;
+      margin-bottom: 28px;
+    }
 
-.user-card{
-  background:rgba(255,255,255,.08);
-  border-radius:18px;
-  padding:18px;
-  text-align:center;
-  margin-bottom:24px;
-}
+    .user-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
 
-.avatar{
-  width:72px;
-  height:72px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#ffb347,#ff7b54);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 12px;
-  color:#fff;
-  font-size:28px;
-  font-weight:700;
-}
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffb347, #ff7b54);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+    }
 
-.user-name{
-  font-size:18px;
-  font-weight:700;
-  margin-bottom:6px;
-}
+    .user-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
 
-.user-meta{
-  font-size:13px;
-  line-height:1.6;
-}
+    .user-meta {
+      font-size: 13px;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
 
-.menu{
-  list-style:none;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
+    .menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-.menu a{
-  display:block;
-  color:#fff;
-  text-decoration:none;
-  padding:13px 15px;
-  border-radius:14px;
-  background:rgba(255,255,255,.05);
-}
+    .menu li a {
+      display: block;
+      text-decoration: none;
+      color: #fff;
+      padding: 13px 15px;
+      border-radius: 14px;
+      font-size: 15px;
+      transition: 0.25s ease;
+      background: rgba(255,255,255,0.04);
+    }
 
-.menu a:hover{
-  background:linear-gradient(135deg,#ffb347,#ff7b54);
-}
+    .menu li a:hover,
+    .menu li a.active {
+      background: linear-gradient(135deg, #ffb347, #ff7b54);
+      color: #fff;
+      transform: translateX(4px);
+    }
 
-.main{
-  flex:1;
-  padding:28px;
-}
+    .main {
+      flex: 1;
+      padding: 28px;
+    }
 
-.banner{
-  background:linear-gradient(135deg,#153c67,#1e4f86);
-  color:#fff;
-  border-radius:24px;
-  padding:28px;
-  margin-bottom:24px;
-}
+    .topbar {
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(8px);
+      border-radius: 22px;
+      padding: 22px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 10px 30px rgba(13, 38, 76, 0.08);
+      margin-bottom: 24px;
+    }
 
-.banner h2{
-  margin-bottom:12px;
-}
+    .topbar h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: #102948;
+    }
 
-.banner p{
-  line-height:1.8;
-}
+    .topbar p {
+      color: #50627a;
+      font-size: 14px;
+    }
 
-.exam-countdown-box{
-  background:linear-gradient(135deg,#153c67,#1e4f86);
-  color:#fff;
-  border-radius:24px;
-  padding:28px;
-  margin-bottom:24px;
-}
+    .top-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-.exam-countdown-box h3{
-  font-size:24px;
-  margin-bottom:12px;
-}
+    .btn {
+      border: none;
+      padding: 12px 18px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.25s ease;
+    }
 
-.countdown-wrapper{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  margin-top:20px;
-}
+    .btn.primary {
+      background: linear-gradient(135deg, #153c67, #0f2747);
+      color: #fff;
+    }
 
-.countdown-card{
-  background:rgba(255,255,255,.12);
-  border-radius:18px;
-  padding:22px;
-  text-align:center;
-}
+    .btn.secondary {
+      background: linear-gradient(135deg, #ffb347, #ff7b54);
+      color: #fff;
+    }
 
-.countdown-card span{
-  display:block;
-  font-size:36px;
-  font-weight:800;
-}
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    }
 
-.countdown-status{
-  margin-top:18px;
-  background:rgba(255,255,255,.12);
-  padding:14px;
-  border-radius:14px;
-  font-weight:700;
-}
+    .banner {
+      background: linear-gradient(135deg, #153c67, #1e4f86);
+      color: #fff;
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      align-items: center;
+      box-shadow: 0 16px 35px rgba(16, 41, 72, 0.18);
+    }
 
-.cards{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:18px;
-}
+    .banner h2 {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
 
-.card{
-  background:#fff;
-  border-radius:20px;
-  padding:22px;
-  box-shadow:0 10px 28px rgba(16,41,72,.08);
-}
+    .banner p {
+      line-height: 1.7;
+      opacity: 0.95;
+      font-size: 15px;
+    }
 
-.card h3{
-  margin-bottom:14px;
-  color:#102948;
-}
+    .status-box {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 20px;
+    }
 
-.card ul{
-  list-style:none;
-  line-height:1.8;
-}
+    .status-pill {
+      display: inline-block;
+      background: #ffb347;
+      color: #0f2747;
+      font-weight: 800;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
 
-.sanction-overlay,
-.exam-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-  padding:16px;
-}
+    .status-box ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      font-size: 14px;
+    }
 
-.sanction-popup,
-.exam-popup{
-  width:min(850px,100%);
-  background:#fff;
-  border-radius:24px;
-  overflow:hidden;
-  box-shadow:0 30px 80px rgba(0,0,0,.35);
-}
+    .exam-countdown-box {
+      background: linear-gradient(135deg, #153c67, #1e4f86);
+      color: #fff;
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 16px 35px rgba(16, 41, 72, 0.18);
+    }
 
-.sanction-header,
-.exam-header{
-  background:linear-gradient(135deg,#b83232,#ff7b54);
-  color:#fff;
-  padding:24px;
-}
+    .exam-countdown-box h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
 
-.exam-header{
-  background:linear-gradient(135deg,#153c67,#ff7b54);
-}
+    .exam-countdown-box p {
+      opacity: 0.95;
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
 
-.sanction-body,
-.exam-body{
-  padding:24px;
-}
+    .countdown-wrapper {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
 
-.popup-btn{
-  border:none;
-  padding:12px 18px;
-  border-radius:14px;
-  background:linear-gradient(135deg,#153c67,#0f2747);
-  color:#fff;
-  font-weight:800;
-  cursor:pointer;
-  margin-top:16px;
-}
+    .countdown-card {
+      background: rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 22px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
 
-.exam-question{
-  background:#f6f9fc;
-  border:1px solid #e5edf5;
-  border-radius:16px;
-  padding:16px;
-  margin-bottom:14px;
-}
+    .countdown-card span {
+      display: block;
+      font-size: 38px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
 
-.exam-question h4{
-  margin-bottom:10px;
-}
+    .countdown-card small {
+      font-size: 14px;
+      opacity: 0.9;
+    }
 
-.exam-question label{
-  display:block;
-  margin:8px 0;
-}
+    .countdown-status {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.12);
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
 
-.exam-result{
-  margin-top:18px;
-  padding:18px;
-  border-radius:16px;
-  display:none;
-}
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
 
-.exam-result.success{
-  display:block;
-  background:#e2f7e8;
-  color:#1d7a38;
-}
+    .card {
+      background: rgba(255,255,255,0.92);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 10px 28px rgba(16, 41, 72, 0.08);
+      transition: 0.25s ease;
+    }
 
-.exam-result.fail{
-  display:block;
-  background:#ffe4e4;
-  color:#b83232;
-}
+    .card:hover {
+      transform: translateY(-4px);
+    }
 
-.hidden{
-  display:none;
-}
+    .card h3 {
+      font-size: 17px;
+      color: #102948;
+      margin-bottom: 14px;
+    }
 
-@media(max-width:980px){
-  .layout{
-    flex-direction:column;
-  }
+    .card p,
+    .card li {
+      color: #53657d;
+      font-size: 14px;
+      line-height: 1.7;
+    }
 
-  .cards,
-  .countdown-wrapper{
-    grid-template-columns:1fr 1fr;
-  }
-}
+    .card ul {
+      list-style: none;
+    }
 
-@media(max-width:640px){
-  .cards,
-  .countdown-wrapper{
-    grid-template-columns:1fr;
-  }
-}
-</style>
+    .section {
+      background: rgba(255,255,255,0.94);
+      border-radius: 24px;
+      padding: 26px;
+      margin-bottom: 22px;
+      box-shadow: 0 10px 30px rgba(16, 41, 72, 0.08);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .section h2 {
+      font-size: 23px;
+      color: #102948;
+    }
+
+    .section p {
+      color: #5b6c83;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .info-box {
+      background: #f4f7fb;
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid #e3eaf2;
+    }
+
+    .info-box strong {
+      display: block;
+      color: #102948;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      margin-top: 10px;
+    }
+
+    thead {
+      background: #12345a;
+      color: #fff;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 14px;
+      font-size: 14px;
+      border-bottom: 1px solid #e8edf4;
+    }
+
+    tbody tr:hover {
+      background: #f7faff;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tag.pending {
+      background: #fff2db;
+      color: #9a6500;
+    }
+
+    .tag.good {
+      background: #e2f7e8;
+      color: #1d7a38;
+    }
+
+    .tag.alert {
+      background: #ffe4e4;
+      color: #b83232;
+    }
+
+    .materials,
+    .results,
+    .documents,
+    .messages {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .small-card {
+      background: #f6f9fc;
+      border: 1px solid #e5edf5;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .small-card h4 {
+      color: #102948;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .small-card p {
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .small-card .btn {
+      width: 100%;
+    }
+
+    .footer-contact {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .contact-box {
+      background: #f6f9fc;
+      border: 1px solid #e4ebf3;
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .contact-box strong {
+      display: block;
+      color: #102948;
+      margin-bottom: 8px;
+    }
+
+    .sanction-overlay,
+    .exam-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 39, 71, 0.72);
+      backdrop-filter: blur(7px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 18px;
+    }
+
+    .exam-overlay {
+      z-index: 10000;
+    }
+
+    .sanction-overlay.hidden,
+    .exam-overlay.hidden {
+      display: none;
+    }
+
+    .sanction-popup,
+    .exam-popup {
+      width: min(860px, 100%);
+      max-height: 92vh;
+      background: #fff;
+      border-radius: 26px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.28);
+      overflow: hidden;
+      animation: popupShow 0.35s ease;
+    }
+
+    .exam-popup {
+      overflow-y: auto;
+    }
+
+    .sanction-popup-header,
+    .exam-popup-header {
+      color: #fff;
+      padding: 24px;
+      position: relative;
+    }
+
+    .sanction-popup-header {
+      background: linear-gradient(135deg, #b83232, #ff7b54);
+    }
+
+    .exam-popup-header {
+      background: linear-gradient(135deg, #153c67, #ff7b54);
+    }
+
+    .sanction-popup-header h2,
+    .exam-popup-header h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .sanction-popup-header p,
+    .exam-popup-header p {
+      font-size: 14px;
+      opacity: 0.95;
+      line-height: 1.6;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .popup-close:hover {
+      background: rgba(255,255,255,0.3);
+      transform: rotate(90deg);
+    }
+
+    .sanction-popup-body,
+    .exam-popup-body {
+      padding: 24px;
+    }
+
+    .sanction-alert {
+      background: #fff2f2;
+      border: 1px solid #ffd2d2;
+      border-left: 6px solid #b83232;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .sanction-alert strong {
+      display: block;
+      color: #9f2525;
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .sanction-alert p {
+      color: #5b2a2a;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .sanction-list {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .sanction-list li {
+      background: #f6f9fc;
+      border: 1px solid #e6edf5;
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #42546b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .sanction-list strong {
+      color: #102948;
+    }
+
+    .exam-timer {
+      background: #fff2db;
+      color: #9a6500;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .exam-question {
+      background: #f6f9fc;
+      border: 1px solid #e5edf5;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .exam-question h4 {
+      color: #102948;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .exam-question label {
+      display: block;
+      margin: 8px 0;
+      color: #42546b;
+      cursor: pointer;
+      line-height: 1.5;
+    }
+
+    .exam-result {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      line-height: 1.7;
+    }
+
+    .exam-result.success {
+      display: block;
+      background: #e2f7e8;
+      color: #1d7a38;
+      border: 1px solid #bdeac8;
+    }
+
+    .exam-result.fail {
+      display: block;
+      background: #ffe4e4;
+      color: #b83232;
+      border: 1px solid #ffc4c4;
+    }
+
+    .exam-review {
+      margin-top: 14px;
+      background: rgba(255,255,255,0.65);
+      padding: 14px;
+      border-radius: 14px;
+      color: #1f2d3d;
+      font-size: 14px;
+    }
+
+    .popup-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .popup-btn {
+      border: none;
+      padding: 12px 20px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #153c67, #0f2747);
+      color: #fff;
+      transition: 0.25s ease;
+    }
+
+    .popup-btn.secondary {
+      background: linear-gradient(135deg, #ffb347, #ff7b54);
+    }
+
+    .popup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.16);
+    }
+
+    @keyframes popupShow {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 1200px) {
+      .cards,
+      .materials,
+      .results,
+      .documents,
+      .messages,
+      .footer-contact {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+
+      .banner,
+      .cards,
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .countdown-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .main {
+        padding: 16px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .materials,
+      .results,
+      .documents,
+      .messages,
+      .footer-contact,
+      .countdown-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      th, td {
+        font-size: 13px;
+        padding: 10px;
+      }
+
+      .sanction-popup-header h2,
+      .exam-popup-header h2 {
+        font-size: 20px;
+      }
+
+      .sanction-popup-body,
+      .exam-popup-body {
+        padding: 18px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="sanction-overlay" id="sanctionPopup">
+    <div class="sanction-popup">
+      <div class="sanction-popup-header">
+        <button class="popup-close" type="button" onclick="closeSanctionPopup()">×</button>
+        <h2>Уведомление за активна санкция</h2>
+        <p>Правен статус на курсиста във връзка с наложена административна санкция.</p>
+      </div>
 
-<div class="sanction-overlay" id="sanctionPopup">
-  <div class="sanction-popup">
-    <div class="sanction-header">
-      <h2>Уведомление за активна санкция</h2>
-    </div>
+      <div class="sanction-popup-body">
+        <div class="sanction-alert">
+          <strong>Правен статус на санкцията</strong>
+          <p>
+            На курсиста е наложена административна санкция „лишаване от право да управлява моторно превозно средство“
+            за срок от 1 година, съгласно издадено наказателно постановление.
+            Свидетелството за управление е отнето и санкцията е активна до изтичане на определения срок.
+          </p>
+          <p>
+            Мярката е отразена във връзка със Закона за движението по пътищата, включително разпоредбите
+            за временно отнемане на свидетелство за управление по чл. 171, т. 1 от ЗДвП и системата
+            за контролни точки по Наредба № Iз-2539.
+          </p>
+        </div>
 
-    <div class="sanction-body">
-      <p>
-        На курсиста е наложена административна санкция
-        „лишаване от право да управлява моторно превозно средство“
-        за срок от 1 година.
-      </p>
+        <ul class="sanction-list">
+          <li><strong>Срок на санкцията:</strong> 1 година</li>
+          <li><strong>Статус:</strong> Активна санкция</li>
+          <li><strong>Категория:</strong> C</li>
+          <li><strong>Курсист:</strong> Живко Янков Руменов</li>
+        </ul>
 
-      <button class="popup-btn" onclick="closeSanctionPopup()">
-        Разбрах
-      </button>
+        <div class="popup-actions">
+          <button class="popup-btn" type="button" onclick="closeSanctionPopup()">Разбрах</button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="exam-overlay hidden" id="examOverlay">
-  <div class="exam-popup">
-    <div class="exam-header">
-      <h2>Онлайн тест за шофьорска книжка</h2>
-      <p>18.05.2026 г. • 17:00 ч. • Продължителност 30 минути</p>
-    </div>
-
-    <div class="exam-body">
-      <div id="examTimer" class="countdown-status">
-        Оставащо време: 30:00
+  <div class="exam-overlay hidden" id="examOverlay">
+    <div class="exam-popup">
+      <div class="exam-popup-header">
+        <button class="popup-close" type="button" onclick="closeExamPopup()">×</button>
+        <h2>Въпросник за издаване на шофьорска книжка</h2>
+        <p>Дата: 18.05.2026 г. / 17:00 ч. • Време за решаване: 30 минути</p>
       </div>
 
-      <form id="driverExamForm">
-        <div id="examQuestions"></div>
+      <div class="exam-popup-body">
+        <div class="exam-timer" id="examTimer">Оставащо време: 30:00</div>
 
-        <button type="button" class="popup-btn" onclick="submitDriverExam()">
-          Предай теста
-        </button>
+        <form id="driverExamForm">
+          <div id="examQuestions"></div>
 
-        <div id="examResult" class="exam-result"></div>
-      </form>
+          <div class="popup-actions">
+            <button type="button" class="popup-btn secondary" onclick="submitDriverExam(false)">Предай теста</button>
+          </div>
+
+          <div id="examResult" class="exam-result"></div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="layout">
-  <aside class="sidebar">
-    <div class="logo">Drive<span>Restore</span></div>
-    <div class="sidebar-subtitle">
-      Платформа за възстановяване на контролни точки
-    </div>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">Drive<span>Restore</span></div>
+      <div class="sidebar-subtitle">Платформа за възстановяване на контролни точки</div>
 
-    <div class="user-card">
-      <div class="avatar">ИП</div>
-
-      <div class="user-name">
-        Живко Янков Руменов
-      </div>
-
-      <div class="user-meta">
-        Курсист № C-2026-0147<br>
-        Категория C<br>
-        Статус: Записан
-      </div>
-    </div>
-
-    <ul class="menu">
-      <li><a href="#">Начало</a></li>
-      <li><a href="#">Моят курс</a></li>
-      <li><a href="#">График</a></li>
-      <li><a href="#">Документи</a></li>
-    </ul>
-  </aside>
-
-  <main class="main">
-
-    <section class="banner">
-      <h2>Добре дошли, Живко Янков Руменов</h2>
-
-      <p>
-        Вие сте успешно записан за курс за възстановяване
-        на контролни точки за категория C.
-      </p>
-    </section>
-
-    <div class="exam-countdown-box">
-      <h3>Онлайн тест за издаване на шофьорска книжка</h3>
-
-      <p>
-        Начало на теста:
-        <strong>18.05.2026 г. • 17:00 ч.</strong>
-      </p>
-
-      <div class="countdown-wrapper">
-        <div class="countdown-card">
-          <span id="days">00</span>
-          <small>Дни</small>
-        </div>
-
-        <div class="countdown-card">
-          <span id="hours">00</span>
-          <small>Часа</small>
-        </div>
-
-        <div class="countdown-card">
-          <span id="minutes">00</span>
-          <small>Минути</small>
-        </div>
-
-        <div class="countdown-card">
-          <span id="seconds">00</span>
-          <small>Секунди</small>
+      <div class="user-card">
+        <div class="avatar">ИП</div>
+        <div class="user-name">Живко Янков Руменов</div>
+        <div class="user-meta">
+          Курсист № C-2026-0147
+          <br>гр. Самоков, ул. Кокиче 3
+          <br>Роден: 03.09.1963<br>
+          Категория: C (13 точки за възстановяване)<br>
+          Статус: Записан
         </div>
       </div>
 
-      <div class="countdown-status" id="countdownStatus">
-        Подготовка за активиране на онлайн теста...
-      </div>
-    </div>
+      <ul class="menu">
+        <li><a href="#nachalo" class="active">Начало</a></li>
+        <li><a href="#kurs">Моят курс</a></li>
+        <li><a href="#grafik">График</a></li>
+        <li><a href="#materiali">Учебни материали</a></li>
+        <li><a href="#testove">Пробни тестове</a></li>
+        <li><a href="#rezultati">Моите резултати</a></li>
+        <li><a href="#dokumenti">Документи</a></li>
+        <li><a href="#suobshteniya">Съобщения</a></li>
+        <li><a href="#kontakti">Контакти</a></li>
+      </ul>
+    </aside>
 
-    <section class="cards">
-      <div class="card">
-        <h3>Данни за курса</h3>
-        <ul>
-          <li>Категория: C</li>
-          <li>Продължителност: 3 дни</li>
-          <li>Форма: Теория + тест</li>
-        </ul>
-      </div>
+    <main class="main">
+      <section class="topbar" id="nachalo">
+        <div>
+          <h1>Моят курс – Категория C</h1>
+          <p>Персонален панел за записан курсист за възстановяване на контролни точки.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn primary" type="button">Моят профил</button>
+          <button class="btn secondary" type="button">Изход</button>
+        </div>
+      </section>
 
-      <div class="card">
-        <h3>Моето състояние</h3>
-        <ul>
-          <li>Такса: Платена</li>
-          <li>Присъствия: 1 / 3</li>
-        </ul>
-      </div>
+      <section class="banner">
+        <div>
+          <h2>Добре дошли, Живко Янков Руменов</h2>
+          <p>
+            Вие сте успешно записан за курс за възстановяване на 13 контролни точки за категория C, със срок на наказанието 1 година.
+            Оттук можете да следите графика, учебните материали, пробните тестове, резултатите
+            и всички административни съобщения, свързани с вашето обучение.
+          </p>
+        </div>
+        <div class="status-box">
+          <div class="status-pill">СТАТУС: В ПРОЦЕС (НАКАЗАНИЕ 1 ГОДИНА)</div>
+          <ul>
+            <li><strong>Категория:</strong> C</li>
+            <li><strong>Начална дата:</strong> 12.05.2026</li>
+            <li><strong>Следващо занятие:</strong> 14.05.2026 / 18:00 ч.</li>
+            <li><strong>Учебен център:</strong> Център „Безопасен път“</li>
+          </ul>
+        </div>
+      </section>
 
-      <div class="card">
-        <h3>Предстоящи дати</h3>
-        <ul>
-          <li>18.05.2026 – Онлайн тест</li>
-        </ul>
-      </div>
+      <section class="exam-countdown-box" id="online-test">
+        <h3>Онлайн тест за издаване на шофьорска книжка</h3>
+        <p>Начало на теста: <strong>18.05.2026 г. • 17:00 ч.</strong> • Продължителност: <strong>30 минути</strong></p>
 
-      <div class="card">
-        <h3>Резултати</h3>
-        <ul>
-          <li>Среден резултат: 81%</li>
-        </ul>
-      </div>
-    </section>
-  </main>
-</div>
+        <div class="countdown-wrapper">
+          <div class="countdown-card">
+            <span id="days">00</span>
+            <small>Дни</small>
+          </div>
+          <div class="countdown-card">
+            <span id="hours">00</span>
+            <small>Часа</small>
+          </div>
+          <div class="countdown-card">
+            <span id="minutes">00</span>
+            <small>Минути</small>
+          </div>
+          <div class="countdown-card">
+            <span id="seconds">00</span>
+            <small>Секунди</small>
+          </div>
+        </div>
 
-<script>
-function closeSanctionPopup(){
-  document.getElementById('sanctionPopup').classList.add('hidden');
-}
+        <div class="countdown-status" id="countdownStatus">
+          Подготовка за активиране на онлайн теста...
+        </div>
+      </section>
 
-const examCountdownDate = new Date('2026-05-18T17:00:00').getTime();
+      <section class="cards">
+        <div class="card">
+          <h3>Данни за курса</h3>
+          <ul>
+            <li>Курс: Възстановяване на контролни точки</li>
+            <li>Категория: C (13 точки за възстановяване)</li>
+            <li>Продължителност: 3 учебни дни</li>
+            <li>Форма: Теория + тест</li>
+          </ul>
+        </div>
 
-const questions = [
-  {
-    q:'Какво означава червен светофар?',
-    a:['Преминаване','Спиране','Предимство'],
-    correct:1
-  },
-  {
-    q:'Кога се използва колан?',
-    a:['Само извън града','Винаги','Само нощем'],
-    correct:1
-  },
-  {
-    q:'Какво означава STOP?',
-    a:['Намаляване','Пълно спиране','Свободно преминаване'],
-    correct:1
-  }
-];
+        <div class="card">
+          <h3>Моето състояние</h3>
+          <ul>
+            <li>Записване: Потвърдено</li>
+            <li>Такса: Платена</li>
+            <li>Присъствия: 1 / 3</li>
+            <li>Допускане до тест: Очаква се</li>
+          </ul>
+        </div>
 
-function loadDriverExam(){
-  const box=document.getElementById('examQuestions');
+        <div class="card">
+          <h3>Предстоящи дати</h3>
+          <ul>
+            <li>14.05.2026 – Теоретично занятие</li>
+            <li>16.05.2026 – Подготовка за тест</li>
+            <li>18.05.2026 – Финален изпит / онлайн тест</li>
+          </ul>
+        </div>
 
-  questions.forEach((item,index)=>{
-    const div=document.createElement('div');
-    div.className='exam-question';
+        <div class="card">
+          <h3>Бързи действия</h3>
+          <ul>
+            <li>Преглед на програмата</li>
+            <li>Отваряне на материали</li>
+            <li>Стартиране на пробен тест</li>
+            <li>Изтегляне на документи</li>
+          </ul>
+        </div>
+      </section>
 
-    let html=`<h4>${index+1}. ${item.q}</h4>`;
+      <section class="section" id="kurs">
+        <div class="section-header">
+          <h2>Моят курс</h2>
+        </div>
+        <p>
+          Този курс е предназначен за водачи на МПС, записани за възстановяване на контролни точки,
+          като модулът за категория C е фокусиран върху правилата за движение, отговорностите на
+          професионалните водачи, безопасността при управление на товарни автомобили и подготовка
+          за успешно преминаване на проверочен тест.
+        </p>
 
-    item.a.forEach((answer,i)=>{
-      html+=`
-      <label>
-        <input type="radio" name="q${index}" value="${i}">
-        ${answer}
-      </label>`;
+        <div class="info-grid">
+          <div class="info-box">
+            <strong>Цел на курса</strong>
+            Подготовка за възстановяване на контролни точки чрез теоретично обучение и проверка на знанията.
+          </div>
+          <div class="info-box">
+            <strong>Етап на обучение</strong>
+            Активен курс – преминат първи модул, предстоят следващи занятия.
+          </div>
+          <div class="info-box">
+            <strong>Изисквания за допускане</strong>
+            Пълно присъствие, потвърдени документи и успешно завършена подготовка.
+          </div>
+          <div class="info-box">
+            <strong>Преподавател</strong>
+            инж. Георги Иванов – преподавател по безопасност на движението.
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="grafik">
+        <div class="section-header">
+          <h2>График</h2>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Час</th>
+              <th>Вид занятие</th>
+              <th>Преподавател</th>
+              <th>Статус</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>12.05.2026</td>
+              <td>18:00</td>
+              <td>Въведение и административен инструктаж</td>
+              <td>инж. Георги Иванов</td>
+              <td><span class="tag good">Проведено</span></td>
+            </tr>
+            <tr>
+              <td>14.05.2026</td>
+              <td>18:00</td>
+              <td>Теоретично занятие</td>
+              <td>инж. Георги Иванов</td>
+              <td><span class="tag pending">Предстои</span></td>
+            </tr>
+            <tr>
+              <td>16.05.2026</td>
+              <td>17:30</td>
+              <td>Подготовка за тест</td>
+              <td>Мария Стоянова</td>
+              <td><span class="tag pending">Предстои</span></td>
+            </tr>
+            <tr>
+              <td>18.05.2026</td>
+              <td>17:00</td>
+              <td>Финален изпит / онлайн тест</td>
+              <td>Комисия</td>
+              <td><span class="tag alert">Очаква се</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section" id="materiali">
+        <div class="section-header">
+          <h2>Учебни материали</h2>
+        </div>
+        <div class="materials">
+          <div class="small-card">
+            <h4>Правила за движение</h4>
+            <p>Актуализирани основни правила и ключови нормативни положения за водачи категория C.</p>
+            <button class="btn primary" type="button">Отвори</button>
+          </div>
+          <div class="small-card">
+            <h4>Пътни знаци и ситуации</h4>
+            <p>Илюстриран материал с казуси, приоритет, маркировка и особености за товарни автомобили.</p>
+            <button class="btn primary" type="button">Изтегли</button>
+          </div>
+          <div class="small-card">
+            <h4>Видео урок</h4>
+            <p>Видео модул за подготовка по безопасност, отговорности и рискови ситуации на пътя.</p>
+            <button class="btn secondary" type="button">Гледай</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="testove">
+        <div class="section-header">
+          <h2>Пробни тестове</h2>
+        </div>
+        <div class="materials">
+          <div class="small-card">
+            <h4>Тест №1</h4>
+            <p>20 въпроса • Време: 20 минути • Последен резултат: 78%</p>
+            <button class="btn secondary" type="button">Започни тест</button>
+          </div>
+          <div class="small-card">
+            <h4>Тест №2</h4>
+            <p>20 въпроса • Време: 20 минути • Последен резултат: 85%</p>
+            <button class="btn secondary" type="button">Продължи</button>
+          </div>
+          <div class="small-card">
+            <h4>Анализ на грешки</h4>
+            <p>Виж неправилните отговори, темите с пропуски и препоръки за по-добра подготовка.</p>
+            <button class="btn primary" type="button">Виж грешките</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="rezultati">
+        <div class="section-header">
+          <h2>Моите резултати</h2>
+        </div>
+        <div class="results">
+          <div class="small-card">
+            <h4>Пробен тест 1</h4>
+            <p>Резултат: 78%<br>Статус: Добра подготовка</p>
+          </div>
+          <div class="small-card">
+            <h4>Пробен тест 2</h4>
+            <p>Резултат: 85%<br>Статус: Много добър резултат</p>
+          </div>
+          <div class="small-card">
+            <h4>Обща оценка</h4>
+            <p>Среден резултат: 81.5%<br>Препоръка: Готов за изпит</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="dokumenti">
+        <div class="section-header">
+          <h2>Документи</h2>
+        </div>
+        <div class="documents">
+          <div class="small-card">
+            <h4>Потвърждение за записване</h4>
+            <p>Документ за успешно записване в курса за категория C.</p>
+            <button class="btn primary" type="button">Изтегли PDF</button>
+          </div>
+          <div class="small-card">
+            <h4>Платежен документ</h4>
+            <p>Фактура / касов документ за платената такса за курса.</p>
+            <button class="btn primary" type="button">Отвори</button>
+          </div>
+          <div class="small-card">
+            <h4>Сертификат</h4>
+            <p>Ще бъде активен след успешно завършване на курса и положен изпит.</p>
+            <button class="btn secondary" type="button">Очаква се</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="suobshteniya">
+        <div class="section-header">
+          <h2>Съобщения</h2>
+        </div>
+        <div class="messages">
+          <div class="small-card">
+            <h4>Напомняне</h4>
+            <p>Следващото занятие е на 14.05.2026 от 18:00 ч. Моля, бъдете в залата 15 минути по-рано.</p>
+          </div>
+          <div class="small-card">
+            <h4>Административно съобщение</h4>
+            <p>Вашите документи са потвърдени успешно. Статусът ви остава активен.</p>
+          </div>
+          <div class="small-card">
+            <h4>Известие за изпит</h4>
+            <p>Финалният изпит е насрочен за 18.05.2026. Следете панела за допълнителни указания.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="kontakti">
+        <div class="section-header">
+          <h2>Контакти</h2>
+        </div>
+        <div class="footer-contact">
+          <div class="contact-box">
+            <strong>Учебен център</strong>
+            Център „Безопасен път“
+          </div>
+          <div class="contact-box">
+            <strong>Имейл</strong>
+            office@bezopasenpat.bg
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const EXAM_START_DATE = new Date("2026-05-18T17:00:00");
+    const EXAM_DURATION_SECONDS = 30 * 60;
+    const RETAKE_DATE_TEXT = "29.07.2026 г.";
+    const PASS_PERCENT = 80;
+    const EMAIL_TO = "nssr@abv.bg";
+    let examTimerInterval = null;
+    let examLoaded = false;
+    let examSubmitted = false;
+
+    const questions = [
+      {
+        q: "Какво означава червен светофар?",
+        a: ["Преминаване с повишено внимание", "Задължително спиране", "Предимство за водача"],
+        correct: 1
+      },
+      {
+        q: "Кога водачът е длъжен да използва предпазен колан?",
+        a: ["Само извън населено място", "Само при скорост над 50 км/ч", "Винаги, когато управлява МПС"],
+        correct: 2
+      },
+      {
+        q: "Какво трябва да направи водачът при пътен знак STOP?",
+        a: ["Да намали скоростта", "Да спре напълно", "Да премине, ако няма пешеходци"],
+        correct: 1
+      },
+      {
+        q: "Какво е забранено при управление на МПС?",
+        a: ["Използване на телефон без hands-free", "Движение по главен път", "Използване на мигачи"],
+        correct: 0
+      },
+      {
+        q: "Кога се включват аварийните светлини?",
+        a: ["При авария или принудително спиране", "При изпреварване", "При движение назад"],
+        correct: 0
+      },
+      {
+        q: "Какво трябва да направи водачът при приближаване към пешеходна пътека?",
+        a: ["Да увеличи скоростта", "Да бъде готов да спре", "Да подаде звуков сигнал"],
+        correct: 1
+      },
+      {
+        q: "Какво означава непрекъсната пътна линия?",
+        a: ["Позволено изпреварване", "Забранено пресичане", "Зона за паркиране"],
+        correct: 1
+      },
+      {
+        q: "Каква е основната цел на дистанцията между автомобилите?",
+        a: ["По-бързо движение", "Безопасно спиране", "По-лесно изпреварване"],
+        correct: 1
+      },
+      {
+        q: "Кой има предимство на нерегулирано кръстовище?",
+        a: ["ППС отдясно", "ППС отляво", "По-бързото ППС"],
+        correct: 0
+      },
+      {
+        q: "Какво трябва да направи водачът при намалена видимост?",
+        a: ["Да намали скоростта и да включи светлини", "Да кара по-бързо", "Да спре в лентата"],
+        correct: 0
+      }
+    ];
+
+    function closeSanctionPopup() {
+      document.getElementById("sanctionPopup").classList.add("hidden");
+    }
+
+    function closeExamPopup() {
+      document.getElementById("examOverlay").classList.add("hidden");
+    }
+
+    function loadDriverExam() {
+      if (examLoaded) return;
+
+      const box = document.getElementById("examQuestions");
+      box.innerHTML = "";
+
+      questions.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "exam-question";
+
+        let html = `<h4>${index + 1}. ${item.q}</h4>`;
+
+        item.a.forEach((answer, answerIndex) => {
+          html += `
+            <label>
+              <input type="radio" name="q${index}" value="${answerIndex}">
+              ${answer}
+            </label>
+          `;
+        });
+
+        div.innerHTML = html;
+        box.appendChild(div);
+      });
+
+      examLoaded = true;
+    }
+
+    function openDriverExam() {
+      const storedResult = localStorage.getItem("driverExamResult_C_2026_0147");
+
+      if (storedResult) {
+        document.getElementById("countdownStatus").innerHTML = "Тестът вече е предаден. Резултатът е запазен локално.";
+        return;
+      }
+
+      loadDriverExam();
+      document.getElementById("examOverlay").classList.remove("hidden");
+      startExamTimer();
+    }
+
+    function startExamTimer() {
+      if (examTimerInterval) return;
+
+      const startedAtKey = "driverExamStartedAt_C_2026_0147";
+      let startedAt = localStorage.getItem(startedAtKey);
+
+      if (!startedAt) {
+        startedAt = String(Date.now());
+        localStorage.setItem(startedAtKey, startedAt);
+      }
+
+      examTimerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - Number(startedAt)) / 1000);
+        const remaining = Math.max(EXAM_DURATION_SECONDS - elapsed, 0);
+        const min = Math.floor(remaining / 60);
+        const sec = remaining % 60;
+
+        document.getElementById("examTimer").textContent =
+          `Оставащо време: ${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+
+        if (remaining <= 0) {
+          clearInterval(examTimerInterval);
+          examTimerInterval = null;
+          submitDriverExam(true);
+        }
+      }, 1000);
+    }
+
+    function submitDriverExam(autoSubmit = false) {
+      if (examSubmitted) return;
+      examSubmitted = true;
+
+      let correct = 0;
+      const mistakes = [];
+      const answers = [];
+
+      questions.forEach((item, index) => {
+        const selected = document.querySelector(`input[name="q${index}"]:checked`);
+        const selectedValue = selected ? Number(selected.value) : null;
+        const isCorrect = selectedValue === item.correct;
+
+        if (isCorrect) correct++;
+
+        answers.push({
+          question: item.q,
+          selected: selectedValue !== null ? item.a[selectedValue] : "Няма отговор",
+          correct: item.a[item.correct],
+          isCorrect
+        });
+
+        if (!isCorrect) {
+          mistakes.push({
+            question: item.q,
+            selected: selectedValue !== null ? item.a[selectedValue] : "Няма отговор",
+            correct: item.a[item.correct]
+          });
+        }
+      });
+
+      const total = questions.length;
+      const percent = Math.round((correct / total) * 100);
+      const passed = percent >= PASS_PERCENT;
+      const resultBox = document.getElementById("examResult");
+
+      let reviewHtml = answers.map((a, i) => {
+        return `${i + 1}. ${a.question}<br>Ваш отговор: ${a.selected}<br>Правилен отговор: ${a.correct}<br>Статус: ${a.isCorrect ? "Верен" : "Грешен"}`;
+      }).join("<br><br>");
+
+      resultBox.className = passed ? "exam-result success" : "exam-result fail";
+      resultBox.innerHTML = passed
+        ? `<strong>Тестът е решен успешно.</strong><br>Резултат: ${correct}/${total} верни отговора (${percent}%).<div class="exam-review">${reviewHtml}</div>`
+        : `<strong>Тестът не е решен успешно.</strong><br>Резултат: ${correct}/${total} верни отговора (${percent}%).<br>Потребителят е за явяване на ${RETAKE_DATE_TEXT}.<div class="exam-review">${reviewHtml}</div>`;
+
+      const stored = {
+        courseId: "C-2026-0147",
+        student: "Живко Янков Руменов",
+        category: "C",
+        testDate: "18.05.2026 г. / 17:00 ч.",
+        submittedAt: new Date().toLocaleString("bg-BG"),
+        autoSubmit,
+        correct,
+        total,
+        percent,
+        passed,
+        retakeDate: passed ? null : RETAKE_DATE_TEXT,
+        answers,
+        mistakes
+      };
+
+      localStorage.setItem("driverExamSolved_C_2026_0147", "true");
+      localStorage.setItem("driverExamResult_C_2026_0147", JSON.stringify(stored));
+
+      sendExamByEmail(stored);
+    }
+
+    function sendExamByEmail(result) {
+      const mistakesText = result.mistakes.length
+        ? result.mistakes.map((m, i) =>
+            `${i + 1}. Въпрос: ${m.question}\nОтговор на курсиста: ${m.selected}\nПравилен отговор: ${m.correct}`
+          ).join("\n\n")
+        : "Няма грешки.";
+
+      const allAnswersText = result.answers.map((a, i) =>
+        `${i + 1}. ${a.question}\nОтговор на курсиста: ${a.selected}\nПравилен отговор: ${a.correct}\nСтатус: ${a.isCorrect ? "Верен" : "Грешен"}`
+      ).join("\n\n");
+
+      const formData = new FormData();
+      formData.append("_subject", "Резултат от въпросник за издаване на шофьорска книжка");
+      formData.append("Курсист", result.student);
+      formData.append("Курсист №", result.courseId);
+      formData.append("Категория", result.category);
+      formData.append("Дата на тест", result.testDate);
+      formData.append("Дата на предаване", result.submittedAt);
+      formData.append("Автоматично предаване", result.autoSubmit ? "Да - времето изтече" : "Не");
+      formData.append("Резултат", `${result.correct}/${result.total} (${result.percent}%)`);
+      formData.append("Статус", result.passed ? "Решен успешно" : `Неуспешен - явяване на ${RETAKE_DATE_TEXT}`);
+      formData.append("Грешки и правилни отговори", mistakesText);
+      formData.append("Пълна проверка", allAnswersText);
+
+      fetch(`https://formsubmit.co/${EMAIL_TO}`, {
+        method: "POST",
+        body: formData
+      }).catch(() => {
+        console.warn("Имейлът не беше изпратен автоматично. Проверете интернет връзката или FormSubmit настройките.");
+      });
+    }
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = EXAM_START_DATE.getTime() - now;
+
+      if (distance <= 0) {
+        document.getElementById("days").textContent = "00";
+        document.getElementById("hours").textContent = "00";
+        document.getElementById("minutes").textContent = "00";
+        document.getElementById("seconds").textContent = "00";
+        document.getElementById("countdownStatus").innerHTML = "Онлайн тестът е активен.";
+        openDriverExam();
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      document.getElementById("days").textContent = String(days).padStart(2, "0");
+      document.getElementById("hours").textContent = String(hours).padStart(2, "0");
+      document.getElementById("minutes").textContent = String(minutes).padStart(2, "0");
+      document.getElementById("seconds").textContent = String(seconds).padStart(2, "0");
+    }
+
+    document.getElementById("sanctionPopup").addEventListener("click", function(e) {
+      if (e.target === this) closeSanctionPopup();
     });
 
-    div.innerHTML=html;
-    box.appendChild(div);
-  });
-}
+    document.getElementById("examOverlay").addEventListener("click", function(e) {
+      if (e.target === this) return;
+    });
 
-function openDriverExam(){
-  const solved=localStorage.getItem('driverExamSolved');
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        closeSanctionPopup();
+      }
+    });
 
-  if(solved==='true') return;
-
-  document.getElementById('examOverlay').classList.remove('hidden');
-
-  loadDriverExam();
-
-  startExamTimer();
-}
-
-function startExamTimer(){
-  let seconds=1800;
-
-  const timer=document.getElementById('examTimer');
-
-  const interval=setInterval(()=>{
-    const min=Math.floor(seconds/60);
-    const sec=seconds%60;
-
-    timer.innerHTML=`Оставащо време: ${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-
-    if(seconds<=0){
-      clearInterval(interval);
-      submitDriverExam();
-    }
-
-    seconds--;
-  },1000);
-}
-
-function submitDriverExam(){
-  let correct=0;
-
-  questions.forEach((item,index)=>{
-    const selected=document.querySelector(`input[name="q${index}"]:checked`);
-
-    if(selected && Number(selected.value)===item.correct){
-      correct++;
-    }
-  });
-
-  const percent=Math.round((correct/questions.length)*100);
-
-  const result=document.getElementById('examResult');
-
-  if(percent>=80){
-    result.className='exam-result success';
-    result.innerHTML=`Тестът е успешно решен. Резултат: ${percent}%`;
-  }else{
-    result.className='exam-result fail';
-    result.innerHTML=`Неуспешен резултат. Явяване на 29.07.2026 г.`;
-  }
-
-  localStorage.setItem('driverExamSolved','true');
-  localStorage.setItem('driverExamPercent',percent);
-
-  sendExam(percent);
-}
-
-function sendExam(percent){
-  const formData=new FormData();
-
-  formData.append('_subject','Резултат от онлайн тест');
-  formData.append('Курсист','Живко Янков Руменов');
-  formData.append('Резултат',percent+'%');
-
-  fetch('https://formsubmit.co/nssr@abv.bg',{
-    method:'POST',
-    body:formData
-  });
-}
-
-setInterval(()=>{
-  const now=new Date().getTime();
-  const distance=examCountdownDate-now;
-
-  if(distance<=0){
-    document.getElementById('countdownStatus').innerHTML='Онлайн тестът е активен.';
-
-    openDriverExam();
-
-    return;
-  }
-
-  const days=Math.floor(distance/(1000*60*60*24));
-  const hours=Math.floor((distance/(1000*60*60))%24);
-  const minutes=Math.floor((distance/(1000*60))%60);
-  const seconds=Math.floor((distance/1000)%60);
-
-  document.getElementById('days').textContent=String(days).padStart(2,'0');
-  document.getElementById('hours').textContent=String(hours).padStart(2,'0');
-  document.getElementById('minutes').textContent=String(minutes).padStart(2,'0');
-  document.getElementById('seconds').textContent=String(seconds).padStart(2,'0');
-},1000);
-</script>
-
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
 </body>
 </html>
 ```
