@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DriveRestore - Нов курсист</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI;}
+
+body{
+  background:linear-gradient(135deg,#eef3f9,#dfe8f2);
+  color:#1f2d3d;
+}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{
+  width:270px;
+  background:linear-gradient(180deg,#0f2747,#163760);
+  color:#fff;
+  padding:20px;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:800;
+  text-align:center;
+  margin-bottom:20px;
+}
+.logo span{color:#ffb347;}
+
+.user-card{
+  background:rgba(255,255,255,0.08);
+  padding:16px;
+  border-radius:16px;
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.avatar{
+  width:65px;height:65px;
+  margin:0 auto 10px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ffb347,#ff7b54);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  font-size:20px;
+}
+
+.menu a{
+  display:block;
+  color:#fff;
+  text-decoration:none;
+  padding:10px;
+  border-radius:10px;
+  margin:6px 0;
+  background:rgba(255,255,255,0.05);
+}
+
+/* MAIN */
+.main{flex:1;padding:25px;}
+
+.header{
+  background:#fff;
+  padding:20px;
+  border-radius:18px;
+  margin-bottom:20px;
+}
+
+.banner{
+  background:linear-gradient(135deg,#153c67,#1e4f86);
+  color:#fff;
+  padding:22px;
+  border-radius:20px;
+  margin-bottom:20px;
+}
+
+/* CARD */
+.card{
+  background:#fff;
+  padding:18px;
+  border-radius:18px;
+  margin-bottom:15px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#fff;
+  border-radius:14px;
+  overflow:hidden;
+}
+
+th,td{
+  padding:12px;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+}
+
+th{
+  background:#12345a;
+  color:#fff;
+}
+
+/* POPUP */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.popup.hidden{display:none;}
+
+.popup-box{
+  width:420px;
+  background:#fff;
+  padding:20px;
+  border-radius:18px;
+}
+
+.popup-box h2{
+  color:#b83232;
+  margin-bottom:10px;
+}
+
+.btn{
+  padding:10px 14px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.btn-danger{
+  background:#b83232;
+  color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-box">
+    <h2>САНКЦИЯ ПО ЗАКОНА</h2>
+    <p>
+      Лицето е санкционирано съгласно чл. 157, ал. 4 от Закона за движението по пътищата
+      и няма право да управлява МПС до възстановяване на правоспособност.
+    </p>
+    <br>
+    <button class="btn btn-danger" onclick="document.getElementById('popup').classList.add('hidden')">
+      Разбрах
+    </button>
+  </div>
+</div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">Drive<span>Restore</span></div>
+
+  <div class="user-card">
+    <div class="avatar">АК</div>
+    <h3>Асен Иванов Константинов</h3>
+    <p>
+      Код: 7383<br>
+      гр. Самоков<br>
+      ул. „Велико Търново“ 6<br>
+      Категория: C<br>
+      Статус: Възстановяване на точки
+    </p>
+  </div>
+
+  <div class="menu">
+    <a href="#">Начало</a>
+    <a href="#">Курс</a>
+    <a href="#">График</a>
+    <a href="#">Документи</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">
+  <h1>Моят курс – Категория C</h1>
+  <p>Персонален курс за възстановяване на контролни точки</p>
+</div>
+
+<div class="banner">
+  <h2>Добре дошъл, Асен!</h2>
+  <p>Следи обучението, графика и предстоящите занятия.</p>
+</div>
+
+<!-- INFO -->
+<div class="card">
+  <h3>Основна информация</h3>
+  <p>
+    Курсистът е записан в програма за възстановяване на правоспособност.
+    Обучението включва теория и психотест.
+  </p>
+</div>
+
+<!-- SCHEDULE -->
+<div class="card">
+  <h3>График на занятията</h3>
+
+  <table>
+    <tr>
+      <th>Дата</th>
+      <th>Час</th>
+      <th>Занятие</th>
+      <th>Преподавател</th>
+    </tr>
+
+    <tr>
+      <td>18.06</td>
+      <td>16:00</td>
+      <td>Въведение и теория</td>
+      <td>инж. Георги Иванов</td>
+    </tr>
+
+    <tr>
+      <td>24.06</td>
+      <td>17:00</td>
+      <td>Практическа подготовка</td>
+      <td>Мария Стоянова</td>
+    </tr>
+
+    <tr>
+      <td>07.07</td>
+      <td>17:30</td>
+      <td>Контролен тест</td>
+      <td>Комисия</td>
+    </tr>
+
+    <tr>
+      <td>17.07</td>
+      <td>16:30</td>
+      <td>Психологически тест</td>
+      <td>д-р Николай Петров</td>
+    </tr>
+
+  </table>
+</div>
+
+</div>
+</div>
+
+</body>
+</html>
