@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Цени и пакети за частни проверки, OSINT анализ, сигнали, жалби, извънсъдебно уреждане и случаи с материален интерес." />
+  <title>ARGUS | Цени и пакети</title>
+  <style>
+    :root{
+      --bg:#070b12;
+      --bg-soft:#0e1622;
+      --card:#111b29;
+      --line:rgba(255,255,255,.10);
+      --text:#f4f7fb;
+      --muted:#9ba9ba;
+      --gold:#d6aa58;
+      --gold-2:#f0cf8b;
+      --green:#77d6a2;
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+      --radius:20px;
+      --max:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%,rgba(214,170,88,.10),transparent 28%),
+        radial-gradient(circle at 90% 30%,rgba(64,92,125,.15),transparent 24%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.6;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    .container{width:min(var(--max),calc(100% - 32px));margin:auto}
+
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      background:rgba(7,11,18,.90);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      min-height:76px;
+      display:flex;align-items:center;justify-content:space-between;gap:24px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.08em}
+    .brand-mark{
+      width:42px;height:42px;border-radius:50%;
+      border:1px solid rgba(214,170,88,.55);
+      display:grid;place-items:center;color:var(--gold);
+      background:linear-gradient(145deg,rgba(214,170,88,.16),rgba(255,255,255,.02));
+    }
+    .brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.16em}
+    .menu{display:flex;gap:24px;align-items:center;font-size:14px;color:#d9e1eb}
+    .menu a:hover{color:var(--gold-2)}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:13px 20px;border-radius:12px;border:1px solid transparent;
+      font-weight:700;cursor:pointer;transition:.2s ease;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,var(--gold),var(--gold-2));
+      color:#17120a;box-shadow:0 10px 30px rgba(214,170,88,.18);
+    }
+    .btn-outline{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.03)}
+    .btn:hover{transform:translateY(-2px)}
+
+    .hero{padding:88px 0 58px}
+    .eyebrow{
+      color:var(--gold-2);font-size:12px;font-weight:800;
+      text-transform:uppercase;letter-spacing:.18em;margin-bottom:14px;
+    }
+    h1{
+      margin:0;max-width:850px;font-size:clamp(42px,7vw,74px);
+      line-height:1.04;letter-spacing:-.04em;
+    }
+    h1 span{color:var(--gold-2)}
+    .hero p{max-width:760px;color:var(--muted);font-size:18px;margin:24px 0 0}
+
+    section{padding:70px 0}
+    .section-head{max-width:800px;margin-bottom:34px}
+    .section-head h2{
+      margin:0 0 12px;font-size:clamp(30px,4vw,46px);
+      letter-spacing:-.03em;line-height:1.15;
+    }
+    .section-head p{margin:0;color:var(--muted)}
+
+    .packages{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:20px;
+    }
+    .package{
+      background:linear-gradient(180deg,rgba(17,27,41,.92),rgba(10,16,25,.96));
+      border:1px solid var(--line);
+      border-radius:24px;padding:28px;
+      box-shadow:var(--shadow);
+      position:relative;
+    }
+    .package.featured{border-color:rgba(214,170,88,.45);transform:translateY(-8px)}
+    .badge{
+      position:absolute;top:18px;right:18px;
+      font-size:11px;font-weight:800;letter-spacing:.08em;
+      color:#17120a;background:var(--gold-2);
+      padding:6px 10px;border-radius:999px;
+    }
+    .package h3{margin:0 0 10px;font-size:24px}
+    .price{font-size:42px;font-weight:800;color:var(--gold-2);margin:10px 0}
+    .price small{font-size:14px;color:var(--muted);font-weight:500}
+    .package ul{padding-left:20px;color:#dce4ee}
+    .package li{margin:9px 0}
+    .package .btn{width:100%;margin-top:14px}
+
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:rgba(17,27,41,.76);
+    }
+    table{width:100%;border-collapse:collapse;min-width:760px}
+    th,td{padding:16px 18px;text-align:left;border-bottom:1px solid var(--line)}
+    th{color:var(--gold-2);font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+    td{color:#dbe3ed}
+    td:last-child{font-weight:800;color:#fff}
+    tr:last-child td{border-bottom:none}
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+    .card{
+      padding:24px;border-radius:20px;border:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(17,27,41,.82),rgba(10,16,25,.92));
+    }
+    .card .icon{
+      width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+      background:rgba(214,170,88,.10);color:var(--gold-2);font-weight:800;
+    }
+    .card h3{margin:16px 0 8px}
+    .card p{margin:0;color:var(--muted);font-size:14px}
+    .card strong{color:var(--gold-2)}
+
+    .material-box{
+      display:grid;grid-template-columns:1fr 1fr;gap:20px;
+    }
+    .material{
+      border:1px solid rgba(214,170,88,.25);
+      border-radius:20px;padding:24px;
+      background:linear-gradient(135deg,rgba(214,170,88,.07),rgba(255,255,255,.02));
+    }
+    .material h3{margin-top:0}
+    .material ul{padding-left:20px;color:#dce4ee}
+    .material li{margin:8px 0}
+    .note{
+      margin-top:18px;padding:16px;border-radius:14px;
+      background:rgba(119,214,162,.08);border:1px solid rgba(119,214,162,.22);
+      color:#dff8ea;font-size:14px;
+    }
+
+    .calculator{
+      display:grid;grid-template-columns:1fr 1fr;gap:18px;
+      background:var(--card);border:1px solid var(--line);
+      border-radius:24px;padding:28px;
+    }
+    label{font-size:13px;color:#d7dee8}
+    select,input{
+      width:100%;margin-top:7px;padding:13px 14px;border-radius:12px;
+      border:1px solid var(--line);background:#0b121c;color:var(--text);outline:none;
+    }
+    .result{
+      grid-column:1/-1;
+      padding:18px;border-radius:14px;background:rgba(214,170,88,.08);
+      border:1px solid rgba(214,170,88,.25);
+      font-size:18px;font-weight:800;color:var(--gold-2);
+    }
+
+    .legal{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:20px;padding:22px;background:rgba(255,255,255,.025);
+      color:#d9e2ec;
+    }
+    .legal p{margin:8px 0 0;color:var(--muted)}
+
+    footer{
+      border-top:1px solid var(--line);
+      padding:28px 0 40px;color:var(--muted);font-size:13px;
+    }
+    .footer-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+    @media(max-width:900px){
+      .packages,.cards,.material-box,.calculator{grid-template-columns:1fr}
+      .package.featured{transform:none}
+      .menu{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="argus_homepage.html">
+        <div class="brand-mark">◉</div>
+        <div>ARGUS<small>PRIVATE INVESTIGATIONS</small></div>
+      </a>
+      <nav class="menu">
+        <a href="#packages">Пакети</a>
+        <a href="#services">Единични услуги</a>
+        <a href="#material">Материален интерес</a>
+        <a href="#calculator">Калкулатор</a>
+      </nav>
+      <a class="btn btn-primary" href="argus_homepage.html#contact">Подай запитване</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="eyebrow">Прозрачно ценообразуване</div>
+        <h1>Цени и <span>пакети</span></h1>
+        <p>
+          Цената се определя според сложността, обема на документите, броя на лицата,
+          материалния интерес, необходимите проверки и наличието на международен елемент.
+          Посочените стойности са базови и служат за предварителна ориентация.
+        </p>
+      </div>
+    </section>
+
+    <section id="packages">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Комплексни решения</div>
+          <h2>Пакети за различни видове случаи</h2>
+          <p>Всеки пакет може да бъде адаптиран към конкретния казус.</p>
+        </div>
+
+        <div class="packages">
+          <article class="package">
+            <h3>Basic</h3>
+            <div class="price">199 € <small>/ случай</small></div>
+            <ul>
+              <li>Първоначален анализ</li>
+              <li>Проверка по публични източници</li>
+              <li>Преглед на до 10 документа</li>
+              <li>Един сигнал, жалба или покана</li>
+              <li>Кратък писмен доклад</li>
+            </ul>
+            <a class="btn btn-outline" href="argus_homepage.html#contact">Избери Basic</a>
+          </article>
+
+          <article class="package featured">
+            <div class="badge">НАЙ-ПРЕДПОЧИТАН</div>
+            <h3>Professional</h3>
+            <div class="price">399 € <small>/ случай</small></div>
+            <ul>
+              <li>Разширен анализ на случая</li>
+              <li>Проверка на лица, фирми и свързани обстоятелства</li>
+              <li>Преглед на до 30 документа</li>
+              <li>До три подготвени документа</li>
+              <li>Опит за доброволно уреждане</li>
+              <li>Подробен доклад с приложения</li>
+            </ul>
+            <a class="btn btn-primary" href="argus_homepage.html#contact">Избери Professional</a>
+          </article>
+
+          <article class="package">
+            <h3>Premium</h3>
+            <div class="price">от 799 € <small>/ случай</small></div>
+            <ul>
+              <li>Комплексно документално разследване</li>
+              <li>Множество лица, фирми или активи</li>
+              <li>Разширен OSINT анализ</li>
+              <li>Цялостна документална подготовка</li>
+              <li>Извънсъдебни преговори</li>
+              <li>Финален професионален доклад</li>
+            </ul>
+            <a class="btn btn-outline" href="argus_homepage.html#contact">Поискай оферта</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Единични услуги</div>
+          <h2>Базови цени</h2>
+          <p>Подходящи за ограничени по обем задачи и конкретни документи.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Услуга</th><th>Обхват</th><th>Цена</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Първоначална оценка</td><td>До 15 минути</td><td>Безплатно</td></tr>
+              <tr><td>Анализ на случай</td><td>Факти, документи и рискове</td><td>от 50 €</td></tr>
+              <tr><td>Проверка на физическо лице</td><td>Публични регистри и открити източници</td><td>от 80 €</td></tr>
+              <tr><td>Проверка на фирма</td><td>Собственост, управление и публични записи</td><td>от 100 €</td></tr>
+              <tr><td>Проверка при интернет измама</td><td>Профили, обяви, плащания и цифрови следи</td><td>от 80 €</td></tr>
+              <tr><td>OSINT анализ</td><td>Разширено проучване по открити източници</td><td>от 150 €</td></tr>
+              <tr><td>Документен анализ</td><td>Договори, разписки, фактури, кореспонденция</td><td>от 50 €</td></tr>
+              <tr><td>Сигнал или жалба</td><td>До една компетентна институция</td><td>от 60 €</td></tr>
+              <tr><td>Покана за доброволно изпълнение</td><td>Писмена покана и фактическа хронология</td><td>от 60 €</td></tr>
+              <tr><td>Извънсъдебно съдействие</td><td>Преговори и предложение за споразумение</td><td>от 120 €</td></tr>
+              <tr><td>Доказателствен доклад</td><td>Хронология, източници и приложения</td><td>от 150 €</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="material">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Случаи с материален интерес</div>
+          <h2>Индивидуално ценообразуване</h2>
+          <p>
+            При стойност на претенцията или имуществото над 5 000 € се изготвя
+            индивидуална оферта след предварителен анализ.
+          </p>
+        </div>
+
+        <div class="material-box">
+          <article class="material">
+            <h3>Парични вземания над 5 000 €</h3>
+            <ul>
+              <li>Размер на претенцията</li>
+              <li>Брой участващи лица и дружества</li>
+              <li>Обем на документите</li>
+              <li>Необходими проверки и срокове</li>
+              <li>Наличие на международен елемент</li>
+            </ul>
+            <div class="note"><strong>Цена:</strong> след индивидуална оценка и писмена оферта.</div>
+          </article>
+
+          <article class="material">
+            <h3>Движимо имущество и превозни средства</h3>
+            <ul>
+              <li>Вид на превозното средство или актива</li>
+              <li>Марка, модел и година</li>
+              <li>Пазарна стойност и държава на регистрация</li>
+              <li>История, собственост и налични документи</li>
+              <li>Необходимост от специализирана експертна оценка</li>
+            </ul>
+            <div class="note"><strong>Цена:</strong> според характеристиките и обхвата на проверката.</div>
+          </article>
+
+          <article class="material">
+            <h3>Недвижими имоти</h3>
+            <ul>
+              <li>Вид и местоположение на имота</li>
+              <li>Район, населено място и държава</li>
+              <li>Пазарна или експертна оценка</li>
+              <li>Брой собственици и документи</li>
+              <li>Необходими проверки за собственост и тежести</li>
+            </ul>
+            <div class="note"><strong>Важно:</strong> разходът за независима оценка на имота се заплаща отделно от клиента.</div>
+          </article>
+
+          <article class="material">
+            <h3>Международни случаи</h3>
+            <ul>
+              <li>Брой държави и компетентни органи</li>
+              <li>Преводи и легализация на документи</li>
+              <li>Международна кореспонденция</li>
+              <li>Допълнителни регистри и проверки</li>
+              <li>Необходимост от местен адвокат или експерт</li>
+            </ul>
+            <div class="note"><strong>Цена:</strong> индивидуална оферта; външните разходи се калкулират отделно.</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Допълнителни условия</div>
+          <h2>Доплащания и външни разходи</h2>
+        </div>
+
+        <div class="cards">
+          <article class="card"><div class="icon">24h</div><h3>Спешна услуга</h3><p>До 24 часа: <strong>+50%</strong><br>До 48 часа: <strong>+25%</strong></p></article>
+          <article class="card"><div class="icon">EU</div><h3>Преводи и легализация</h3><p>Заплащат се отделно според езика, обема и вида на документа.</p></article>
+          <article class="card"><div class="icon">EX</div><h3>Външни експерти</h3><p>Оценители, адвокати, вещи лица и технически експерти се договарят отделно.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="calculator">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Ориентировъчен калкулатор</div>
+          <h2>Провери началния ценови диапазон</h2>
+          <p>Резултатът е ориентировъчен и не представлява окончателна оферта.</p>
+        </div>
+
+        <div class="calculator">
+          <label>Вид на случая
+            <select id="caseType">
+              <option value="80">Проверка на лице</option>
+              <option value="100">Проверка на фирма</option>
+              <option value="150">OSINT разследване</option>
+              <option value="60">Сигнал или жалба</option>
+              <option value="120">Извънсъдебно съдействие</option>
+              <option value="199">Комплексен случай</option>
+            </select>
+          </label>
+
+          <label>Сложност
+            <select id="complexity">
+              <option value="1">Стандартна</option>
+              <option value="1.5">Средна</option>
+              <option value="2.2">Висока</option>
+            </select>
+          </label>
+
+          <label>Материален интерес
+            <select id="materialInterest">
+              <option value="1">До 5 000 €</option>
+              <option value="1.25">Над 5 000 €</option>
+              <option value="1.5">Над 25 000 €</option>
+              <option value="1.8">Над 100 000 €</option>
+            </select>
+          </label>
+
+          <label>Спешност
+            <select id="urgency">
+              <option value="1">Стандартен срок</option>
+              <option value="1.25">До 48 часа</option>
+              <option value="1.5">До 24 часа</option>
+            </select>
+          </label>
+
+          <div class="result" id="result">Ориентировъчна цена: 80 € – 120 €</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="legal">
+          <strong>Важно уточнение</strong>
+          <p>
+            Окончателната цена се определя след преглед на случая и се посочва в писмена оферта.
+            Разходи за държавни такси, преводи, оценки, нотариални услуги, адвокати, вещи лица,
+            пътуване и други външни услуги не са включени, освен ако изрично не е договорено друго.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-row">
+      <div>© 2026 ARGUS. Всички права запазени.</div>
+      <div><a href="argus_homepage.html">Начална страница</a> • Политика за поверителност • Общи условия</div>
+    </div>
+  </footer>
+
+  <script>
+    const ids = ["caseType","complexity","materialInterest","urgency"];
+    function calculatePrice(){
+      const base = Number(document.getElementById("caseType").value);
+      const complexity = Number(document.getElementById("complexity").value);
+      const material = Number(document.getElementById("materialInterest").value);
+      const urgency = Number(document.getElementById("urgency").value);
+
+      const min = Math.round(base * complexity * material * urgency);
+      const max = Math.round(min * 1.5);
+
+      document.getElementById("result").textContent =
+        `Ориентировъчна цена: ${min} € – ${max} €`;
+    }
+    ids.forEach(id => document.getElementById(id).addEventListener("change", calculatePrice));
+    calculatePrice();
+  </script>
+</body>
+</html>
